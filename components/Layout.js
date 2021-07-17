@@ -1,7 +1,10 @@
 import Head from 'next/head';
 import Navbar from './Navbar';
+import Footer from './Footer';
+import { useRouter } from 'next/router';
 
 function Layout({ title, description, children }) {
+  const router = useRouter();
   return (
     <div className='flex flex-col justify-between h-screen'>
       <Head>
@@ -13,7 +16,13 @@ function Layout({ title, description, children }) {
         <meta name='viewport' content='initial-scale=1.0, width=device-width' />
       </Head>
       <Navbar />
-      <main className='relative '>{children}</main>
+      <main
+        className={`relative ${
+          router.asPath === '/' ? 'mt-0' : 'mt-20'
+        }`}>
+        {children}
+      </main>
+      <Footer />
     </div>
   );
 }
