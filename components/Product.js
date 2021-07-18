@@ -6,7 +6,7 @@ import { Card, CardBody, CardTitle, CardText } from './Card';
 const Product = ({ product }) => {
   return (
     <Card>
-      <Link href={`/product/${product._id}`}>
+      <Link href={`/products/${product._id}`}>
         <a>
           <Image
             src={product.image}
@@ -14,6 +14,7 @@ const Product = ({ product }) => {
             className=''
             width={400}
             height={400}
+            objectFit='cover'
           />
         </a>
       </Link>

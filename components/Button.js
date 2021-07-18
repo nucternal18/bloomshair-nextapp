@@ -19,6 +19,8 @@ const colors = {
   dark: `border-black border-2 text-gray-900 active:bg-black active:text-white hover:bg-black hover:text-white`,
   warning: `border-yellow-500 border-2 text-yellow-500 active:bg-yellow-500 active:text-white`,
   indigo: `border-indigo-900 border-2 text-indigo-900 active:bg-indigo-900 active:text-white`,
+  yellow: `border-yellow-500 border-2 text-yellow-500 active:bg-yellow-500 active:text-white`,
+
 };
 
 Button.displayName = 'Button';

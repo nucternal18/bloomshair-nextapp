@@ -3,46 +3,22 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import SearchBox from '../SearchBox';
 
 const navLink = [
   {
-    id: 1,
-    link: '/',
-    title: 'HOME',
+    id: 8,
+    link: '/account/register',
+    title: 'Login',
   },
   {
-    id: 2,
-    link: '/about',
-    title: 'ABOUT US',
-  },
-  {
-    id: 3,
-    link: '/service-menu',
-    title: 'SERVICE MENU',
-  },
-  {
-    id: 4,
-    link: '/gallery',
-    title: 'GALLERY',
-  },
-  {
-    id: 5,
-    link: '/products',
-    title: 'PRODUCTS',
-  },
-  {
-    id: 6,
-    link: '/contact-us',
-    title: 'CONTACT US',
-  },
-  {
-    id: 7,
-    link: '/book-online',
-    title: 'BOOK ONLINE',
+    id: 9,
+    link: '/account/register',
+    title: 'Register',
   },
 ];
 
-const NavPane = () => {
+const ProductsNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
@@ -63,19 +39,9 @@ const NavPane = () => {
   };
 
   return (
-    <nav className={`absolute top-0 z-50 flex flex-wrap items-center justify-between w-full px-2 py-2 ${router.asPath === '/' ? 'bg-transparent':'bg-gray-900'} opacity-75 navbar-expand-lg`}>
-      <div className='container px-4 mx-auto text-3xl font-light text-gray-500 md:relative md:flex md:items-center sm:px-1 md:px-0 md:flex-row md:justify-between'>
-        <Link href={'/'}>
-          <a className='inline-block p-0 m-0 mr-4 text-2xl font-bold cursor-pointer '>
-            <Image
-              src={'/logo.svg'}
-              alt='blooms hair logo'
-              height={60}
-              width={200}
-              className='text-gray-500'
-            />
-          </a>
-        </Link>
+    <nav
+      className={`absolute top-0 z-50 flex flex-wrap items-center justify-between w-full px-2 py-2 md:bg-gray-500  navbar-expand-lg`}>
+      <div className='container px-4 mx-auto text-3xl font-light text-gray-200 md:relative md:flex md:items-center sm:px-1 md:px-0 md:flex-row md:justify-between'>
         <button
           type='button'
           aria-expanded='false'
@@ -86,6 +52,9 @@ const NavPane = () => {
           onClick={toggle}>
           &#8801;
         </button>
+        <div className={position.center}>
+          <SearchBox />
+        </div>
         <ul className={position.right}>
           {navLink.map((link) => (
             <li
@@ -102,6 +71,7 @@ const NavPane = () => {
               </Link>
             </li>
           ))}
+          <li>View basket</li>
         </ul>
       </div>
       <aside
@@ -140,7 +110,6 @@ const NavPane = () => {
   );
 };
 
-
 const position = {
   left: 'hidden  pl-0 mb-0 mr-auto lg:flex md:pl-0 md:mb-0',
   right: 'hidden  pl-0 mb-0 ml-auto lg:flex md:pl-0 md:mb-0',
@@ -154,4 +123,4 @@ const classNames = {
   disabled: `w-0  bg-gray-800 text-white overflow-x-hidden`,
 };
 
-export default NavPane;
+export default ProductsNavbar;

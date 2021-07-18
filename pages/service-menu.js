@@ -96,7 +96,7 @@ function ServiceMenu() {
                   Wash & Blow-Dry from
                 </div>
                 <div className='col-span-1 px-4 py-2 bg-gray-100'>
-                  £30.00 to £33.00
+                  £30.00
                 </div>
                 <div className='col-span-2 px-4 py-2'>Wash & Cut</div>
                 <div className='col-span-1 px-4 py-2'>£39.00</div>
@@ -128,7 +128,7 @@ function ServiceMenu() {
                 <div className='col-span-2 px-4 py-2 bg-gray-100'>
                   Full Head Tint
                 </div>
-                <div className='col-span-1 px-4 py-2 bg-gray-100'>£60.00</div>
+                <div className='col-span-1 px-4 py-2 bg-gray-100'>£80.00</div>
                 <div className='col-span-2 px-4 py-2'>Hair Mask Treatment</div>
                 <div className='col-span-1 px-4 py-2'>£25.00</div>
                 <div className='col-span-2 px-4 py-2 bg-gray-100'>
@@ -138,7 +138,7 @@ function ServiceMenu() {
                 <div className='col-span-2 px-4 py-2'>
                   Semi Permanent Colours
                 </div>
-                <div className='col-span-1 px-4 py-2'>£60.00</div>
+                <div className='col-span-1 px-4 py-2'>£80.00</div>
                 <div className='col-span-2 px-4 py-2 bg-gray-100'>
                   Tint Regrowth (roots)
                 </div>

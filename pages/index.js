@@ -33,14 +33,21 @@ export default function Home() {
               className='absolute w-full h-full bg-black opacity-75'></span>
           </div>
           <div className='container relative mx-auto'>
-            <div className='flex flex-wrap items-center justify-center'>
+            <div className='flex flex-wrap items-center justify-center '>
               <motion.div
-                className='opacity-75'
+                className='flex flex-col items-center opacity-75'
                 initial='hidden'
                 animate='visible'
                 variants={variants}
                 transition={{ duration: 2.0 }}>
-                <p className='text-gray-700 text-7xl'>Welcome to Blooms Hair</p>
+                <p className='mb-4 text-3xl font-semibold text-gray-300 md:text-7xl'>
+                  Welcome to Blooms Hair
+                </p>
+                <Button color='yellow'>
+                  <Link href='/book-online'>
+                    <a>Book Now!</a>
+                  </Link>
+                </Button>
               </motion.div>
             </div>
           </div>

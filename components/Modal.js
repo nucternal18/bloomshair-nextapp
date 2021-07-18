@@ -23,6 +23,7 @@ const Modal = ({ selectedImg, setSelectedImg }) => {
             height={600}
             className='z-50'
             quality={75}
+            objectFit='cover'
           />
         </div>
         <span

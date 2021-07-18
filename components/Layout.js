@@ -1,7 +1,8 @@
 import Head from 'next/head';
-import Navbar from './Navbar';
+import Navbar from './navigation/Navbar';
 import Footer from './Footer';
 import { useRouter } from 'next/router';
+import ProductsNavbar from './navigation/ProductNavBar';
 
 function Layout({ title, description, children }) {
   const router = useRouter();
@@ -16,10 +17,7 @@ function Layout({ title, description, children }) {
         <meta name='viewport' content='initial-scale=1.0, width=device-width' />
       </Head>
       <Navbar />
-      <main
-        className={`relative ${
-          router.asPath === '/' ? 'mt-0' : 'mt-20'
-        }`}>
+      <main className={`relative ${router.asPath === '/' ? 'mt-0' : 'mt-20'}`}>
         {children}
       </main>
       <Footer />

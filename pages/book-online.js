@@ -4,21 +4,26 @@ import { useState, useEffect, useRef } from 'react';
 import Layout from '../components/Layout';
 import Spinner from '../components/Spinner';
 
-function BookOnline() {
+const url =
+  'https://www.vagaro.com//resources/WidgetEmbeddedLoader/OZqnC3SqD3OcT3qmV35y6RuSdBuOc1WJD1wOc1WO61Ctdg4tjxMG9pUxapkUcXCu7gevEhAJDXwPW?v=CKUtPBdAwZby7jHVYN9lBBPoGztzzzdvamgsRAEGCUJu#';
 
+function BookOnline() {
    const [loading, setLoading] = useState(false);
    const scriptEl = useRef(null);
 
    useEffect(() => {
      setLoading(true);
+     const current = scriptEl.current;
      // Append a script tag to the end of the div
      const script = document.createElement('script');
      script.type = 'text/javascript';
-     script.src =
-       'https://www.vagaro.com//resources/WidgetEmbeddedLoader/OZqnC3SqD3OcT3qmV35y6RuSdBuOc1WJD1wOc1WO61Ctdg4tjxMG9pUxapkUcXCu7gevEhAJDXwPW?v=CKUtPBdAwZby7jHVYN9lBBPoGztzzzdvamgsRAEGCUJu#';
-
-     scriptEl.current.appendChild(script);
+     script.src = url;
+      script.async = true;
+     current.appendChild(script);
      setLoading(false);
+     return () => {
+       current.removeChild(script);
+     };
    }, []);
   return (
     <Layout>

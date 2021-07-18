@@ -13,7 +13,7 @@ const ImageCards = ({ image, setSelectedImg }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}>
-        <Image src={image} alt='' width={400} height={400} className='rounded' />
+        <Image src={image} alt='' width={400} height={400} className='rounded' objectFit='cover' />
       </motion.div>
     </motion.div>
   );
