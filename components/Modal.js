@@ -15,7 +15,7 @@ const Modal = ({ selectedImg, setSelectedImg }) => {
         initial={{ y: '-100vh' }}
         animate={{ y: 0 }}
         className='top-0 flex justify-center w-full bg-center'>
-        <div className='py-20 '>
+        <div className='px-1 py-20 md:px-0'>
           <Image
             src={selectedImg}
             alt='enlarged pic'

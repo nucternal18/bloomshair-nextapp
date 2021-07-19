@@ -7,6 +7,7 @@ import Layout from '../../components/Layout';
 import ErrorMessage from '../../components/ErrorMessage';
 import Spinner from '../../components/Spinner';
 import Notification from '../../components/Notification';
+import Table from 'components/OrdersTable'
 
 // context
 import { AuthContext } from '../../context/AuthContext';
@@ -125,7 +126,8 @@ function Profile({ user, orders }) {
           ) : errorOrders ? (
             <ErrorMessage variant='danger'>{errorOrders}</ErrorMessage>
           ) : (
-            <table className='flex flex-col flex-no-wrap my-5 overflow-hidden rounded-lg table-auto sm:bg-transparent sm:shadow'>
+                <table className='flex flex-col flex-no-wrap my-5 overflow-hidden rounded-lg table-auto sm:bg-transparent sm:shadow'>
+                  <Table tableData={orders} headingColumns={['ID', 'DATE', 'TOTAL', 'PAID', 'DELIVERED','DETAILS']} />
               <thead className='text-white'>
                 <tr>
                   <th>ID</th>

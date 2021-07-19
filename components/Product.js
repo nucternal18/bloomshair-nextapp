@@ -14,14 +14,15 @@ const Product = ({ product }) => {
             className=''
             width={400}
             height={400}
+            layout='responsive'
             objectFit='cover'
           />
         </a>
       </Link>
       <CardBody className='px-3'>
-        <CardTitle className='text-lg'>
+        <CardTitle className='text-lg truncate'>
           <Link href={`/products/${product._id}`}>
-            <a className='font-semibold'>{product.name}</a>
+            <a className='font-semibold '>{product.name}</a>
           </Link>
         </CardTitle>
         <div>

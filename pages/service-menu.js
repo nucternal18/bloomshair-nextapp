@@ -37,7 +37,7 @@ function ServiceMenu() {
                   visible: { opacity: 1 },
                 }}
                 transition={{ duration: 2.0 }}>
-                <h1 className='text-gray-500 text-7xl'>Service & Price Menu</h1>
+                <h1 className='text-4xl text-gray-400 md:text-7xl'>Service & Price Menu</h1>
               </motion.div>
             </div>
           </div>

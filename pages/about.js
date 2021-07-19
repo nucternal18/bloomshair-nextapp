@@ -10,7 +10,7 @@ const url =
 function about() {
   return (
     <Layout>
-      <main >
+      <main>
         <section className='relative flex items-center content-center justify-center'>
           <div
             className='relative top-0 w-full h-full bg-center bg-cover '
@@ -38,7 +38,9 @@ function about() {
                   visible: { opacity: 1 },
                 }}
                 transition={{ duration: 2.0 }}>
-                <p className='text-gray-500 text-7xl'>About Blooms Hair</p>
+                <p className='text-4xl text-gray-400 md:text-7xl'>
+                  About Blooms Hair
+                </p>
               </motion.div>
             </div>
           </div>

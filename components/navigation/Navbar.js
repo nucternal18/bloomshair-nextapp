@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -59,9 +59,9 @@ const Navbar = () => {
     return () => window.removeEventListener('mousedown', handleOutsideClick);
   }, [isOpen, ref]);
 
-  const toggle = () => {
+  const toggle = useCallback(() => {
     setIsOpen(!isOpen);
-  };
+  }, [isOpen]);
 
   return (
     <nav
@@ -147,7 +147,6 @@ const Navbar = () => {
                     style={{
                       color: router.asPath === link.link ? 'orange' : '',
                     }}>
-                    {link.title === 'Sign In' && <FaUser />}
                     {link.title}
                   </a>
                 </Link>
@@ -182,8 +181,8 @@ const position = {
 };
 
 const classNames = {
-  default: `lg:hidden flex h-screen fixed z-20 top-0 right-0 transition-all ease duration-200`,
-  enabled: `w-7/12 md:w-60 bg-gray-800 text-white overflow-x-hidden opacity-75`,
+  default: `lg:hidden flex h-screen fixed top-0 right-0 transition-all ease duration-200`,
+  enabled: `w-7/12 md:w-60 bg-gray-900 z-50  text-white overflow-x-hidden `,
   disabled: `w-0  bg-gray-800 text-white overflow-x-hidden`,
 };
 

@@ -7,13 +7,14 @@ const ImageCards = ({ image, setSelectedImg }) => {
       layout
       whileHover={{ opacity: 1 }}
       onClick={() => setSelectedImg(image)}
-      className='rounded shadow-2xl'
-      style={{ height: '400px', width: '400px'}}>
+      className='mb-2 rounded shadow-md md:shadow-2xl md:mb-0 '
+      style={{width: '400'}}
+      >
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}>
-        <Image src={image} alt='' width={400} height={400} className='rounded' objectFit='cover' />
+        <Image src={image} alt='' width={400} height={400} layout='responsive' objectFit='cover' />
       </motion.div>
     </motion.div>
   );

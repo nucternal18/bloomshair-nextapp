@@ -9,8 +9,6 @@ const AuthContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [success, setSuccess] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [user, setUser] = useState([]);
   const [error, setError] = useState(null);
   const [requestStatus, setRequestStatus] = useState('');
   const [image, setImage] = useState();
@@ -76,7 +74,7 @@ const AuthContextProvider = ({ children }) => {
   };
 
   // Register User
-  const registerUser = async (displayName, email, password, isAdmin) => {
+  const register = async (displayName, email, password, isAdmin) => {
     try {
       setLoading(true);
 
@@ -100,7 +98,7 @@ const AuthContextProvider = ({ children }) => {
         setRequestStatus('success');
         setMessage('User registered successfully');
         setUserInfo(data);
-        router.push('/dashboard');
+        router.push('/');
       } else {
         setRequestStatus('error');
         setMessage('Unable to register user');
@@ -141,7 +139,7 @@ const AuthContextProvider = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({user}),
+        body: JSON.stringify({ user }),
       });
 
       const data = await res.json();
@@ -199,8 +197,6 @@ const AuthContextProvider = ({ children }) => {
     if (res.ok) {
       setUserInfo({});
       setLoading(false);
-      setUsers([]);
-      setUser({});
       setSuccess(false);
       setError(null);
       router.push('/');
@@ -210,8 +206,7 @@ const AuthContextProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         userInfo,
-        users,
-        user,
+
         loading,
         success,
         error,
@@ -221,10 +216,11 @@ const AuthContextProvider = ({ children }) => {
         message,
         uploadImage,
         login,
-        registerUser,
+        register,
         updateUserProfile,
         logout,
         setMessage,
+        setRequestStatus,
       }}>
       {children}
     </AuthContext.Provider>

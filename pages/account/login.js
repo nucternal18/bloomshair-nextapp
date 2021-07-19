@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 // import cookie from 'cookie';
 
 // Components
@@ -13,7 +14,7 @@ import { AuthContext } from '../../context/AuthContext';
 const url =
   'https://res.cloudinary.com/dtkjg8f0n/image/upload/ar_16:9,c_fill,e_sharpen,g_auto,w_1000/v1625089267/blooms_hair_products/shari-sirotnak-oM5YoMhTf8E-unsplash_rcpxsj.webp';
 
-export default function Home() {
+export default function Login() {
   const { loading, login, error, requestStatus } = useContext(AuthContext);
 
   const [email, setEmail] = useState('');
@@ -37,7 +38,7 @@ export default function Home() {
   return (
     <Layout>
       <main className='h-screen bg-gray-200'>
-        <div className='flex flex-col w-full h-screen md:flex-row'>
+        <div className='z-0 flex flex-col w-full h-screen md:flex-row'>
           <div className='relative hidden transform md:left-0 md:block md:top-0 md:bottom-0 md:overflow-y-auto md:w-8/12'>
             <div style={{ width: '100%', height: '100%' }}>
               <Image
@@ -64,7 +65,7 @@ export default function Home() {
                       Email Address
                     </label>
                     <input
-                      className='w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none '
+                      className='z-0 w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none '
                       type='email'
                       placeholder='Enter email'
                       value={email}
@@ -91,6 +92,15 @@ export default function Home() {
                   </Button>
                 </form>
               )}
+              <div className='flex flex-row justify-center py-3 text-lg'>
+                <p className='mr-2'>New Customer?</p>{' '}
+                <Link
+                  href={
+                    '/account/register'
+                  }>
+                  <a className='text-blue-500'>Register</a>
+                </Link>
+              </div>
             </div>
             {notification && (
               <Notification

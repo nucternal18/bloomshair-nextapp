@@ -9,12 +9,14 @@ function Gallery(props) {
   const [selectedImg, setSelectedImg] = useState(null);
   return (
     <Layout>
-      <section className='flex w-full h-screen overflow-scroll bg-white'>
-        <div className='container mx-auto'>
-          <div className='flex items-center justify-between px-4 mb-4 border-b-4 border-current border-gray-200'>
-            <h1 className='p-5 mt-6 text-5xl font-bold'>Gallery</h1>
+      <section className='flex w-full h-screen overflow-scroll bg-white md:px-0'>
+        <div className='container px-2 mx-auto'>
+          <div className='flex items-center justify-between mb-4 border-b-4 border-current border-gray-200'>
+            <h1 className='px-1 py-5 mt-6 text-5xl font-bold uppercase'>
+              Gallery
+            </h1>
           </div>
-          <div className='grid grid-cols-1 gap-2 mx-4 my-8 sm:grid-cols-3 sm:mx-0'>
+          <div className='grid grid-cols-1 gap-1 my-8 md:grid-cols-3 sm:mx-0'>
             {props.pictures.map((doc) => (
               <ImageCard
                 setSelectedImg={setSelectedImg}

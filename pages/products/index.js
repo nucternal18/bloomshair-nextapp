@@ -35,8 +35,8 @@ const Products = (props) => {
             )}
           </div>
 
-          <div className='container mx-auto'>
-            <div className='grid grid-cols-1 gap-2 mx-auto my-8 sm:grid-cols-3 sm:mx-0'>
+          <div className='container flex flex-col justify-center'>
+            <div className='grid grid-cols-1 gap-2 mx-auto my-8 md:grid-cols-3 sm:mx-0'>
               {products.map((product) => {
                 return (
                   <div key={product._id}>
