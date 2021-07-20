@@ -50,7 +50,7 @@ const AuthContextProvider = ({ children }) => {
       if (res.ok) {
         setLoading(false);
         setUserInfo(data);
-        router.push('/dashboard');
+        router.push('/');
       } else {
         setRequestStatus('error');
         setMessage(
@@ -91,14 +91,12 @@ const AuthContextProvider = ({ children }) => {
         }),
       });
 
-      const data = await res.json();
 
       if (res.ok) {
         setLoading(false);
         setRequestStatus('success');
         setMessage('User registered successfully');
-        setUserInfo(data);
-        router.push('/');
+        router.push('/account/login');
       } else {
         setRequestStatus('error');
         setMessage('Unable to register user');
@@ -206,7 +204,6 @@ const AuthContextProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         userInfo,
-
         loading,
         success,
         error,

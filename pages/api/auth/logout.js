@@ -9,7 +9,7 @@ export default async (req, res) => {
        cookie.serialize('token', '', {
          httpOnly: true,
          secure: process.env.NODE_ENV !== 'production' ? false : true,
-         maxAge: new Date(0), // 1 week
+         maxAge: new Date(0), 
          sameSite: 'strict',
          path: '/',
        })

@@ -16,6 +16,8 @@ import Button from '../../components/Button';
 import Notification from '../../components/notification/notification';
 import Layout from '../../components/Layout';
 
+import { SERVER_URL } from '../../config';
+
 const OrderDetails = (props) => {
   const { order } = props;
   const router = useRouter();

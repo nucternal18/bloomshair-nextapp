@@ -1,9 +1,12 @@
 /* eslint-disable react/display-name */
-import { useState, useEffect, useRef, useCallback} from 'react';
+import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { FaUser } from 'react-icons/fa';
+
+// context
+import { AuthContext } from '../../context/AuthContext';
 
 const navLink = [
   {
@@ -44,7 +47,9 @@ const navLink = [
 ];
 
 const Navbar = () => {
+  const { userInfo, logout } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
 
   const ref = useRef();
@@ -106,20 +111,54 @@ const Navbar = () => {
               </Link>
             </li>
           ))}
-          <li className='px-1 m-0 text-base list-none sm:text-xs md:text-sm text-md'>
-            <button className='flex items-center'>
-              <FaUser className='text-gray-200 ' />
-              <Link href={'/account/login'}>
-                <a
-                  className='flex items-center md:block ml-4 mb-4 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1 text-gray-200 hover:text-gray-400 text-md font-medium list-none uppercase'
-                  style={{
-                    color: router.asPath === '/account/login' ? 'orange' : '',
-                  }}>
-                  Sign In
-                </a>
-              </Link>
-            </button>
-          </li>
+          {userInfo?.user ? (
+            <li className='px-1 m-0 text-base list-none sm:text-xs md:text-sm text-md'>
+              <button
+                className='flex items-center p-1 border-2 border-yellow-500 rounded-full'
+                onClick={() => setDropdownOpen(!dropdownOpen)}>
+                <Image
+                  src={userInfo.user.image}
+                  alt={userInfo.name}
+                  width={30}
+                  height={30}
+                />
+              </button>
+              <div
+                className={
+                  dropdownOpen
+                    ? 'absolute right-0 z-20 w-32 mt-2 overflow-hidden bg-gray-900 rounded-md shadow-xl'
+                    : 'hidden'
+                }>
+                <Link href={'/account/profile'}>
+                  <a
+                    className='block px-4 py-2 font-medium text-gray-200 uppercase list-none cursor-pointer hover:text-yellow-400 text-md'
+                    style={{
+                      color: router.asPath === '/account/login' ? 'orange' : '',
+                    }}>
+                    Profile
+                  </a>
+                </Link>
+                <button className='block px-4 py-2 text-lg text-gray-200 hover:text-yellow-500' onClick={() => logout()}>
+                  Logout
+                </button>
+              </div>
+            </li>
+          ) : (
+            <li className='px-1 m-0 text-base list-none sm:text-xs md:text-sm text-md'>
+              <button className='flex items-center'>
+                <FaUser className='text-gray-200 ' />
+                <Link href={'/account/login'}>
+                  <a
+                    className='flex items-center md:block ml-4 mb-4 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1 text-gray-200 hover:text-gray-400 text-md font-medium list-none uppercase'
+                    style={{
+                      color: router.asPath === '/account/login' ? 'orange' : '',
+                    }}>
+                    Sign In
+                  </a>
+                </Link>
+              </button>
+            </li>
+          )}
         </ul>
       </div>
       <aside
@@ -174,10 +213,11 @@ const Navbar = () => {
 };
 
 const position = {
-  left: 'hidden  pl-0 mb-0 mr-auto lg:flex md:pl-0 md:mb-0',
-  right: 'hidden  pl-0 mb-0 ml-auto lg:flex md:pl-0 md:mb-0',
-  center: 'hidden  pl-0 mb-0 ml-auto lg:flex md:pl-0 md:mb-0 md:mx-auto ',
-  default: 'hidden  pl-0 mb-0 mr-auto lg:flex md:pl-0 md:mb-0',
+  left: 'hidden  pl-0 mb-0 mr-auto lg:flex md:pl-0 md:mb-0 md:items-center',
+  right: 'hidden  pl-0 mb-0 ml-auto lg:flex md:pl-0 md:mb-0 md:items-center',
+  center:
+    'hidden  pl-0 mb-0 ml-auto lg:flex md:pl-0 md:mb-0 md:mx-auto md:items-center',
+  default: 'hidden  pl-0 mb-0 mr-auto lg:flex md:pl-0 md:mb-0 md:items-center',
 };
 
 const classNames = {

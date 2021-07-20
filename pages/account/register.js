@@ -15,7 +15,7 @@ const url =
   'https://res.cloudinary.com/dtkjg8f0n/image/upload/ar_16:9,c_fill,e_sharpen,g_auto,w_1000/v1625089267/blooms_hair_products/shari-sirotnak-oM5YoMhTf8E-unsplash_rcpxsj.webp';
 
 export default function Register() {
-  const { loading, register, error, requestStatus, setMessage, setRequestStatus } =
+  const { loading, register, error, requestStatus, message, setMessage, setRequestStatus } =
     useContext(AuthContext);
 
   const [name, setName] = useState('');
@@ -35,7 +35,13 @@ export default function Register() {
   };
 
   let notification;
-
+   if (requestStatus === 'success') {
+     notification = {
+       status: 'success',
+       title: 'Success!',
+       message: message,
+     };
+   }
   if (requestStatus === 'error') {
     notification = {
       status: 'error',

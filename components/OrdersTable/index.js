@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import {  FaTimes } from 'react-icons/fa';
-import styles from '../../../styles/Table.module.css';
+import styles from '../../styles/Table.module.css';
 
 import Button from '../Button';
 

@@ -6,11 +6,13 @@ import cookie from 'cookie';
 import Layout from '../../components/Layout';
 import ErrorMessage from '../../components/ErrorMessage';
 import Spinner from '../../components/Spinner';
-import Notification from '../../components/Notification';
-import Table from 'components/OrdersTable'
+import Notification from '../../components/notification/notification';
+import Table from '../../components/OrdersTable';
 
 // context
 import { AuthContext } from '../../context/AuthContext';
+
+import { SERVER_URL } from '../../config';
 
 function Profile({ user, orders }) {
   const [name, setName] = useState(user.name);
@@ -44,11 +46,32 @@ function Profile({ user, orders }) {
       message: error,
     };
   }
+
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      uploadImage(reader.result);
+    };
+    reader.onerror = () => {
+      console.error('something went wrong!');
+    };
+  };
+
+
+  const submitHandler = () => {
+    console.log('submitted');
+  };
   return (
     <Layout>
       <main className='flex-grow w-full p-4 mx-auto bg-gray-200'>
         <section className='container px-12 pt-6 pb-8 mx-2 mb-4 bg-white rounded shadow-xl md:mx-auto '>
-          <h2>User Profile</h2>
+          <div className='mb-6 border-b-4 border-current border-gray-200'>
+            <h1 className='my-2 text-3xl font-semibold md:text-4xl '>
+              Profile
+            </h1>
+          </div>
           {error && <ErrorMessage variant='danger'>{error}</ErrorMessage>}
           {success && (
             <ErrorMessage variant='success'>Profile updated</ErrorMessage>
@@ -120,60 +143,22 @@ function Profile({ user, orders }) {
           )}
         </section>
         <section className='container px-12 pt-6 pb-8 mx-2 mb-4 bg-white rounded shadow-xl md:mx-auto '>
-          <h2>My Orders</h2>
-          {loadingOrders ? (
-            <Spinner />
-          ) : errorOrders ? (
-            <ErrorMessage variant='danger'>{errorOrders}</ErrorMessage>
-          ) : (
-                <table className='flex flex-col flex-no-wrap my-5 overflow-hidden rounded-lg table-auto sm:bg-transparent sm:shadow'>
-                  <Table tableData={orders} headingColumns={['ID', 'DATE', 'TOTAL', 'PAID', 'DELIVERED','DETAILS']} />
-              <thead className='text-white'>
-                <tr>
-                  <th>ID</th>
-                  <th>DATE</th>
-                  <th>TOTAL</th>
-                  <th>PAID</th>
-                  <th>DELIVERED</th>
-                  <th>DETAILS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders?.map((order) => (
-                  <tr key={order._id}>
-                    <td>{order._id}</td>
-                    <td>{order.createdAt.substring(0, 10)}</td>
-                    <td>{order.totalPrice}</td>
-                    <td>
-                      {order.isPaid ? (
-                        order.paidAt.substring(0, 10)
-                      ) : (
-                        <i
-                          className='fas fa-times'
-                          style={{ color: 'red' }}></i>
-                      )}
-                    </td>
-                    <td>
-                      {order.isDelivered ? (
-                        order.deliveredAt.substring(0, 10)
-                      ) : (
-                        <i
-                          className='fas fa-times'
-                          style={{ color: 'red' }}></i>
-                      )}
-                    </td>
-                    <td>
-                      <button className='w-full px-4 py-2 mr-2 font-bold text-blue-400 bg-transparent border border-blue-400 rounded md:w-2/4 hover:bg-blue-700 focus:outline-none focus:shadow-outline hover:text-white'>
-                        <Link href={`/order/${order._id}`}>
-                          <a>Details</a>
-                        </Link>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+          <div className='mb-6 border-b-4 border-current border-gray-200'>
+            <h1 className='my-2 text-3xl font-semibold md:text-4xl '>
+             My Orders
+            </h1>
+          </div>
+          <Table
+            tableData={orders}
+            headingColumns={[
+              'ID',
+              'DATE',
+              'TOTAL',
+              'PAID',
+              'DELIVERED',
+              'DETAILS',
+            ]}
+          />
         </section>
         {notification && (
           <Notification
@@ -190,25 +175,30 @@ function Profile({ user, orders }) {
 export async function getServerSideProps(context) {
   const { token } = cookie.parse(context.req.headers.cookie);
 
-  const userRes = await fetch(`${SERVER_URL}/api/users/profile`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const orderRes = await fetch(`${SERVER_URL}/api/orders/`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const ordersData = await orderRes.json();
-  const userData = await userRes.json();
+  const [userRes, orderRes] = await Promise.all([
+    fetch(`${SERVER_URL}/api/users/profile`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }),
+    fetch(`${SERVER_URL}/api/orders/myorders`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }),
+  ]);
+
+  const [userData, ordersData] = await Promise.all([
+    userRes.json(),
+    orderRes.json(),
+  ]);
 
   if (!token) {
     return {
       redirect: {
-        destination: '/',
+        destination: '/account/login',
         permanent: false,
       },
     };

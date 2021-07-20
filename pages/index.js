@@ -40,7 +40,7 @@ export default function Home() {
                 animate='visible'
                 variants={variants}
                 transition={{ duration: 2.0 }}>
-                <p className='mb-4 text-3xl font-semibold text-gray-300 md:text-7xl'>
+                <p className='mb-4 text-3xl font-semibold text-gray-300 md:text-5xl lg:text-7xl'>
                   Welcome to Blooms Hair
                 </p>
                 <Button color='yellow'>
