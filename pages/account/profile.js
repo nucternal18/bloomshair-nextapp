@@ -1,6 +1,8 @@
 import { useState, useContext } from 'react';
 import Link from 'next/link';
 import cookie from 'cookie';
+import { getSession, getToken } from 'next-auth/client'
+
 
 // Components
 import Layout from '../../components/Layout';
@@ -173,8 +175,9 @@ function Profile({ user, orders }) {
 }
 
 export async function getServerSideProps(context) {
-  const { token } = cookie.parse(context.req.headers.cookie);
-
+  const session = await getSession(context)
+  // const token = await getToken({ req: context.req });
+  console.log(session)
   const [userRes, orderRes] = await Promise.all([
     fetch(`${SERVER_URL}/api/users/profile`, {
       method: 'GET',
@@ -195,7 +198,7 @@ export async function getServerSideProps(context) {
     orderRes.json(),
   ]);
 
-  if (!token) {
+  if (!session) {
     return {
       redirect: {
         destination: '/account/login',

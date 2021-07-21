@@ -1,6 +1,7 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { signIn } from 'next-auth/client';
 // import cookie from 'cookie';
 
 // Components
@@ -15,15 +16,20 @@ const url =
   'https://res.cloudinary.com/dtkjg8f0n/image/upload/ar_16:9,c_fill,e_sharpen,g_auto,w_1000/v1625089267/blooms_hair_products/shari-sirotnak-oM5YoMhTf8E-unsplash_rcpxsj.webp';
 
 export default function Login() {
-  const { loading, login, error, requestStatus } = useContext(AuthContext);
+  const { loading, login, error, requestStatus, setError } = useContext(AuthContext);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const submitHandler = (e) => {
     e.preventDefault();
+    if (!email || !email.includes('@') || !password || password.trim().length < 5) {
+      setError('Invalid input - password must be at least 5 characters')
+      return;
+    }
     //dispatch login
-    login(email, password);
+    const result = signIn('credentials', { redirect: false, email, password });
+    console.log(result)
   };
 
   let notification;

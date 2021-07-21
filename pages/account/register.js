@@ -15,8 +15,15 @@ const url =
   'https://res.cloudinary.com/dtkjg8f0n/image/upload/ar_16:9,c_fill,e_sharpen,g_auto,w_1000/v1625089267/blooms_hair_products/shari-sirotnak-oM5YoMhTf8E-unsplash_rcpxsj.webp';
 
 export default function Register() {
-  const { loading, register, error, requestStatus, message, setMessage, setRequestStatus } =
-    useContext(AuthContext);
+  const {
+    loading,
+    register,
+    error,
+    requestStatus,
+    message,
+    setMessage,
+    setRequestStatus,
+  } = useContext(AuthContext);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -26,8 +33,17 @@ export default function Register() {
   const submitHandler = (e) => {
     e.preventDefault();
     //dispatch login
-      if (password !== confirmPassword) {
-        setRequestStatus('error')
+    if (
+      !email ||
+      !email.includes('@') ||
+      !password ||
+      !password.trim().length < 5
+    ) {
+      setError('Invalid input - password must be at least 5 characters');
+      return;
+    }
+    if (password !== confirmPassword) {
+      setRequestStatus('error');
       setMessage('Passwords do not match');
     } else {
       register(name, email, password);
@@ -35,13 +51,13 @@ export default function Register() {
   };
 
   let notification;
-   if (requestStatus === 'success') {
-     notification = {
-       status: 'success',
-       title: 'Success!',
-       message: message,
-     };
-   }
+  if (requestStatus === 'success') {
+    notification = {
+      status: 'success',
+      title: 'Success!',
+      message: message,
+    };
+  }
   if (requestStatus === 'error') {
     notification = {
       status: 'error',

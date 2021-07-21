@@ -28,9 +28,9 @@ const AuthContextProvider = ({ children }) => {
     }
   }, [requestStatus]);
 
-  useEffect(() => {
-    checkUserLoggedIn();
-  }, []);
+  // useEffect(() => {
+  //   checkUserLoggedIn();
+  // }, []);
 
   // Login User
   const login = async (email, password) => {
@@ -132,7 +132,7 @@ const AuthContextProvider = ({ children }) => {
     try {
       setLoading(true);
 
-      const res = await fetch(`${NEXT_URL}/api/auth/updateUser`, {
+      const res = await fetch(`${NEXT_URL}/api/users/updateUser`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -218,6 +218,7 @@ const AuthContextProvider = ({ children }) => {
         logout,
         setMessage,
         setRequestStatus,
+        setError
       }}>
       {children}
     </AuthContext.Provider>
