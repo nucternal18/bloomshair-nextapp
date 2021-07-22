@@ -28,9 +28,9 @@ const AuthContextProvider = ({ children }) => {
     }
   }, [requestStatus]);
 
-  // useEffect(() => {
-  //   checkUserLoggedIn();
-  // }, []);
+  useEffect(() => {
+    checkUserLoggedIn();
+  }, []);
 
   // Login User
   const login = async (email, password) => {
@@ -49,7 +49,7 @@ const AuthContextProvider = ({ children }) => {
 
       if (res.ok) {
         setLoading(false);
-        setUserInfo(data);
+ 
         router.push('/');
       } else {
         setRequestStatus('error');
@@ -117,11 +117,11 @@ const AuthContextProvider = ({ children }) => {
 
   // Check if user is logged in
   const checkUserLoggedIn = async () => {
-    const res = await fetch(`${NEXT_URL}/api/auth/user`);
-    const data = await res.json();
+    const res = await fetch(`${NEXT_URL}/api/users/user`);
+    const user = await res.json();
 
     if (res.ok) {
-      setUserInfo(data);
+      setUserInfo(user);
     } else {
       setUserInfo(null);
     }

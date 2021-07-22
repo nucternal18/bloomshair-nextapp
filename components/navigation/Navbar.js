@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { FaUser } from 'react-icons/fa';
-import { getSession } from 'next-auth/client';
+
 
 // context
 import { AuthContext } from '../../context/AuthContext';
@@ -49,11 +49,11 @@ const navLink = [
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadedSession, setLoadedSession] = useState();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [user, setUser] = useState({});
   const router = useRouter();
-  console.log(loadedSession, isLoading);
+
+  const {userInfo, loading, logout} = useContext(AuthContext)
 
   const ref = useRef();
   useEffect(() => {
@@ -72,16 +72,15 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    getSession().then((session) => {
-      if (session) {
-        setIsLoading(false);
-        setLoadedSession(session);
-      }
-    });
-  }, []);
+    if (userInfo && !loading) {
+      setUser(userInfo.user)
+    }
+  },[loading, userInfo])
+
+ 
 
   const logoutHandler = () => {
-    signOut();
+    logout();
   };
 
   return (
@@ -127,16 +126,21 @@ const Navbar = () => {
               </Link>
             </li>
           ))}
-          {loadedSession && (
+          {user && (
             <li className='px-1 m-0 text-base list-none sm:text-xs md:text-sm text-md'>
               <button
-                className='flex items-center p-1 border-2 border-yellow-500 rounded-full'
+                className='flex items-center bg-white border-2 border-yellow-500 rounded-full'
                 onClick={() => setDropdownOpen(!dropdownOpen)}>
                 <Image
-                  src={loadedSession.user.image}
-                  alt={loadedSession.user.name}
+                  src={
+                    user.image ? user.image :
+                    'https://res.cloudinary.com/dtkjg8f0n/image/upload/v1625765848/blooms_hair_products/icons8-user-96_wyguya.png'
+                  }
+                  alt={user.name}
                   width={30}
                   height={30}
+                  className='rounded-full'
+                  objectFit='cover'
                 />
               </button>
               <div
@@ -162,7 +166,7 @@ const Navbar = () => {
               </div>
             </li>
           )}
-          {!loadedSession && !isLoading && (
+          {!user && !loading && (
             <li className='px-1 m-0 text-base list-none sm:text-xs md:text-sm text-md'>
               <button className='flex items-center'>
                 <FaUser className='text-gray-200 ' />
@@ -210,7 +214,7 @@ const Navbar = () => {
                 </Link>
               </li>
             ))}
-            {loadedSession && (
+            {userInfo && !loading && (
               <>
                 <li className='px-1 m-0 text-base list-none text-md'>
                   <Link href={'/account/profile'}>
@@ -233,7 +237,7 @@ const Navbar = () => {
                 </li>
               </>
             )}
-            {!loadedSession && !isLoading && (
+            {!userInfo && !loading && (
               <li className='flex items-center px-1 m-0 text-base list-none text-md'>
                 <button className='flex items-center'>
                   <FaUser className='mb-1 ml-5 mr-1 text-gray-200 ' />

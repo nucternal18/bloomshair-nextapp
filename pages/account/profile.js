@@ -1,8 +1,7 @@
 import { useState, useContext } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import cookie from 'cookie';
-import { getSession, getToken } from 'next-auth/client'
-
 
 // Components
 import Layout from '../../components/Layout';
@@ -10,15 +9,17 @@ import ErrorMessage from '../../components/ErrorMessage';
 import Spinner from '../../components/Spinner';
 import Notification from '../../components/notification/notification';
 import Table from '../../components/OrdersTable';
+import Button from '../../components/Button';
 
 // context
 import { AuthContext } from '../../context/AuthContext';
 
 import { SERVER_URL } from '../../config';
+import { FaPlusCircle } from 'react-icons/fa';
 
-function Profile({ user, orders }) {
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
+function Profile({ userData, orders }) {
+  const [name, setName] = useState(userData.name);
+  const [email, setEmail] = useState(userData.email);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const {
@@ -61,14 +62,13 @@ function Profile({ user, orders }) {
     };
   };
 
-
   const submitHandler = () => {
     console.log('submitted');
   };
   return (
     <Layout>
-      <main className='flex-grow w-full p-4 mx-auto bg-gray-200'>
-        <section className='container px-12 pt-6 pb-8 mx-2 mb-4 bg-white rounded shadow-xl md:mx-auto '>
+      <main className='w-full p-4 bg-gray-200 md:mx-auto'>
+        <section className='container px-2 pt-6 pb-8 mb-4 bg-white rounded shadow-xl md:px-12 md:mx-auto '>
           <div className='mb-6 border-b-4 border-current border-gray-200'>
             <h1 className='my-2 text-3xl font-semibold md:text-4xl '>
               Profile
@@ -81,73 +81,111 @@ function Profile({ user, orders }) {
           {loading ? (
             <Spinner />
           ) : (
-            <form
-              onSubmit={submitHandler}
-              className='px-12 pt-6 pb-8 mx-2 mb-4 bg-white rounded shadow-xl sm:mx-auto md:w-2/4'>
-              <div>
-                <label
-                  htmlFor='name'
-                  className='block mb-2 text-base font-bold text-gray-700'>
-                  Name
-                </label>
-                <input
-                  className='w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none '
-                  type='name'
-                  placeholder='Enter your name'
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}></input>
-              </div>
-              <div>
-                <label
-                  htmlFor='email'
-                  className='block mb-2 text-base font-bold text-gray-700'>
-                  Email Address
-                </label>
-                <input
-                  className='w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none '
-                  type='email'
-                  placeholder='Enter email'
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}></input>
-              </div>
-              <div>
-                <label
-                  htmlFor='password'
-                  className='block mb-2 text-base font-bold text-gray-700'>
-                  Password
-                </label>
-                <input
-                  className='w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none '
-                  type='password'
-                  placeholder='Enter password'
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}></input>
-              </div>
-              <div>
-                <label
-                  htmlFor='confirmPassword'
-                  className='block mb-2 text-base font-bold text-gray-700'>
-                  Confirm Password
-                </label>
-                <input
-                  className='w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none '
-                  type='password'
-                  placeholder='Confirm password'
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}></input>
-              </div>
-              <button
-                type='submit'
-                className='w-full px-4 py-2 mr-2 font-bold text-blue-400 bg-transparent border border-blue-400 rounded md:w-2/4 hover:bg-blue-700 focus:outline-none focus:shadow-outline hover:text-white'>
-                Update
-              </button>
-            </form>
+            <div className='flex flex-col items-center justify-around md:flex-row'>
+              <form
+                onSubmit={submitHandler}
+                className='w-full px-2 pt-6 pb-8 mb-4 bg-white rounded md:px-12 sm:mx-auto'>
+                <div className='flex flex-col items-center justify-around mb-4 md:flex-row'>
+                  <div className='flex flex-col items-center w-full '>
+                    {image ? (
+                      <Image
+                        src={image.url}
+                        alt={name}
+                        width={450}
+                        height={350}
+                        layout='responsive'
+                        objectFit='cover'
+                      />
+                    ) : (
+                      <Image
+                        src={userData.image}
+                        alt={name}
+                        width={450}
+                        height={350}
+                        objectFit='cover'
+                      />
+                    )}
+                    <label className='block py-2 my-2 mr-2 text-base font-bold text-gray-700'>
+                      <FaPlusCircle className='text-4xl' />
+                      <input
+                        type='file'
+                        onChange={uploadFileHandler}
+                        className='hidden'
+                      />
+                      {uploading && <Spinner />}
+                      {error && <div className='justify-center'>{error}</div>}
+                    </label>
+                  </div>
+                  <div className='w-full'>
+                    <div className='mb-4'>
+                      <label
+                        htmlFor='name'
+                        className='block mb-2 text-base font-bold text-gray-700'>
+                        Name
+                      </label>
+                      <input
+                        className='w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none '
+                        type='name'
+                        placeholder='Enter your name'
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}></input>
+                    </div>
+                    <div className='mb-4'>
+                      <label
+                        htmlFor='email'
+                        className='block mb-2 text-base font-bold text-gray-700'>
+                        Email Address
+                      </label>
+                      <input
+                        className='w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none '
+                        type='email'
+                        placeholder='Enter email'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}></input>
+                    </div>
+                    <div className='mb-4'>
+                      <label
+                        htmlFor='password'
+                        className='block mb-2 text-base font-bold text-gray-700'>
+                        Password
+                      </label>
+                      <input
+                        className='w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none '
+                        type='password'
+                        placeholder='Enter password'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}></input>
+                    </div>
+                    <div className='mb-4'>
+                      <label
+                        htmlFor='confirmPassword'
+                        className='block mb-2 text-base font-bold text-gray-700'>
+                        Confirm Password
+                      </label>
+                      <input
+                        className='w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none '
+                        type='password'
+                        placeholder='Confirm password'
+                        value={confirmPassword}
+                        onChange={(e) =>
+                          setConfirmPassword(e.target.value)
+                        }></input>
+                    </div>
+                  </div>
+                </div>
+                <div className='flex items-center justify-center px-4 pt-4 mb-4 border-t-4 border-current border-gray-200'>
+                  <Button type='submit' color='dark'>
+                    Update
+                  </Button>
+                </div>
+              </form>
+            </div>
           )}
         </section>
-        <section className='container px-12 pt-6 pb-8 mx-2 mb-4 bg-white rounded shadow-xl md:mx-auto '>
+        <section className='container px-2 pt-6 pb-8 mb-4 bg-white rounded shadow-xl md:px-12 md:mx-auto '>
           <div className='mb-6 border-b-4 border-current border-gray-200'>
             <h1 className='my-2 text-3xl font-semibold md:text-4xl '>
-             My Orders
+              My Orders
             </h1>
           </div>
           <Table
@@ -175,9 +213,16 @@ function Profile({ user, orders }) {
 }
 
 export async function getServerSideProps(context) {
-  const session = await getSession(context)
-  // const token = await getToken({ req: context.req });
-  console.log(session)
+  const { token } = cookie.parse(context.req.headers.cookie);
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/account/login',
+        permanent: false,
+      },
+    };
+  }
+
   const [userRes, orderRes] = await Promise.all([
     fetch(`${SERVER_URL}/api/users/profile`, {
       method: 'GET',
@@ -198,16 +243,8 @@ export async function getServerSideProps(context) {
     orderRes.json(),
   ]);
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/account/login',
-        permanent: false,
-      },
-    };
-  }
   return {
-    props: { user: userData, orders: ordersData }, // will be passed to the page component as props
+    props: { userData: userData, orders: ordersData }, // will be passed to the page component as props
   };
 }
 

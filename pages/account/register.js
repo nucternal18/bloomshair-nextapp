@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-// import cookie from 'cookie';
+import cookie from 'cookie';
 
 // Components
 import Spinner from '../../components/Spinner';
@@ -163,27 +163,19 @@ export default function Register() {
   );
 }
 
-// export async function getServerSideProps(context) {
-//   const { token } = cookie.parse(context.req.headers.cookie);
-//    if (!token) {
-//      return {
-//        redirect: {
-//          destination: '/',
-//          permanent: false,
-//        },
-//      };
-//    }
+export async function getServerSideProps(context) {
+  const { token } = cookie.parse(context.req.headers.cookie || '');
+ 
+  if (token) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
 
-//   if (token) {
-//     return {
-//       redirect: {
-//         destination: '/dashboard',
-//         permanent: false,
-//       },
-//     };
-//   }
-
-//   return {
-//     props: {}, // will be passed to the page component as props
-//   };
-// }
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+}

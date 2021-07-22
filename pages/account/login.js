@@ -1,8 +1,7 @@
 import { useContext, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { signIn } from 'next-auth/client';
-// import cookie from 'cookie';
+import cookie from 'cookie';
 
 // Components
 import Spinner from '../../components/Spinner';
@@ -16,20 +15,25 @@ const url =
   'https://res.cloudinary.com/dtkjg8f0n/image/upload/ar_16:9,c_fill,e_sharpen,g_auto,w_1000/v1625089267/blooms_hair_products/shari-sirotnak-oM5YoMhTf8E-unsplash_rcpxsj.webp';
 
 export default function Login() {
-  const { loading, login, error, requestStatus, setError } = useContext(AuthContext);
+  const { loading, login, error, requestStatus, setError } =
+    useContext(AuthContext);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const submitHandler = (e) => {
     e.preventDefault();
-    if (!email || !email.includes('@') || !password || password.trim().length < 5) {
-      setError('Invalid input - password must be at least 5 characters')
+    if (
+      !email ||
+      !email.includes('@') ||
+      !password ||
+      password.trim().length < 5
+    ) {
+      setError('Invalid input - password must be at least 5 characters');
       return;
     }
     //dispatch login
-    const result = signIn('credentials', { redirect: false, email, password });
-    console.log(result)
+    login( email, password );
   };
 
   let notification;
@@ -100,10 +104,7 @@ export default function Login() {
               )}
               <div className='flex flex-row justify-center py-3 text-lg'>
                 <p className='mr-2'>New Customer?</p>{' '}
-                <Link
-                  href={
-                    '/account/register'
-                  }>
+                <Link href={'/account/register'}>
                   <a className='text-blue-500'>Register</a>
                 </Link>
               </div>
@@ -122,27 +123,19 @@ export default function Login() {
   );
 }
 
-// export async function getServerSideProps(context) {
-//   const { token } = cookie.parse(context.req.headers.cookie);
-//    if (!token) {
-//      return {
-//        redirect: {
-//          destination: '/',
-//          permanent: false,
-//        },
-//      };
-//    }
+export async function getServerSideProps(context) {
+  const { token } = cookie.parse(context.req.headers.cookie || '');
 
-//   if (token) {
-//     return {
-//       redirect: {
-//         destination: '/dashboard',
-//         permanent: false,
-//       },
-//     };
-//   }
+  if (token) {
+    return {
+      redirect: {
+        destination: '/dashboard',
+        permanent: false,
+      },
+    };
+  }
 
-//   return {
-//     props: {}, // will be passed to the page component as props
-//   };
-// }
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+}
