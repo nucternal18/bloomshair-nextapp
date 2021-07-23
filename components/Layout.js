@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Navbar from './navigation/Navbar';
 import Footer from './Footer';
 import { useRouter } from 'next/router';
-import ProductsNavbar from './navigation/ProductNavBar';
+
 
 function Layout({ title, description, children }) {
   const router = useRouter();

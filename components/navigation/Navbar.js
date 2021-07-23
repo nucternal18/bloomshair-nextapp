@@ -4,7 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { FaUser } from 'react-icons/fa';
+import { FiLogIn, FiLogOut } from 'react-icons/fi';
 
+import Button from '../Button'
 
 // context
 import { AuthContext } from '../../context/AuthContext';
@@ -50,10 +52,10 @@ const navLink = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
   const router = useRouter();
-
-  const {userInfo, loading, logout} = useContext(AuthContext)
+  console.log(user)
+  const { userInfo, loading, logout } = useContext(AuthContext);
 
   const ref = useRef();
   useEffect(() => {
@@ -73,11 +75,9 @@ const Navbar = () => {
 
   useEffect(() => {
     if (userInfo && !loading) {
-      setUser(userInfo.user)
+      setUser(userInfo.user);
     }
-  },[loading, userInfo])
-
- 
+  }, [loading, userInfo]);
 
   const logoutHandler = () => {
     logout();
@@ -88,15 +88,16 @@ const Navbar = () => {
       className={`absolute top-0 z-50 flex flex-wrap items-center justify-between w-full px-2 py-2 ${
         router.asPath === '/' ? 'bg-transparent' : 'bg-gray-900'
       }  navbar-expand-lg`}>
-      <div className='container px-4 mx-auto text-3xl font-light text-gray-500 md:relative md:flex md:items-center sm:px-1 md:px-0 md:flex-row md:justify-between'>
+      <div className='container flex items-center justify-between px-2 mx-auto text-3xl font-light text-gray-500 md:relative sm:px-1 md:px-0 md:flex-row'>
         <Link href={'/'}>
-          <a className='inline-block p-0 m-0 mr-4 text-2xl font-bold cursor-pointer '>
+          <a className='inline-block p-0 m-0 text-2xl font-bold cursor-pointer md:mr-4 '>
             <Image
               src={'/logo.svg'}
               alt='blooms hair logo'
               height={60}
               width={200}
-              className='text-gray-500'
+              layout='intrinsic'
+              objectFit='contain'
             />
           </a>
         </Link>
@@ -106,7 +107,7 @@ const Navbar = () => {
           aria-disabled={isOpen}
           disabled={isOpen}
           aria-label='Toggle navigation'
-          className='items-center block float-right py-2 text-4xl lg:hidden focus:outline-none focus:shadow-none'
+          className='block float-right text-4xl text-gray-200 lg:hidden focus:outline-none focus:shadow-none'
           onClick={toggle}>
           &#8801;
         </button>
@@ -133,8 +134,9 @@ const Navbar = () => {
                 onClick={() => setDropdownOpen(!dropdownOpen)}>
                 <Image
                   src={
-                    user.image ? user.image :
-                    'https://res.cloudinary.com/dtkjg8f0n/image/upload/v1625765848/blooms_hair_products/icons8-user-96_wyguya.png'
+                    user.image
+                      ? user.image
+                      : 'https://res.cloudinary.com/dtkjg8f0n/image/upload/v1625765848/blooms_hair_products/icons8-user-96_wyguya.png'
                   }
                   alt={user.name}
                   width={30}
@@ -149,27 +151,32 @@ const Navbar = () => {
                     ? 'absolute right-0 z-20 w-32 mt-2 overflow-hidden bg-gray-900 rounded-md shadow-xl'
                     : 'hidden'
                 }>
-                <Link href={'/account/profile'}>
-                  <a
-                    className='block px-4 py-2 font-medium text-gray-200 uppercase list-none cursor-pointer hover:text-yellow-400 text-md'
-                    style={{
-                      color: router.asPath === '/account/login' ? 'orange' : '',
-                    }}>
-                    Profile
-                  </a>
-                </Link>
+                <button className='flex items-center px-4 py-2 space-x-2'>
+                  <FaUser className='text-gray-200 ' />
+                  <Link href={'/account/profile'}>
+                    <a
+                      className='block font-medium text-gray-200 uppercase list-none cursor-pointer hover:text-yellow-400 text-md'
+                      style={{
+                        color:
+                          router.asPath === '/account/login' ? 'orange' : '',
+                      }}>
+                      Profile
+                    </a>
+                  </Link>
+                </button>
                 <button
-                  className='block px-4 py-2 text-lg text-gray-200 hover:text-yellow-500'
+                  className='flex items-center px-4 py-2 space-x-2 text-lg text-gray-200 hover:text-yellow-500'
                   onClick={logoutHandler}>
-                  Logout
+                  <FiLogOut className='text-gray-200 ' />
+                  <p>Logout</p>
                 </button>
               </div>
             </li>
           )}
-          {!user && !loading && (
+          {!user && (
             <li className='px-1 m-0 text-base list-none sm:text-xs md:text-sm text-md'>
-              <button className='flex items-center'>
-                <FaUser className='text-gray-200 ' />
+              <Button color='yellow'>
+                <FiLogIn className='text-gray-200 ' />
                 <Link href={'/account/login'}>
                   <a
                     className='flex items-center md:block ml-4 mb-4 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1 text-gray-200 hover:text-gray-400 text-md font-medium list-none uppercase'
@@ -179,7 +186,7 @@ const Navbar = () => {
                     Sign In
                   </a>
                 </Link>
-              </button>
+              </Button>
             </li>
           )}
         </ul>
@@ -214,33 +221,37 @@ const Navbar = () => {
                 </Link>
               </li>
             ))}
-            {userInfo && !loading && (
+            {user && (
               <>
                 <li className='px-1 m-0 text-base list-none text-md'>
-                  <Link href={'/account/profile'}>
-                    <a
-                      className='flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2  text-gray-200 hover:text-gray-400 text-lg font-medium list-none uppercase'
-                      style={{
-                        color:
-                          router.asPath === '/account/login' ? 'orange' : '',
-                      }}>
-                      Profile
-                    </a>
-                  </Link>
+                  <button className='flex items-center py-1.5  px-2 mb-4 ml-4 space-x-2'>
+                    <FaUser className='text-gray-200 ' />
+                    <Link href={'/account/profile'}>
+                      <a
+                        className='flex items-center text-lg font-medium text-gray-200 uppercase list-none cursor-pointer hover:text-gray-400'
+                        style={{
+                          color:
+                            router.asPath === '/account/login' ? 'orange' : '',
+                        }}>
+                        Profile
+                      </a>
+                    </Link>
+                  </button>
                 </li>
                 <li className='px-1 m-0 text-base list-none text-md'>
                   <button
-                    className='flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2  text-gray-200 hover:text-gray-400 text-lg font-medium list-none uppercase'
+                    className='flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2  space-x-2 text-gray-200 hover:text-gray-400 text-lg font-medium list-none uppercase'
                     onClick={logoutHandler}>
-                    Logout
+                    <FiLogOut className='text-gray-200 ' />
+                    <p>Logout</p>
                   </button>
                 </li>
               </>
             )}
-            {!userInfo && !loading && (
+            {!user && (
               <li className='flex items-center px-1 m-0 text-base list-none text-md'>
                 <button className='flex items-center'>
-                  <FaUser className='mb-1 ml-5 mr-1 text-gray-200 ' />
+                  <FiLogIn className='ml-5 mr-1 text-gray-200 ' />
                   <Link href={'/account/login'}>
                     <a
                       className='py-1 text-lg font-medium text-gray-200 uppercase list-none cursor-pointer hover:text-gray-400'

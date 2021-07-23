@@ -26,7 +26,7 @@ export default function Home() {
               alt='home background image'
               layout='fill'
               objectFit='cover'
-              quality={100}
+              quality={75}
             />
             <span
               id='blackOverlay'

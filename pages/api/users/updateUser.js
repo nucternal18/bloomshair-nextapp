@@ -17,7 +17,7 @@ export default async (req, res) => {
       headers: {
         Authorization: `Bearer ${token}`,
         },
-      body: JSON.stringify(user)
+      body: JSON.stringify({user})
     });
 
     const updatedUser = await response.json();

@@ -20,7 +20,7 @@ function about() {
               alt='home background image'
               layout='fill'
               objectFit='cover'
-              quality={75}
+              quality={50}
             />
 
             <span

@@ -45,7 +45,7 @@ const AuthContextProvider = ({ children }) => {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      const user = await res.json();
 
       if (res.ok) {
         setLoading(false);
@@ -56,7 +56,8 @@ const AuthContextProvider = ({ children }) => {
         setMessage(
           'Unable to login. Please check your login credentials and try again'
         );
-        setError(data.message);
+        setUserInfo(user)
+        setError(user.message);
         setError(null);
       }
     } catch (error) {

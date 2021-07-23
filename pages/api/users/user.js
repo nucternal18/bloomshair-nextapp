@@ -10,7 +10,10 @@ export default async (req, res) => {
       }
       
       const { token } = cookie.parse(req.headers.cookie)
-
+      if (!token) {
+          res.status(403).json({ message: 'Not Authorized' });
+          return;
+      }
       const response = await fetch(`${SERVER_URL}/api/users/profile`, {
           method: 'GET',
           headers: {

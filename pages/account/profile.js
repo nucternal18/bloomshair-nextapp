@@ -32,6 +32,7 @@ function Profile({ userData, orders }) {
     message,
     uploadImage,
     updateUserProfile,
+    setError,
   } = useContext(AuthContext);
 
   let notification;
@@ -64,6 +65,12 @@ function Profile({ userData, orders }) {
 
   const submitHandler = () => {
     console.log('submitted');
+    const user = { id: userData._id, name, email, password, image };
+    if (!password || password.trim().length < 5 || password !== confirmPassword) {
+      setError('Invalid input - password must be at least 5 characters');
+      return;
+    }
+    updateUserProfile(user);
   };
   return (
     <Layout>
@@ -82,6 +89,7 @@ function Profile({ userData, orders }) {
             <Spinner />
           ) : (
             <div className='flex flex-col items-center justify-around md:flex-row'>
+              {/* Update user details form */}
               <form
                 onSubmit={submitHandler}
                 className='w-full px-2 pt-6 pb-8 mb-4 bg-white rounded md:px-12 sm:mx-auto'>
@@ -182,6 +190,7 @@ function Profile({ userData, orders }) {
             </div>
           )}
         </section>
+        {/* Users orders list table */}
         <section className='container px-2 pt-6 pb-8 mb-4 bg-white rounded shadow-xl md:px-12 md:mx-auto '>
           <div className='mb-6 border-b-4 border-current border-gray-200'>
             <h1 className='my-2 text-3xl font-semibold md:text-4xl '>
@@ -215,6 +224,7 @@ function Profile({ userData, orders }) {
 export async function getServerSideProps(context) {
   const { token } = cookie.parse(context.req.headers.cookie);
   if (!token) {
+    // If no token is present redirect user to the login page
     return {
       redirect: {
         destination: '/account/login',
@@ -223,28 +233,35 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const [userRes, orderRes] = await Promise.all([
-    fetch(`${SERVER_URL}/api/users/profile`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }),
-    fetch(`${SERVER_URL}/api/orders/myorders`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }),
-  ]);
+  if (token) {
+    // If user has logged in and there is a JWT token present,
+    // Fetch user data and order data
+    const [userRes, orderRes] = await Promise.all([
+      fetch(`${SERVER_URL}/api/users/profile`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+      fetch(`${SERVER_URL}/api/orders/myorders`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    ]);
 
-  const [userData, ordersData] = await Promise.all([
-    userRes.json(),
-    orderRes.json(),
-  ]);
+    const [userData, ordersData] = await Promise.all([
+      userRes.json(),
+      orderRes.json(),
+    ]);
 
+    return {
+      props: { userData: userData, orders: ordersData }, // if  will be passed to the page component as props
+    };
+  }
   return {
-    props: { userData: userData, orders: ordersData }, // will be passed to the page component as props
+    props: {}, // If no token, an empty object will be passed to the page component as props
   };
 }
 
