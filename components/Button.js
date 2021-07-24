@@ -1,16 +1,18 @@
 import { forwardRef } from 'react';
 
-const Button = forwardRef(({ children, disabled, color, ...props }, ref) => (
-  <button
-    ref={ref}
-    {...props}
-    disabled={disabled}
-    className={`${colors[color]} ${
-      disabled ? 'opacity-60 cursor-not-allowed' : ''
-    }  text-white focus:outline-none shadow rounded px-4 py-2 font-medium transition flex items-center ease-in duration-200`}>
-    {children}
-  </button>
-));
+const Button = forwardRef(
+  ({ children, disabled, className, color, ...props }, ref) => (
+    <button
+      ref={ref}
+      {...props}
+      disabled={disabled}
+      className={`${colors[color]} ${className} ${
+        disabled ? 'opacity-60 cursor-not-allowed' : ''
+      }  text-white focus:outline-none shadow rounded px-4 py-2 font-medium transition flex items-center ease-in duration-200`}>
+      {children}
+    </button>
+  )
+);
 
 const colors = {
   primary: `border-blue-700 border-2 text-blue-700 active:bg-blue-700 active:text-white`,
@@ -20,7 +22,6 @@ const colors = {
   warning: `border-yellow-500 border-2 text-yellow-500 active:bg-yellow-500 active:text-white`,
   indigo: `border-indigo-900 border-2 text-indigo-900 active:bg-indigo-900 active:text-white`,
   yellow: `border-yellow-500 border-2 text-yellow-500 active:bg-yellow-500 active:text-white`,
-
 };
 
 Button.displayName = 'Button';

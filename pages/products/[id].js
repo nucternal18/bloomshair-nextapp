@@ -29,9 +29,12 @@ function ProductDetails({ product, productId, userInfo }) {
   const { createProductReview } = useContext(ProductContext);
 
   const addToCartHandler = () => {
-    router.push(`/cart/${productId}?qty=${qty}`)
+    router.push({
+      pathname: `/checkout/cart`,
+      query: { id: productId, qty: qty },
+    });
   };
-  
+
   const submitHandler = (e) => {
     e.preventDefault();
     createProductReview(productId, { rating, comment });

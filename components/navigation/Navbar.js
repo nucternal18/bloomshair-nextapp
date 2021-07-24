@@ -3,10 +3,11 @@ import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { FaUser } from 'react-icons/fa';
+import { FaUser, FaShoppingBasket } from 'react-icons/fa';
 import { FiLogIn, FiLogOut } from 'react-icons/fi';
+import { BiBasket } from 'react-icons/bi';
 
-import Button from '../Button'
+import Button from '../Button';
 
 // context
 import { AuthContext } from '../../context/AuthContext';
@@ -54,7 +55,7 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState(null);
   const router = useRouter();
-  console.log(user)
+  console.log(user);
   const { userInfo, loading, logout } = useContext(AuthContext);
 
   const ref = useRef();
@@ -175,7 +176,7 @@ const Navbar = () => {
           )}
           {!user && (
             <li className='px-1 m-0 text-base list-none sm:text-xs md:text-sm text-md'>
-              <Button color='yellow'>
+              <button className='flex items-center px-1 text-yellow-500 border-2 border-yellow-500 rounded active:bg-yellow-500 active:text-white'>
                 <FiLogIn className='text-gray-200 ' />
                 <Link href={'/account/login'}>
                   <a
@@ -186,9 +187,20 @@ const Navbar = () => {
                     Sign In
                   </a>
                 </Link>
-              </Button>
+              </button>
             </li>
           )}
+          <button className='flex items-center ml-1'>
+            <Link href={'/checkout/cart'}>
+              <a
+                className='block text-gray-200 list-none cursor-pointer text-md hover:text-yellow-400'
+                style={{
+                  color: router.asPath === '/account/login' ? 'orange' : '',
+                }}>
+                <BiBasket className='' />
+              </a>
+            </Link>
+          </button>
         </ul>
       </div>
       <aside
@@ -198,74 +210,109 @@ const Navbar = () => {
             : `${classNames.default} ${classNames.disabled}`
         }
         ref={ref}>
-        <button
-          aria-label='Close'
-          className='absolute text-3xl text-white cursor-pointer top-1 focus:outline-none right-3'
-          onClick={toggle}>
-          &times;
-        </button>
-        <div className='mt-12'>
-          <ul>
-            {navLink.map((link) => (
-              <li
-                key={link.id}
-                className='flex px-1 m-0 text-base list-none sm:text-xs md:text-sm text-md'>
-                <Link href={link.link}>
+        <div>
+          <div className='flex items-center justify-between px-3 py-2 ml-4'>
+            <button
+              aria-label='Close'
+              className='text-4xl text-white cursor-pointer focus:outline-none'
+              onClick={toggle}>
+              &times;
+            </button>
+            <div className='flex items-center'>
+              {user && (
+                <button className='flex items-center bg-white border-2 border-yellow-500 rounded-full' disabled>
+                  <Image
+                    src={
+                      user.image
+                        ? user.image
+                        : 'https://res.cloudinary.com/dtkjg8f0n/image/upload/v1625765848/blooms_hair_products/icons8-user-96_wyguya.png'
+                    }
+                    alt={user.name}
+                    width={30}
+                    height={30}
+                    className='rounded-full'
+                    objectFit='cover'
+                  />
+                </button>
+              )}
+              <button className=''>
+                <Link href={'/checkout/cart'}>
                   <a
-                    className='flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2  text-gray-200 hover:text-gray-400 text-lg font-medium list-none uppercase'
+                    className='text-2xl text-gray-200 list-none cursor-pointer hover:text-yellow-400'
                     style={{
-                      color: router.asPath === link.link ? 'orange' : '',
+                      color: router.asPath === '/account/login' ? 'orange' : '',
                     }}>
-                    {link.title}
+                    <BiBasket />
                   </a>
                 </Link>
-              </li>
-            ))}
-            {user && (
-              <>
-                <li className='px-1 m-0 text-base list-none text-md'>
-                  <button className='flex items-center py-1.5  px-2 mb-4 ml-4 space-x-2'>
-                    <FaUser className='text-gray-200 ' />
-                    <Link href={'/account/profile'}>
+              </button>
+            </div>
+          </div>
+          <div className='mt-12'>
+            <ul>
+              {navLink.map((link) => (
+                <li
+                  key={link.id}
+                  className='flex px-1 m-0 text-base list-none sm:text-xs md:text-sm text-md'>
+                  <Link href={link.link}>
+                    <a
+                      className='flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2  text-gray-200 hover:text-gray-400 text-lg font-medium list-none uppercase'
+                      style={{
+                        color: router.asPath === link.link ? 'orange' : '',
+                      }}>
+                      {link.title}
+                    </a>
+                  </Link>
+                </li>
+              ))}
+              {user && (
+                <>
+                  <li className='px-1 m-0 text-base list-none text-md'>
+                    <button className='flex items-center py-1.5  px-2 mb-4 ml-4 space-x-2'>
+                      <FaUser className='text-gray-200 ' />
+                      <Link href={'/account/profile'}>
+                        <a
+                          className='flex items-center text-lg font-medium text-gray-200 uppercase list-none cursor-pointer hover:text-gray-400'
+                          style={{
+                            color:
+                              router.asPath === '/account/login'
+                                ? 'orange'
+                                : '',
+                          }}>
+                          Profile
+                        </a>
+                      </Link>
+                    </button>
+                  </li>
+                  <li className='px-1 m-0 text-base list-none text-md'>
+                    <button
+                      className='flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2  space-x-2 text-gray-200 hover:text-gray-400 text-lg font-medium list-none uppercase'
+                      onClick={logoutHandler}>
+                      <FiLogOut className='text-gray-200 ' />
+                      <p>Logout</p>
+                    </button>
+                  </li>
+                </>
+              )}
+              {!user && (
+                <li className='flex items-center px-1 m-0 text-base list-none text-md'>
+                  <button className='flex items-center'>
+                    <FiLogIn className='ml-5 mr-1 text-gray-200 ' />
+                    <Link href={'/account/login'}>
                       <a
-                        className='flex items-center text-lg font-medium text-gray-200 uppercase list-none cursor-pointer hover:text-gray-400'
+                        className='py-1 text-lg font-medium text-gray-200 uppercase list-none cursor-pointer hover:text-gray-400'
                         style={{
                           color:
                             router.asPath === '/account/login' ? 'orange' : '',
                         }}>
-                        Profile
+                        Sign In
                       </a>
                     </Link>
                   </button>
                 </li>
-                <li className='px-1 m-0 text-base list-none text-md'>
-                  <button
-                    className='flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2  space-x-2 text-gray-200 hover:text-gray-400 text-lg font-medium list-none uppercase'
-                    onClick={logoutHandler}>
-                    <FiLogOut className='text-gray-200 ' />
-                    <p>Logout</p>
-                  </button>
-                </li>
-              </>
-            )}
-            {!user && (
-              <li className='flex items-center px-1 m-0 text-base list-none text-md'>
-                <button className='flex items-center'>
-                  <FiLogIn className='ml-5 mr-1 text-gray-200 ' />
-                  <Link href={'/account/login'}>
-                    <a
-                      className='py-1 text-lg font-medium text-gray-200 uppercase list-none cursor-pointer hover:text-gray-400'
-                      style={{
-                        color:
-                          router.asPath === '/account/login' ? 'orange' : '',
-                      }}>
-                      Sign In
-                    </a>
-                  </Link>
-                </button>
-              </li>
-            )}
-          </ul>
+              )}
+            </ul>
+          </div>
         </div>
       </aside>
     </nav>
@@ -282,7 +329,7 @@ const position = {
 
 const classNames = {
   default: `lg:hidden flex h-screen fixed top-0 right-0 transition-all ease duration-200`,
-  enabled: `w-7/12 md:w-60 bg-gray-900 z-50  text-white overflow-x-hidden `,
+  enabled: `w-7/12 md:w-1/3 bg-gray-900 z-50  text-white overflow-x-hidden `,
   disabled: `w-0  bg-gray-800 text-white overflow-x-hidden`,
 };
 
