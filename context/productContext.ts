@@ -27,7 +27,7 @@ const ProductContextProvider = ({ children }) => {
   const createProductReview = async (productId, review) => {
     try {
       setLoading(true);
-      await Fetch(`${NEXT_URL}/api/products/${productId}/reviews`, {
+      await fetch(`${NEXT_URL}/api/products/${productId}/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
