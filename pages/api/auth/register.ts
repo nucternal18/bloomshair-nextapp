@@ -1,15 +1,15 @@
 /* eslint-disable import/no-anonymous-default-export */
+import { NextApiRequest, NextApiResponse } from "next";
+import { SERVER_URL } from "../../../config";
 
-import { SERVER_URL } from '../../../config';
-
-export default async (req, res) => {
-  if (req.method === 'POST') {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method === "POST") {
     const { displayName, email, password, isAdmin } = req.body;
 
     const response = await fetch(`${SERVER_URL}/api/users/`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ displayName, email, password, isAdmin }),
     });
@@ -17,13 +17,12 @@ export default async (req, res) => {
     const data = await response.json();
 
     if (response.ok) {
-
       res.status(200).json({ data });
     } else {
       res.status(data.statusCode).json({ message: data });
     }
   } else {
-    res.setHeader('Allow', ['POST']);
+    res.setHeader("Allow", ["POST"]);
     res.status(405).json({ message: `Method ${req.method} not allowed` });
   }
 };

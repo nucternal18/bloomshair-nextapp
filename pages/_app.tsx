@@ -1,19 +1,19 @@
 // import '../styles/globals.css'
-import 'tailwindcss/tailwind.css';
+import "tailwindcss/tailwind.css";
 
-import AuthContextProvider from '../context/AuthContext';
-import OrderContextProvider from '../context/OrderContext';
-import ProductContextProvider from '../context/productContext';
+import AuthProvider from "../context/AuthContext";
+import OrderContextProvider from "../context/OrderContext";
+import ProductContextProvider from "../context/productContext";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <AuthContextProvider>
+    <AuthProvider>
       <ProductContextProvider>
         <OrderContextProvider>
           <Component {...pageProps} />
         </OrderContextProvider>
       </ProductContextProvider>
-    </AuthContextProvider>
+    </AuthProvider>
   );
 }
 

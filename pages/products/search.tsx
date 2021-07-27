@@ -1,38 +1,44 @@
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
+import { GetServerSideProps } from "next";
+
 // Components
-import Paginate from '../../components/Paginate';
-import Layout from '../../components/Layout';
-import Product from '../../components/Product';
-import Button from '../../components/Button';
+import Paginate from "../../components/Paginate";
+import Layout from "../../components/Layout";
+import Product from "../../components/Product";
+import Button from "../../components/Button";
 
-import { SERVER_URL } from '../../config';
+import { SERVER_URL } from "../../config";
 
-const Products = (props) => {
-    const router = useRouter();
+function Products(props): JSX.Element {
+  const router = useRouter();
   const { products, keyword, pages, page } = props;
 
   return (
     <Layout>
-      <main className='w-full mx-auto overflow-auto bg-white '>
-        <section className='container px-2 pt-2 pb-8 mb-4 md:mx-auto '>
-          <div className='flex items-center justify-between mb-6 border-b-4 border-current border-gray-200'>
+      <main className="w-full mx-auto overflow-auto bg-white ">
+        <section className="container px-2 pt-2 pb-8 mb-4 md:mx-auto ">
+          <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
             <div>
-              <h1 className='p-3 text-3xl font-bold md:p-5 md:text-5xl'>
+              <h1 className="p-3 text-3xl font-bold md:p-5 md:text-5xl">
                 Search Result for {router.query.keyword}
               </h1>
             </div>
             {keyword && (
               <div>
-                <Button color='dark' onClick={() => router.back()}>
-                  {' '}
+                <Button
+                  type="button"
+                  color="dark"
+                  onClick={() => router.back()}
+                >
+                  {" "}
                   Go Back
                 </Button>
               </div>
             )}
           </div>
 
-          <div className='container mx-auto'>
-            <div className='grid grid-cols-1 gap-2 mx-auto my-8 sm:grid-cols-3 sm:mx-0'>
+          <div className="container mx-auto">
+            <div className="grid grid-cols-1 gap-2 mx-auto my-8 sm:grid-cols-3 sm:mx-0">
               {products.map((product) => {
                 return (
                   <div key={product._id}>
@@ -45,24 +51,24 @@ const Products = (props) => {
             <Paginate
               pages={pages}
               page={page}
-              keyword={keyword ? keyword : ''}
+              keyword={keyword ? keyword : ""}
             />
           </div>
         </section>
       </main>
     </Layout>
   );
-};
+}
 
-export async function getServerSideProps({
-  query: { pageNumber = 1, keyword = '' },
-}) {
+export const getServerSideProps: GetServerSideProps = async ({
+  query: { pageNumber = 1, keyword = "" },
+}) => {
   const res = await fetch(
     `${SERVER_URL}/api/products?keyword=${keyword}&pageNumber=${pageNumber}`,
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     }
   );
@@ -81,5 +87,5 @@ export async function getServerSideProps({
       keyword: keyword,
     }, // will be passed to the page component as props
   };
-}
+};
 export default Products;

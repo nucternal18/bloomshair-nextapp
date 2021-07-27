@@ -1,12 +1,24 @@
+import { FC } from "react";
+import Link from "next/link";
 
-import Link from 'next/link'
+interface ICheckout {
+  step1?: boolean;
+  step2?: boolean;
+  step3?: boolean;
+  step4?: boolean;
+}
 
-const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
+const CheckoutSteps: FC<ICheckout> = ({
+  step1,
+  step2,
+  step3,
+  step4,
+}): JSX.Element => {
   return (
-    <nav className='flex justify-center mb-4'>
+    <nav className="flex justify-center mb-4">
       <div>
         {step1 ? (
-          <Link href='/login'>
+          <Link href="/login">
             <a>Sign In</a>
           </Link>
         ) : (
@@ -15,7 +27,7 @@ const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
       </div>
       <div>
         {step2 ? (
-          <Link href='/shipping'>
+          <Link href="/shipping">
             <a>Shipping</a>
           </Link>
         ) : (
@@ -24,7 +36,7 @@ const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
       </div>
       <div>
         {step3 ? (
-          <Link href='/payment'>
+          <Link href="/payment">
             <a>Payment</a>
           </Link>
         ) : (
@@ -33,7 +45,7 @@ const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
       </div>
       <div>
         {step4 ? (
-          <Link href='/placeorder'>
+          <Link href="/placeorder">
             <a>Place Order</a>
           </Link>
         ) : (

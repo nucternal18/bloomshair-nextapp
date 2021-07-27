@@ -1,28 +1,28 @@
-import { useContext, useEffect, useState } from 'react';
-import cookie from 'cookie';
-import { useRouter } from 'next/router';
+import { useContext, useEffect, useState } from "react";
+import cookie from "cookie";
+import { useRouter } from "next/router";
 // Components
-import Layout from '../../../components/Layout';
-import Button from '../../../components/Button';
-import CheckoutSteps from '../../../components/navigation/CheckoutStepsNav';
+import Layout from "../../../components/Layout";
+import Button from "../../../components/Button";
+import CheckoutSteps from "../../../components/navigation/CheckoutStepsNav";
 
 // context
-import { OrderContext } from '../../../context/OrderContext';
+import { OrderContext } from "../../../context/OrderContext";
 function Shipping() {
   const router = useRouter();
   const { shippingAddress, savePaymentMethod } = useContext(OrderContext);
-  const [paymentMethod, setPaymentMethod] = useState('PayPal');
+  const [paymentMethod, setPaymentMethod] = useState("PayPal");
 
   useEffect(() => {
     if (!shippingAddress) {
-      router.push('/checkout/shipping');
+      router.push("/checkout/shipping");
     }
   }, [router, shippingAddress]);
 
   const submitHandler = (e) => {
     e.preventDefault();
     savePaymentMethod(paymentMethod);
-    router.push('/checkout/placeorder');
+    router.push("/checkout/placeorder");
   };
   return (
     <Layout>
@@ -31,14 +31,13 @@ function Shipping() {
         <h1>Payment Method</h1>
         <form onSubmit={submitHandler}>
           <div>
-            <label as='legend'>Select Method</label>
+            <label>Select Method</label>
             <div>
               <input
-                type='radio'
-                label='PayPal or Credit Card'
-                id='PayPal'
-                name='paymentMethod'
-                value='PayPal'
+                type="radio"
+                id="PayPal"
+                name="paymentMethod"
+                value="PayPal"
                 checked
                 onChange={(e) => setPaymentMethod(e.target.value)}
               />
@@ -51,7 +50,7 @@ function Shipping() {
               onChange={(e) => setPaymentMethod(e.target.value)} /> */}
             </div>
           </div>
-          <Button type='submit' color='yellow'>
+          <Button type="submit" color="yellow">
             Continue
           </Button>
         </form>

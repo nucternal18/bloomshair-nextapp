@@ -1,18 +1,19 @@
 /* eslint-disable import/no-anonymous-default-export */
-import cookie from 'cookie';
+import { NextApiRequest, NextApiResponse } from "next";
+import cookie from "cookie";
 // Server Url
-import { SERVER_URL } from '../../config';
+import { SERVER_URL } from "../../config";
 
-export default async (req, res) => {
-  if (req.method == 'POST') {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method == "POST") {
     try {
       const { data } = req.body;
 
-       const { token } = cookie.parse(req.headers.cookie);
+      const { token } = cookie.parse(req.headers.cookie);
       const response = await fetch(`${SERVER_URL}/api/upload`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ data }),
@@ -23,18 +24,16 @@ export default async (req, res) => {
       if (response.ok) {
         res.status(201).json({ url });
       } else {
-        res.status(403).json({ message: 'Image not uploaded' });
+        res.status(403).json({ message: "Image not uploaded" });
       }
-
-
     } catch (error) {
       console.error(error);
-      res.status(500).json({ err: 'Something went wrong uploading image' });
+      res.status(500).json({ err: "Something went wrong uploading image" });
     }
   } else {
     return res.status(500).json({
       success: false,
-      error: 'Server Error. Invalid Request',
+      error: "Server Error. Invalid Request",
     });
   }
 };
@@ -42,7 +41,7 @@ export default async (req, res) => {
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '50mb',
+      sizeLimit: "50mb",
     },
   },
 };

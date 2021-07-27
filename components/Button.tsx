@@ -1,14 +1,31 @@
-import { forwardRef } from 'react';
+import { forwardRef, ReactNode } from "react";
 
-const Button = forwardRef(
-  ({ children, disabled, className, color, ...props }, ref) => (
+export type Ref = HTMLButtonElement;
+
+type ButtonProps = {
+  disabled?: boolean;
+  className?: string;
+  color: string;
+  type: "submit" | "button";
+  children?: ReactNode;
+  props?: any;
+  onClick?: () => void;
+};
+
+const Button = forwardRef<Ref, ButtonProps>(
+  (
+    { children, disabled, className, type, color, ...props }: ButtonProps,
+    ref
+  ) => (
     <button
       ref={ref}
       {...props}
       disabled={disabled}
+      type={type}
       className={`${colors[color]} ${className} ${
-        disabled ? 'opacity-60 cursor-not-allowed' : ''
-      }  text-white focus:outline-none shadow rounded px-4 py-2 font-medium transition flex items-center ease-in duration-200`}>
+        disabled ? "opacity-60 cursor-not-allowed" : ""
+      }  text-white focus:outline-none shadow rounded px-4 py-2 font-medium transition flex items-center ease-in duration-200`}
+    >
       {children}
     </button>
   )
@@ -24,6 +41,6 @@ const colors = {
   yellow: `border-yellow-500 border-2 text-yellow-500 active:bg-yellow-500 active:text-white`,
 };
 
-Button.displayName = 'Button';
+Button.displayName = "Button";
 
 export default Button;

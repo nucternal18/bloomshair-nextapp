@@ -1,12 +1,12 @@
-import { useContext, useState } from 'react';
-import cookie from 'cookie';
-import { useRouter } from 'next/router';
+import { useContext, useState } from "react";
+import cookie from "cookie";
+import { useRouter } from "next/router";
 // Components
-import Layout from '../../../components/Layout';
-import CheckoutSteps from '../../../components/navigation/CheckoutStepsNav';
+import Layout from "../../../components/Layout";
+import CheckoutSteps from "../../../components/navigation/CheckoutStepsNav";
 
 // context
-import { OrderContext } from '../../../context/OrderContext';
+import { OrderContext } from "../../../context/OrderContext";
 
 function Shipping() {
   const router = useRouter();
@@ -18,8 +18,9 @@ function Shipping() {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    saveShippingAddress({ address, city, postalCode, country });
-    router.push('/checkout/payment');
+    const data = { address, city, postalCode, country };
+    saveShippingAddress(data);
+    router.push("/checkout/payment");
   };
   return (
     <Layout>
@@ -28,60 +29,69 @@ function Shipping() {
         <h1>Shipping</h1>
         <form
           onSubmit={submitHandler}
-          className='px-12 pt-6 pb-8 mx-2 mb-4 bg-white rounded shadow-xl sm:mx-auto md:w-2/4'>
-          <div className='mb-4'>
+          className="px-12 pt-6 pb-8 mx-2 mb-4 bg-white rounded shadow-xl sm:mx-auto md:w-2/4"
+        >
+          <div className="mb-4">
             <label
-              htmlFor='address'
-              className='block mb-2 text-base font-bold text-gray-700'>
+              htmlFor="address"
+              className="block mb-2 text-base font-bold text-gray-700"
+            >
               Address
             </label>
             <input
-              className='w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none '
-              type='text'
-              placeholder='Enter your Address'
+              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
+              type="text"
+              placeholder="Enter your Address"
               value={address}
-              onChange={(e) => setAddress(e.target.value)}></input>
+              onChange={(e) => setAddress(e.target.value)}
+            ></input>
           </div>
-          <div className='mb-4'>
+          <div className="mb-4">
             <label
-              htmlFor='city'
-              className='block mb-2 text-base font-bold text-gray-700'>
+              htmlFor="city"
+              className="block mb-2 text-base font-bold text-gray-700"
+            >
               city
             </label>
             <input
-              className='w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none '
-              type='text'
-              placeholder='Enter your City'
+              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
+              type="text"
+              placeholder="Enter your City"
               value={city}
-              onChange={(e) => setCity(e.target.value)}></input>
+              onChange={(e) => setCity(e.target.value)}
+            ></input>
           </div>
-          <div className='mb-4'>
+          <div className="mb-4">
             <label
-              htmlFor='postalCode'
-              className='block mb-2 text-base font-bold text-gray-700'>
+              htmlFor="postalCode"
+              className="block mb-2 text-base font-bold text-gray-700"
+            >
               Postal Code
             </label>
             <input
-              className='w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none '
-              type='text'
-              placeholder='Enter your Postal Code'
+              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
+              type="text"
+              placeholder="Enter your Postal Code"
               value={postalCode}
-              onChange={(e) => setPostalCode(e.target.value)}></input>
+              onChange={(e) => setPostalCode(e.target.value)}
+            ></input>
           </div>
-          <div className='mb-4'>
+          <div className="mb-4">
             <label
-              htmlFor='country'
-              className='block mb-2 text-base font-bold text-gray-700'>
+              htmlFor="country"
+              className="block mb-2 text-base font-bold text-gray-700"
+            >
               Country
             </label>
             <input
-              className='w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none '
-              type='text'
-              placeholder='Enter your Country'
+              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
+              type="text"
+              placeholder="Enter your Country"
               value={country}
-              onChange={(e) => setCountry(e.target.value)}></input>
+              onChange={(e) => setCountry(e.target.value)}
+            ></input>
           </div>
-          <button type='submit'>Continue</button>
+          <button type="submit">Continue</button>
         </form>
       </div>
     </Layout>

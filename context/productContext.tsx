@@ -1,20 +1,39 @@
-import { useState, createContext, useEffect } from 'react';
+import { useState, createContext, useEffect } from "react";
 
-import { NEXT_URL } from '../config';
+import { NEXT_URL } from "../config";
 
-export const ProductContext = createContext();
+type ReviewProps = {
+  rating: number;
+  comment: string;
+};
+
+interface IProduct {
+  createProductReview: (productId: string, review: ReviewProps) => void;
+  requestStatus: string;
+  message: string;
+  success: boolean;
+  loading: boolean;
+  error: string | Error | null;
+}
+
+export const ProductContext = createContext<IProduct>({
+  createProductReview: () => {},
+  requestStatus: "",
+  message: "",
+  success: false,
+  loading: false,
+  error: null,
+});
 
 const ProductContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [image, setImage] = useState();
-  const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState(null);
-  const [requestStatus, setRequestStatus] = useState('');
+  const [requestStatus, setRequestStatus] = useState("");
 
   useEffect(() => {
-    if (requestStatus === 'success' || requestStatus === 'error') {
+    if (requestStatus === "success" || requestStatus === "error") {
       const timer = setTimeout(() => {
         setRequestStatus(null);
         setError(null);
@@ -24,23 +43,23 @@ const ProductContextProvider = ({ children }) => {
     }
   }, [requestStatus]);
 
-  const createProductReview = async (productId, review) => {
+  const createProductReview = async (productId, review): Promise<void> => {
     try {
       setLoading(true);
       await fetch(`${NEXT_URL}/api/products/${productId}/reviews`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({review})
+        body: JSON.stringify({ review }),
       });
-     setLoading(false);
-     setRequestStatus('success');
-     setMessage('Product review created successfully');
-     setSuccess(true);
+      setLoading(false);
+      setRequestStatus("success");
+      setMessage("Product review created successfully");
+      setSuccess(true);
     } catch (error) {
       setLoading(false);
-      setRequestStatus('error');
+      setRequestStatus("error");
       setError(
         error.response && error.response.data.message
           ? error.response.data.message
@@ -58,7 +77,8 @@ const ProductContextProvider = ({ children }) => {
         success,
         loading,
         error,
-      }}>
+      }}
+    >
       {children}
     </ProductContext.Provider>
   );
