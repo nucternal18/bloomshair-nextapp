@@ -25,7 +25,7 @@ const PlaceOrderScreen = () => {
     createOrder,
   } = useContext(OrderContext);
   const { address, city, postalCode, country } = shippingAddress;
-
+  console.log(order);
   // Calculate prices
   const itemsPrice = addDecimals(
     cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
@@ -60,104 +60,153 @@ const PlaceOrderScreen = () => {
   };
   return (
     <Layout>
-      <CheckoutSteps step1 step2 step3 step4 />
-      <main className="flex w-full p-2 mx-auto bg-gray-200 md:p-4">
-        <section className="flex flex-col p-2 mb-4 bg-white rounded shadow-xl md:p-12 md:mx-auto">
-          <div>
-            <div>
-              <h2>Shipping</h2>
-              <p>
-                <strong>Address: </strong>
-                {address}, {city}, {postalCode} {country}
-              </p>
-            </div>
-            <div>
-              <h2>Payment Method</h2>
-              <strong>Method: </strong>
-              {paymentMethod}
-            </div>
-            <div>
-              <h2>Order Items</h2>
-              {cartItems.length === 0 ? (
-                <ErrorMessage variant="default">
-                  {" "}
-                  Your cart is empty
-                </ErrorMessage>
-              ) : (
-                <div>
-                  {cartItems.map((item, index) => (
-                    <div key={index}>
-                      <div>
-                        <div>
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            width={50}
-                            height={50}
-                            className="rounded"
-                          />
-                        </div>
-                        <div>
-                          <Link href={`/product/${item.product}`}>
-                            <a>{item.name}</a>
-                          </Link>
-                        </div>
-                        <div>
-                          {item.qty} x £{item.price} = £{item.qty * item.price}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+      <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
+        <CheckoutSteps step1 step2 step3 step4 />
+        <section className="container grid grid-cols-1 mb-4 bg-white rounded shadow-xl md:gap-2 lg:gap-4 md:px-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:p-12 md:mx-auto">
+          <div className="px-2 md:col-span-2 lg:col-span-3">
+            <div className="p-4">
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
+                  <h2 className="p-2 text-2xl font-semibold md:p-3 md:text-3xl">
+                    Shipping
+                  </h2>
                 </div>
-              )}
+                <p className="text-xl">
+                  <strong>Address: </strong>
+                  {address}, {city}, {postalCode} {country}
+                </p>
+              </div>
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
+                  <h2 className="p-2 text-2xl font-semibold md:p-3 md:text-3xl">
+                    Payment Method
+                  </h2>
+                </div>
+                <div className="flex items-center px-3">
+                  <strong className="mr-3 text-xl">Method: </strong>
+                  {paymentMethod === "PayPal" && (
+                    <Image
+                      src={"/paypal.png"}
+                      alt="Round Icons"
+                      width={100}
+                      height={100}
+                    />
+                  )}
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
+                  <h2 className="p-2 text-2xl font-semibold md:p-3 md:text-3xl">
+                    Order Items
+                  </h2>
+                </div>
+
+                {cartItems.length === 0 ? (
+                  <ErrorMessage variant="default">
+                    {" "}
+                    Your cart is empty
+                  </ErrorMessage>
+                ) : (
+                  <table className="w-full text-left rounded-lg">
+                    <thead>
+                      <tr className="text-gray-800 border border-b-0">
+                        <th className="hidden px-4 py-3 md:block">Product</th>
+                        <th className="px-4 py-3">Name</th>
+                        <th className="px-4 py-3">Qty</th>
+                        <th className="hidden px-4 py-3 md:block">Price</th>
+                        <th className="px-4 py-3">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cartItems.map((item, index) => (
+                        <tr
+                          key={index}
+                          className="w-full font-light text-gray-700 whitespace-no-wrap bg-gray-100 border border-b-0"
+                        >
+                          <td className="hidden px-4 py-4 mr-2 md:block">
+                            <Image
+                              src={item.image}
+                              alt={item.name}
+                              width={50}
+                              height={50}
+                              className="rounded"
+                            />
+                          </td>
+                          <td className="px-4 py-4 mr-2 truncate">
+                            <Link href={`/product/${item.product}`}>
+                              <a className="font-semibold md:text-xl">
+                                {item.name}
+                              </a>
+                            </Link>
+                          </td>
+                          <td className="px-4 py-4 font-semibold md:text-xl">
+                            {item.qty}
+                          </td>
+                          <td className="hidden px-4 py-4 font-semibold md:block md:text-xl">
+                            £{item.price}
+                          </td>
+                          <td className="px-4 py-4 font-semibold md:text-xl">
+                            £{item.qty * item.price}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
             </div>
           </div>
-        </section>
-        <section>
-          <Card>
-            <div>
+          <div>
+            <Card className="p-1 md:w-64">
               <div>
-                <h2>Order Summary</h2>
-              </div>
-              <div>
-                <div className="flex">
-                  <div>Items</div>
-                  <div>£{itemsPrice}</div>
+                <div className="p-3 border-b">
+                  <h2 className="text-2xl font-semibold ">Order Summary</h2>
+                </div>
+                <div className="w-full p-6">
+                  <div>
+                    <div className="flex items-center justify-between mb-4 text-xl ">
+                      <div className="mr-1 font-semibold">Items:</div>
+                      <div>£{itemsPrice}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-4 text-xl ">
+                      <div className="mr-1 font-semibold">Shipping:</div>
+                      <div>£{shippingPrice}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-4 text-xl ">
+                      <div className="mr-1 font-semibold">Tax:</div>
+                      <div>{"(inc. VAT)"}</div>
+                    </div>
+                  </div>
+                  <div className="w-full mt-4 border-t">
+                    <div className="flex items-center justify-between my-4 text-xl ">
+                      <div className="mr-1 font-semibold">Total:</div>
+                      <div>£{totalPrice}</div>
+                    </div>
+                  </div>
+                  <div className="w-full mt-2 border-t">
+                    {error && (
+                      <ErrorMessage variant="danger">{error}</ErrorMessage>
+                    )}
+                  </div>
+                  <div className="mt-2 ">
+                    <Button
+                      type="button"
+                      color="yellow"
+                      className="w-full"
+                      disabled={cartItems.length === 0}
+                      onClick={placeOrderHandler}
+                    >
+                      Place Order
+                    </Button>
+                  </div>
                 </div>
               </div>
-              <div>
-                <div className="flex">
-                  <div>Shipping</div>
-                  <div>£{shippingPrice}</div>
-                </div>
-              </div>
-              <div>
-                <div className="flex">
-                  <div>Tax</div>
-                  <div>£{taxPrice}</div>
-                </div>
-              </div>
-              <div>
-                <div className="flex">
-                  <div>Total</div>
-                  <div>£{totalPrice}</div>
-                </div>
-              </div>
-              <div>
-                {error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
-              </div>
-              <div>
-                <Button
-                  type="button"
-                  color="yellow"
-                  disabled={cartItems.length === 0}
-                  onClick={placeOrderHandler}
-                >
-                  Place Order
-                </Button>
-              </div>
-            </div>
-          </Card>
+            </Card>
+          </div>
         </section>
       </main>
     </Layout>

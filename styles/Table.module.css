@@ -7,19 +7,21 @@
 
 .tableContainerTable {
   width: 100%;
-
 }
 
 .tableContainerTable thead tr {
   background: rgb(3, 175, 175);
-    color: #fff;
-
+  color: #fff;
 }
-.tableContainerTable td, 
+.tableContainerTable td,
 .tableContainerTable th {
   padding: 10px;
   text-align: center;
 }
+.tableContainerTable tbody tr td {
+  text-align: center;
+}
+
 .tableContainerTable tr:nth-child(even) {
   background-color: #f1f1f1;
 }

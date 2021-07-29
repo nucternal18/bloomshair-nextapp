@@ -142,7 +142,7 @@ function Cart() {
                           .toFixed(2)}
                       </p>
                     </div>
-                    <div className="w-full mb-4">
+                    {/* <div className="w-full mb-4">
                       <label className="inline-block mb-3 text-sm font-medium uppercase">
                         Shipping
                       </label>
@@ -157,11 +157,20 @@ function Cart() {
                         <option>Choose Shipping method...</option>
                         <option value={5.99}>Standard shipping-£5.99</option>
                       </select>
-                    </div>
+                    </div> */}
                     <div className="w-full mt-8 border-t">
                       <div className="flex justify-between py-6 text-sm font-semibold uppercase">
                         <span>Total cost</span>
-                        <span>${totalPrice}</span>
+                        <span>
+                          {" "}
+                          £
+                          {cartItems
+                            .reduce(
+                              (acc, item) => acc + item.qty * item.price,
+                              0
+                            )
+                            .toFixed(2)}
+                        </span>
                       </div>
                       <Button
                         type="button"

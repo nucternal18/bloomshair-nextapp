@@ -34,12 +34,12 @@ const Table = ({ tableData, headingColumns }) => {
                   {row.isDelivered ? (
                     row.deliveredAt.substring(0, 10)
                   ) : (
-                    <FaTimes className="text-red-500" />
+                    <FaTimes className="text-red-500 " />
                   )}
                 </td>
                 <td data-heading={"category"}>
                   <Button type="button" color="dark">
-                    <Link href={`/order/${row._id}`}>
+                    <Link href={`/orders/${row._id}`}>
                       <a>Details</a>
                     </Link>
                   </Button>

@@ -16,15 +16,14 @@ import Button from "../../components/Button";
 import Notification from "../../components/notification/notification";
 import Layout from "../../components/Layout";
 
-import { SERVER_URL } from "../../config";
+import { SERVER_URL, NEXT_URL } from "../../config";
 
 const OrderDetails = (props) => {
   const { userInfo, order, orderId } = props;
   const router = useRouter();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sdkReady, setSdkReady] = useState(false);
-  const { loading, error, payOrder, message, requestStatus, success } =
-    useContext(OrderContext);
+  const { error, payOrder, message, requestStatus } = useContext(OrderContext);
 
   useEffect(() => {
     setIsRefreshing(false);
@@ -35,8 +34,8 @@ const OrderDetails = (props) => {
       router.push("/login");
     }
     const addPaypalScript = async () => {
-      const res = await fetch("/api/config/paypal");
-      const data = res.json();
+      const res = await fetch(`${NEXT_URL}/api/paypal`);
+      const data = await res.json();
       const script = document.createElement("script");
       script.type = "text/javascript";
       script.src = `https://www.paypal.com/sdk/js?client-id=${data}`;
@@ -54,7 +53,7 @@ const OrderDetails = (props) => {
         setSdkReady(true);
       }
     }
-  }, [order, orderId, history, userInfo]);
+  }, [order, orderId, userInfo]);
 
   const refreshData = () => {
     router.replace(router.asPath);
@@ -88,14 +87,12 @@ const OrderDetails = (props) => {
 
   return (
     <Layout>
-      <main className="w-full h-screen p-4 mx-auto mt-6 bg-gray-200">
+      <main className="w-full h-screen p-4 mx-auto bg-gray-200">
         <section className="container px-2 pt-6 pb-8 mx-2 mb-4 bg-white rounded shadow-2xl md:mx-auto ">
           <div className="flex items-center justify-between px-4 mb-4 border-b-4 border-current border-gray-200">
             <div className="mt-6">
-              <Button type="button" color="dark">
-                <Link href="/orders">
-                  <a>Go Back</a>
-                </Link>
+              <Button type="button" color="dark" onClick={() => router.back()}>
+                Go Back
               </Button>
             </div>
             <div>
@@ -215,13 +212,12 @@ const OrderDetails = (props) => {
                       <p>£{addDecimals(order.totalPrice)}</p>
                     </div>
                   </div>
-                  {loading && <Spinner />}
+
                   {error && (
                     <ErrorMessage variant="danger">{error}</ErrorMessage>
                   )}
                   {!order.isPaid && !userInfo.isAdmin && (
                     <div>
-                      {loading && <Spinner />}
                       {!sdkReady ? (
                         <Spinner />
                       ) : (

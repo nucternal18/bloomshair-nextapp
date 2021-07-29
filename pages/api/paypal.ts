@@ -1,37 +1,31 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import cookie from "cookie";
-import { SERVER_URL } from "../../../config";
+import { SERVER_URL } from "../../config";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method === "POST") {
+  if (req.method === "GET") {
     if (!req.headers.cookie) {
       res.status(403).json({ message: "Not Authorized" });
       return;
     }
 
-    const { newOrder } = req.body;
-    console.log(newOrder);
     const { token } = cookie.parse(req.headers.cookie);
+    if (!token) {
+      res.status(403).json({ message: "Not Authorized" });
+      return;
+    }
+    const response = await fetch(`${SERVER_URL}/api/config/paypal`);
 
-    const response = await fetch(`${SERVER_URL}/api/orders/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        newOrder,
-      }),
-    });
     const data = await response.json();
+
     if (response.ok) {
-      res.status(200).json({ data });
+      res.status(200).json(JSON.stringify(data));
     } else {
-      res.status(403).json({ message: "Review not created" });
+      res.status(403).json({ message: "User forbidden" });
     }
   } else {
-    res.setHeader("Allow", ["PUT"]);
+    res.setHeader("Allow", ["POST"]);
     res.status(405).json({ message: `Method ${req.method} not allowed` });
   }
 };

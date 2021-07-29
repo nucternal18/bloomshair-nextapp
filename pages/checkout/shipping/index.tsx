@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 // Components
 import Layout from "../../../components/Layout";
 import CheckoutSteps from "../../../components/navigation/CheckoutStepsNav";
+import Button from "../../../components/Button";
 
 // context
 import { OrderContext } from "../../../context/OrderContext";
@@ -24,76 +25,85 @@ function Shipping() {
   };
   return (
     <Layout>
-      <div>
+      <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
         <CheckoutSteps step1 step2 />
-        <h1>Shipping</h1>
-        <form
-          onSubmit={submitHandler}
-          className="px-12 pt-6 pb-8 mx-2 mb-4 bg-white rounded shadow-xl sm:mx-auto md:w-2/4"
-        >
-          <div className="mb-4">
-            <label
-              htmlFor="address"
-              className="block mb-2 text-base font-bold text-gray-700"
-            >
-              Address
-            </label>
-            <input
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-              type="text"
-              placeholder="Enter your Address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            ></input>
+        <section className="container p-2 mb-4 bg-white rounded shadow-xl md:p-12 md:mx-auto ">
+          <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
+            <h1 className="p-3 text-2xl font-bold md:p-5 md:text-5xl">
+              Shipping
+            </h1>
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="city"
-              className="block mb-2 text-base font-bold text-gray-700"
-            >
-              city
-            </label>
-            <input
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-              type="text"
-              placeholder="Enter your City"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-            ></input>
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="postalCode"
-              className="block mb-2 text-base font-bold text-gray-700"
-            >
-              Postal Code
-            </label>
-            <input
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-              type="text"
-              placeholder="Enter your Postal Code"
-              value={postalCode}
-              onChange={(e) => setPostalCode(e.target.value)}
-            ></input>
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="country"
-              className="block mb-2 text-base font-bold text-gray-700"
-            >
-              Country
-            </label>
-            <input
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-              type="text"
-              placeholder="Enter your Country"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-            ></input>
-          </div>
-          <button type="submit">Continue</button>
-        </form>
-      </div>
+
+          <form
+            onSubmit={submitHandler}
+            className="px-12 pt-6 pb-8 mx-2 mb-4 sm:mx-auto md:w-2/4"
+          >
+            <div className="mb-4">
+              <label
+                htmlFor="address"
+                className="block mb-2 text-base font-bold text-gray-700"
+              >
+                Address
+              </label>
+              <input
+                className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
+                type="text"
+                placeholder="Enter your Address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              ></input>
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="city"
+                className="block mb-2 text-base font-bold text-gray-700"
+              >
+                city
+              </label>
+              <input
+                className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
+                type="text"
+                placeholder="Enter your City"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+              ></input>
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="postalCode"
+                className="block mb-2 text-base font-bold text-gray-700"
+              >
+                Postal Code
+              </label>
+              <input
+                className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
+                type="text"
+                placeholder="Enter your Postal Code"
+                value={postalCode}
+                onChange={(e) => setPostalCode(e.target.value)}
+              ></input>
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="country"
+                className="block mb-2 text-base font-bold text-gray-700"
+              >
+                Country
+              </label>
+              <input
+                className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
+                type="text"
+                placeholder="Enter your Country"
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+              ></input>
+            </div>
+            <Button type="submit" color="yellow">
+              Continue
+            </Button>
+          </form>
+        </section>
+      </main>
     </Layout>
   );
 }

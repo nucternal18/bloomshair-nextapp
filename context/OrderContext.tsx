@@ -27,7 +27,7 @@ type CartItemsProps = {
 type OrderProps = {
   orderItems: CartItemsProps[];
   shippingAddress: ShippingAddressProps;
-  paymentMethod: "";
+  paymentMethod: string;
   itemsPrice: number;
   shippingPrice: number;
   taxPrice: number;
@@ -43,7 +43,7 @@ interface IOrder {
   payOrder: (orderId: string, paymentResult: PaymentResProps) => void;
   setTotalPrice: (totalPrice: number) => void;
   shippingAddress: ShippingAddressProps;
-  paymentMethod: "";
+  paymentMethod: string;
   cartItems: CartItemsProps[];
   requestStatus: string;
   message: string;
@@ -120,7 +120,6 @@ const OrderContextProvider = ({ children }) => {
   const createOrder = async (newOrder) => {
     try {
       setLoading(true);
-
       const res = await fetch(`${NEXT_URL}/api/orders`, {
         method: "POST",
         headers: {

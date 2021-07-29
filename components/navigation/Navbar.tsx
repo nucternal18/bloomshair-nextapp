@@ -7,8 +7,6 @@ import { FaUser } from "react-icons/fa";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { BiBasket } from "react-icons/bi";
 
-import Button from "../Button";
-
 // context
 import { authContext } from "../../context/AuthContext";
 
@@ -55,7 +53,6 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState(null);
   const router = useRouter();
-  console.log(user);
   const { userInfo, loading, logout } = useContext(authContext);
 
   const ref = useRef<HTMLElement>();
@@ -140,8 +137,8 @@ const Navbar = () => {
               >
                 <Image
                   src={
-                    user.image
-                      ? user.image
+                    user
+                      ? user.user.image
                       : "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1625765848/blooms_hair_products/icons8-user-96_wyguya.png"
                   }
                   alt={user.name}

@@ -1,5 +1,6 @@
 import { FC } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface ICheckout {
   step1?: boolean;
@@ -14,39 +15,69 @@ const CheckoutSteps: FC<ICheckout> = ({
   step3,
   step4,
 }): JSX.Element => {
+  const router = useRouter();
   return (
-    <nav className="flex justify-center mb-4">
+    <nav className="container flex justify-around mx-auto mb-4 sm:px-8">
       <div>
         {step1 ? (
-          <Link href="/login">
-            <a>Sign In</a>
+          <Link href="/account/login">
+            <a
+              className={`${
+                router.asPath === "/account/login" ? "text-yellow-500" : ""
+              }`}
+            >
+              Sign-In
+            </a>
           </Link>
         ) : (
           <button disabled>Sign In</button>
         )}
       </div>
+      <div className="line-through"></div>
       <div>
         {step2 ? (
-          <Link href="/shipping">
-            <a>Shipping</a>
+          <Link href="/checkout/shipping">
+            <a
+              className={`${
+                router.asPath === "/checkout/shipping" ? "text-yellow-500" : ""
+              }`}
+            >
+              Shipping
+            </a>
           </Link>
         ) : (
           <button disabled>Shipping</button>
         )}
       </div>
+      <div className="line-through "></div>
       <div>
         {step3 ? (
-          <Link href="/payment">
-            <a>Payment</a>
+          <Link href="/checkout/payment">
+            <a
+              className={`${
+                router.asPath === "/checkout/payment" ? "text-yellow-500" : ""
+              }`}
+            >
+              Payment
+            </a>
           </Link>
         ) : (
           <button disabled>Payment</button>
         )}
       </div>
+      <div className="line-through "></div>
       <div>
         {step4 ? (
-          <Link href="/placeorder">
-            <a>Place Order</a>
+          <Link href="/checkout/placeorder">
+            <a
+              className={`${
+                router.asPath === "/checkout/placeorder"
+                  ? "text-yellow-500"
+                  : ""
+              }`}
+            >
+              Place Order
+            </a>
           </Link>
         ) : (
           <button disabled>Place Order</button>

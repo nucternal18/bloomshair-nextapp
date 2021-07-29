@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import cookie from "cookie";
 import { useRouter } from "next/router";
+import Image from "next/image";
+
 // Components
 import Layout from "../../../components/Layout";
 import Button from "../../../components/Button";
@@ -26,35 +28,58 @@ function Shipping() {
   };
   return (
     <Layout>
-      <div>
+      <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
         <CheckoutSteps step1 step2 step3 />
-        <h1>Payment Method</h1>
-        <form onSubmit={submitHandler}>
-          <div>
-            <label>Select Method</label>
-            <div>
-              <input
-                type="radio"
-                id="PayPal"
-                name="paymentMethod"
-                value="PayPal"
-                checked
-                onChange={(e) => setPaymentMethod(e.target.value)}
-              />
-              {/* <input
-              type='radio'
-              label='square'
-              id='Square
-              name='paymentMethod'
-              value='Square'
-              onChange={(e) => setPaymentMethod(e.target.value)} /> */}
-            </div>
+        <section className="container p-2 mb-4 bg-white rounded shadow-xl md:p-12 md:mx-auto ">
+          <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
+            <h1 className="p-3 text-2xl font-bold md:p-5 md:text-5xl">
+              Payment Method
+            </h1>
           </div>
-          <Button type="submit" color="yellow">
-            Continue
-          </Button>
-        </form>
-      </div>
+          <form onSubmit={submitHandler}>
+            <div className="mb-4">
+              <label className="block mb-2 font-light text-gray-600">
+                Select Payment Method
+              </label>
+              <div className="flex items-center mb-2">
+                <input
+                  type="radio"
+                  id="PayPal"
+                  name="paymentMethod"
+                  value="PayPal"
+                  checked
+                  className="w-4 h-4 px-3 py-3 mr-4 text-gray-700 border rounded"
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                <label htmlFor="PayPal" className="text-gray-600">
+                  <Image
+                    src={"/paypal.png"}
+                    alt="Round Icons"
+                    width={100}
+                    height={100}
+                  />
+                </label>
+              </div>
+              <div className="flex items-center mb-2">
+                <input
+                  type="radio"
+                  id="Square"
+                  name="paymentMethod"
+                  value="Square"
+                  className="w-4 h-4 px-3 py-3 mr-2 text-gray-700 border rounded"
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                <label htmlFor="Square" className="text-gray-600">
+                  Credit or Debit Card
+                </label>
+              </div>
+            </div>
+            <Button type="submit" color="yellow">
+              Continue
+            </Button>
+          </form>
+        </section>
+      </main>
     </Layout>
   );
 }
