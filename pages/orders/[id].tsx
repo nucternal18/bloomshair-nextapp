@@ -1,59 +1,34 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
+import ReactDOM from "react-dom";
 import cookie from "cookie";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
-import { PayPalButton } from "react-paypal-button-v2";
+import dynamic from "next/dynamic";
 import { GetServerSideProps } from "next";
 
 // context
 import { OrderContext } from "../../context/OrderContext";
 
 // components
-import Spinner from "../../components/Spinner";
 import ErrorMessage from "../../components/ErrorMessage";
 import Button from "../../components/Button";
 import Notification from "../../components/notification/notification";
 import Layout from "../../components/Layout";
 
-import { SERVER_URL, NEXT_URL } from "../../config";
+import { SERVER_URL } from "../../config";
+const PayPalButton = dynamic(() => import("../../components/PayPalButton"));
 
 const OrderDetails = (props) => {
   const { userInfo, order, orderId } = props;
   const router = useRouter();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [sdkReady, setSdkReady] = useState(false);
+
   const { error, payOrder, message, requestStatus } = useContext(OrderContext);
 
   useEffect(() => {
     setIsRefreshing(false);
   }, [order]);
-
-  useEffect(() => {
-    if (!userInfo) {
-      router.push("/login");
-    }
-    const addPaypalScript = async () => {
-      const res = await fetch(`${NEXT_URL}/api/paypal`);
-      const data = await res.json();
-      const script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src = `https://www.paypal.com/sdk/js?client-id=${data}`;
-      script.async = true;
-      script.onload = () => {
-        setSdkReady(true);
-      };
-      document.body.appendChild(script);
-    };
-
-    if (!order.isPaid) {
-      if (!window.paypal) {
-        addPaypalScript();
-      } else {
-        setSdkReady(true);
-      }
-    }
-  }, [order, orderId, userInfo]);
 
   const refreshData = () => {
     router.replace(router.asPath);
@@ -87,16 +62,18 @@ const OrderDetails = (props) => {
 
   return (
     <Layout>
-      <main className="w-full h-screen p-4 mx-auto bg-gray-200">
-        <section className="container px-2 pt-6 pb-8 mx-2 mb-4 bg-white rounded shadow-2xl md:mx-auto ">
-          <div className="flex items-center justify-between px-4 mb-4 border-b-4 border-current border-gray-200">
+      <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
+        <section className="container px-2 pt-6 pb-8 mb-4 bg-white rounded shadow-2xl md:mx-auto ">
+          <div className="flex flex-col items-center justify-between mb-4 border-b-4 border-current border-gray-200 sm:px-4 sm:flex-row">
             <div className="mt-6">
               <Button type="button" color="dark" onClick={() => router.back()}>
                 Go Back
               </Button>
             </div>
             <div>
-              <h1 className="p-5 mt-6 text-5xl font-bold">Order {order._id}</h1>
+              <h1 className="p-5 mt-6 font-bold md:text-5xl">
+                Order {order._id}
+              </h1>
             </div>
           </div>
 
@@ -217,16 +194,12 @@ const OrderDetails = (props) => {
                     <ErrorMessage variant="danger">{error}</ErrorMessage>
                   )}
                   {!order.isPaid && !userInfo.isAdmin && (
-                    <div>
-                      {!sdkReady ? (
-                        <Spinner />
-                      ) : (
-                        <PayPalButton
-                          amount={order.totalPrice}
-                          onSuccess={successPaymentHandler}
-                        />
-                      )}
-                    </div>
+                    <>
+                      <PayPalButton
+                        successPaymentHandler={successPaymentHandler}
+                        totalPrice={order.totalPrice}
+                      />
+                    </>
                   )}
                 </div>
               </div>
@@ -277,6 +250,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     userRes.json(),
     orderRes.json(),
   ]);
+
+  if (!userData) {
+    return {
+      redirect: {
+        destination: "/account/login",
+        permanent: false,
+      },
+    };
+  }
 
   return {
     props: { userInfo: userData, order: orderData, orderId: id }, // will be passed to the page component as props

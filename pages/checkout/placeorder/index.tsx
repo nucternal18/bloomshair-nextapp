@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -11,10 +11,17 @@ import { Card } from "../../../components/Card";
 import Button from "../../../components/Button";
 
 // context
-import { OrderContext } from "../../../context/OrderContext";
+import {
+  OrderContext,
+  ShippingAddressProps,
+} from "../../../context/OrderContext";
 
 const PlaceOrderScreen = () => {
   const router = useRouter();
+  const [delAddress, setDelAddress] = useState<ShippingAddressProps | null>(
+    null
+  );
+  const [cart, setCart] = useState([]);
   const {
     shippingAddress,
     paymentMethod,
@@ -24,25 +31,33 @@ const PlaceOrderScreen = () => {
     error,
     createOrder,
   } = useContext(OrderContext);
-  const { address, city, postalCode, country } = shippingAddress;
-  console.log(order);
+
   // Calculate prices
   const itemsPrice = addDecimals(
-    cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
+    cart.reduce((acc, item) => acc + item.price * item.qty, 0)
   );
   const shippingPrice = addDecimals(+itemsPrice > 100 ? 0 : 5.99);
   const taxPrice = addDecimals(Number((0.2 * +itemsPrice).toFixed(2)));
-  const totalPrice = addDecimals(
-    Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice)
-  );
+  const totalPrice = addDecimals(Number(itemsPrice) + Number(shippingPrice));
 
   function addDecimals(num) {
     return (Math.round(num * 100) / 100).toFixed(2);
   }
+  useEffect(() => {
+    if (shippingAddress) {
+      setDelAddress(shippingAddress);
+    }
+  }, [shippingAddress]);
+
+  useEffect(() => {
+    if (cartItems) {
+      setCart(cartItems);
+    }
+  }, [cartItems]);
 
   useEffect(() => {
     if (success) {
-      router.push(`/orders/${order._id}`);
+      router.push(`/orders/${order.data._id}`);
     }
     // eslint-disable-next-line
   }, [router, success]);
@@ -62,8 +77,8 @@ const PlaceOrderScreen = () => {
     <Layout>
       <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
         <CheckoutSteps step1 step2 step3 step4 />
-        <section className="container grid grid-cols-1 mb-4 bg-white rounded shadow-xl md:gap-2 lg:gap-4 md:px-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:p-12 md:mx-auto">
-          <div className="px-2 md:col-span-2 lg:col-span-3">
+        <section className="container grid grid-cols-1 gap-2 mx-auto mb-4 bg-white rounded shadow-xl md:grid-cols-2 lg:grid-cols-4 md:py-8 md:px-6">
+          <div className="md:px-4 lg:col-span-3">
             <div className="p-4">
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
@@ -73,7 +88,8 @@ const PlaceOrderScreen = () => {
                 </div>
                 <p className="text-xl">
                   <strong>Address: </strong>
-                  {address}, {city}, {postalCode} {country}
+                  {delAddress?.address} {delAddress?.city}{" "}
+                  {delAddress?.postalCode} {delAddress?.country}
                 </p>
               </div>
               <div className="mb-6">
@@ -107,7 +123,7 @@ const PlaceOrderScreen = () => {
                     Your cart is empty
                   </ErrorMessage>
                 ) : (
-                  <table className="w-full text-left rounded-lg">
+                  <table className="w-full text-left rounded-lg ">
                     <thead>
                       <tr className="text-gray-800 border border-b-0">
                         <th className="hidden px-4 py-3 md:block">Product</th>
@@ -121,9 +137,9 @@ const PlaceOrderScreen = () => {
                       {cartItems.map((item, index) => (
                         <tr
                           key={index}
-                          className="w-full font-light text-gray-700 whitespace-no-wrap bg-gray-100 border border-b-0"
+                          className="w-full font-light text-gray-600 whitespace-no-wrap bg-gray-100 border border-b-0"
                         >
-                          <td className="hidden px-4 py-4 mr-2 md:block">
+                          <td className="hidden px-4 py-4 md:block">
                             <Image
                               src={item.image}
                               alt={item.name}
@@ -132,7 +148,7 @@ const PlaceOrderScreen = () => {
                               className="rounded"
                             />
                           </td>
-                          <td className="px-4 py-4 mr-2 truncate">
+                          <td className="px-4 py-4 truncate">
                             <Link href={`/product/${item.product}`}>
                               <a className="font-semibold md:text-xl">
                                 {item.name}
@@ -142,7 +158,7 @@ const PlaceOrderScreen = () => {
                           <td className="px-4 py-4 font-semibold md:text-xl">
                             {item.qty}
                           </td>
-                          <td className="hidden px-4 py-4 font-semibold md:block md:text-xl">
+                          <td className="hidden px-4 py-2 font-semibold md:flex md:text-xl">
                             £{item.price}
                           </td>
                           <td className="px-4 py-4 font-semibold md:text-xl">
@@ -156,7 +172,7 @@ const PlaceOrderScreen = () => {
               </div>
             </div>
           </div>
-          <div>
+          <div className="">
             <Card className="p-1 md:w-64">
               <div>
                 <div className="p-3 border-b">
@@ -197,7 +213,7 @@ const PlaceOrderScreen = () => {
                       type="button"
                       color="yellow"
                       className="w-full"
-                      disabled={cartItems.length === 0}
+                      disabled={cart.length === 0}
                       onClick={placeOrderHandler}
                     >
                       Place Order

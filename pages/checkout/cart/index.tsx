@@ -15,9 +15,8 @@ import { OrderContext } from "../../../context/OrderContext";
 function Cart() {
   const router = useRouter();
   const { id, qty } = router.query;
-  const [shippingCost, setShippingCost] = useState(0);
-  const { cartItems, addToCart, removeFromCart, totalPrice, setTotalPrice } =
-    useContext(OrderContext);
+  const [cart, setCart] = useState([]);
+  const { cartItems, addToCart, removeFromCart } = useContext(OrderContext);
 
   useEffect(() => {
     if (id) {
@@ -27,14 +26,10 @@ function Cart() {
   }, [id, qty, cartItems]);
 
   useEffect(() => {
-    const subTotal = cartItems
-      .reduce((acc, item) => acc + item.qty * item.price, 0)
-      .toFixed(2);
-    if (shippingCost > 0) {
-      const total = +subTotal + +shippingCost;
-      setTotalPrice(total);
+    if (cartItems) {
+      setCart(cartItems);
     }
-  }, [cartItems, setTotalPrice, shippingCost]);
+  }, [cartItems]);
 
   const removeFromCartHandler = (itemId) => {
     removeFromCart(itemId);
@@ -57,7 +52,7 @@ function Cart() {
           <div className="flex justify-center w-full">
             <div className="grid grid-cols-1 px-1 md:gap-2 lg:gap-4 md:px-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
               <div className=" md:col-span-2 lg:col-span-3">
-                {cartItems.length === 0 ? (
+                {cart.length === 0 ? (
                   <ErrorMessage variant="default">
                     Your cart is empty
                   </ErrorMessage>
@@ -67,7 +62,7 @@ function Cart() {
                       <h1 className="text-2xl font-semibold">Cart Items</h1>
                       <h2 className="text-2xl font-semibold">{qty} Items</h2>
                     </div>
-                    {cartItems.map((item) => (
+                    {cart.map((item) => (
                       <div
                         className="flex items-center justify-around w-full"
                         key={item.product}
@@ -133,11 +128,11 @@ function Cart() {
                     <div className="flex justify-between">
                       <div className="flex items-center mb-4 text-xl font-semibold">
                         <h2 className="mr-1">Items</h2>
-                        {cartItems.reduce((acc, item) => acc + item.qty, 0)}
+                        {cart.reduce((acc, item) => acc + item.qty, 0)}
                       </div>
                       <p className="mb-4 text-lg font-semibold">
                         £
-                        {cartItems
+                        {cart
                           .reduce((acc, item) => acc + item.qty * item.price, 0)
                           .toFixed(2)}
                       </p>
@@ -147,7 +142,7 @@ function Cart() {
                         Shipping
                       </label>
                       <select
-                        disabled={cartItems.length === 0}
+                        disabled={cart.length === 0}
                         value={shippingCost}
                         className="block w-full px-1 py-3 text-sm text-gray-600"
                         onChange={(e) =>
@@ -164,7 +159,7 @@ function Cart() {
                         <span>
                           {" "}
                           £
-                          {cartItems
+                          {cart
                             .reduce(
                               (acc, item) => acc + item.qty * item.price,
                               0
@@ -176,7 +171,7 @@ function Cart() {
                         type="button"
                         color="yellow"
                         className="w-full"
-                        disabled={cartItems.length === 0}
+                        disabled={cart.length === 0}
                         onClick={checkoutHandler}
                       >
                         Proceed To Checkout

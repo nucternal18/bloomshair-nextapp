@@ -2,20 +2,20 @@ import { useState, createContext, useEffect } from "react";
 
 import { NEXT_URL } from "../config";
 
-type PaymentResProps = {
+export type PaymentResProps = {
   id: string;
   status: string;
   update_time: string;
   email_address: string;
 };
-type ShippingAddressProps = {
+export type ShippingAddressProps = {
   address: string;
   city: string;
   postalCode: string;
   country: string;
 };
 
-type CartItemsProps = {
+export type CartItemsProps = {
   product: string;
   name: string;
   image: string;
@@ -24,7 +24,7 @@ type CartItemsProps = {
   qty: number;
 };
 
-type OrderProps = {
+export type OrderProps = {
   orderItems: CartItemsProps[];
   shippingAddress: ShippingAddressProps;
   paymentMethod: string;
@@ -134,6 +134,9 @@ const OrderContextProvider = ({ children }) => {
         setSuccess(true);
         setRequestStatus("success");
         setMessage("Order created successfully");
+        if (typeof window !== "undefined") {
+          localStorage.clear();
+        }
       }
     } catch (error) {
       setLoading(false);
@@ -159,7 +162,7 @@ const OrderContextProvider = ({ children }) => {
       countInStock: data.data.countInStock,
       qty,
     };
-    console.log(items);
+
     const existItem = cartItems.find((i) => i.product === items.product);
 
     if (existItem) {
