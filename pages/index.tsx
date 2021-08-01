@@ -56,17 +56,18 @@ export default function Home(): JSX.Element {
         </section>
         <section className="">
           <div className="grid grid-cols-1 sm:grid-cols-2 ">
-            <div className="flex flex-col items-center justify-center px-8 py-4 text-center bg-black">
+            <div className="flex flex-col items-center justify-center px-8 py-4 bg-black">
               <motion.div
                 initial="hidden"
                 animate="visible"
+                className="flex flex-col items-center justify-center w-full"
                 variants={variants}
                 transition={{ duration: 2.0 }}
               >
-                <p className="mb-4 text-3xl font-thin text-white">
-                  WE REOPEN ON THE 12TH APRIL
+                <p className="mb-4 text-3xl font-thin text-center text-white">
+                  WE ARE OPEN
                 </p>
-                <p className="mb-4 text-3xl font-thin text-white">
+                <p className="mb-4 text-3xl font-thin text-center text-white">
                   KEEPING YOU & OUR TEAM SAFE
                 </p>
                 <Button type="button" color="primary">

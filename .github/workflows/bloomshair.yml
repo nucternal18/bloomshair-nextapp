@@ -39,6 +39,6 @@ jobs:
       - run: yarn lint
       # - run: yarn test:ci
       - run: yarn build
-    # - run: pm2 reload aolausoro.tech
+      - run: pm2 reload bloomshair-nextapp
     env:
       CI: true

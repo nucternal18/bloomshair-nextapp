@@ -75,7 +75,7 @@ const Navbar = () => {
     if (userInfo && !loading) {
       setUser(userInfo);
     }
-  }, [loading, userInfo]);
+  }, []);
 
   const logoutHandler = () => {
     logout();
@@ -113,10 +113,7 @@ const Navbar = () => {
         </button>
         <ul className={position.right}>
           {navLink.map((link) => (
-            <li
-              key={link.id}
-              className="flex px-1 m-0 text-base list-none sm:text-xs md:text-sm text-md"
-            >
+            <li key={link.id} className="flex px-1 m-0 text-base list-none ">
               <Link href={link.link}>
                 <a
                   className="flex items-center md:block ml-4 mb-4 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1 text-gray-200 hover:text-gray-400 text-md font-medium list-none uppercase"
@@ -130,7 +127,7 @@ const Navbar = () => {
             </li>
           ))}
           {user && (
-            <li className="px-1 m-0 text-base list-none sm:text-xs md:text-sm text-md">
+            <li className="px-1 m-0 text-base list-none">
               <button
                 className="flex items-center bg-white border-2 border-yellow-500 rounded-full"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -141,7 +138,7 @@ const Navbar = () => {
                       ? user.user.image
                       : "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1625765848/blooms_hair_products/icons8-user-96_wyguya.png"
                   }
-                  alt={user.name}
+                  alt={user.user.name}
                   width={30}
                   height={30}
                   className="rounded-full"
@@ -180,16 +177,20 @@ const Navbar = () => {
             </li>
           )}
           {!user && (
-            <li className="px-1 m-0 text-base list-none sm:text-xs md:text-sm text-md">
-              <button className="flex items-center px-1 text-yellow-500 border-2 border-yellow-500 rounded active:bg-yellow-500 active:text-white">
-                <FiLogIn className="text-gray-200 " />
+            <li className="px-1 m-0 text-base list-none ">
+              <button
+                className={`${
+                  router.asPath === "/account/login"
+                    ? "text-yellow-500"
+                    : "text-gray-200"
+                } flex items-center px-1`}
+                style={{
+                  color: router.asPath === "/account/login" ? "orange" : "",
+                }}
+              >
+                <FiLogIn />
                 <Link href={"/account/login"}>
-                  <a
-                    className="flex items-center md:block ml-4 mb-4 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1 text-gray-200 hover:text-gray-400 text-md font-medium list-none uppercase"
-                    style={{
-                      color: router.asPath === "/account/login" ? "orange" : "",
-                    }}
-                  >
+                  <a className="flex items-center md:block ml-4 mb-4 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1  text-md font-medium list-none uppercase">
                     Sign In
                   </a>
                 </Link>
@@ -201,7 +202,7 @@ const Navbar = () => {
               <a
                 className="block text-gray-200 list-none cursor-pointer text-md hover:text-yellow-400"
                 style={{
-                  color: router.asPath === "/account/login" ? "orange" : "",
+                  color: router.asPath === "/checkout/cart" ? "orange" : "",
                 }}
               >
                 <BiBasket className="" />
@@ -222,24 +223,25 @@ const Navbar = () => {
           <div className="flex items-center justify-between px-3 py-2 ml-4">
             <button
               aria-label="Close"
-              className="text-4xl text-white cursor-pointer focus:outline-none"
+              className="flex items-center py-1 mr-12 text-4xl text-white cursor-pointer focus:outline-none"
               onClick={toggle}
             >
               &times;
+              <p className="ml-2 text-base ">Close</p>
             </button>
-            <div className="flex items-center">
+            <div className="flex items-center ">
               {user && (
                 <button
-                  className="flex items-center bg-white border-2 border-yellow-500 rounded-full"
+                  className="flex items-center mr-2 bg-white border-2 border-yellow-500 rounded-full"
                   disabled
                 >
                   <Image
                     src={
-                      user.image
-                        ? user.image
+                      user
+                        ? user.user.image
                         : "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1625765848/blooms_hair_products/icons8-user-96_wyguya.png"
                     }
-                    alt={user.name}
+                    alt={user.user.name}
                     width={30}
                     height={30}
                     className="rounded-full"
