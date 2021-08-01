@@ -30,7 +30,7 @@ function BottomPageContainer() {
                   Book Online
                 </p>
                 <div>
-                  <Button type="button" color="primary">
+                  <Button type="button" color="yellow">
                     <Link href="/book-online">
                       <a>See More</a>
                     </Link>
@@ -60,7 +60,7 @@ function BottomPageContainer() {
                   Service Menu
                 </p>
                 <div>
-                  <Button type="button" color="primary">
+                  <Button type="button" color="yellow">
                     <Link href="/service-menu">
                       <a>See More</a>
                     </Link>
@@ -91,7 +91,7 @@ function BottomPageContainer() {
                     Contact Blooms
                   </p>
                   <div>
-                    <Button type="button" color="primary">
+                    <Button type="button" color="yellow">
                       <Link href="/contact-us">
                         <a>Contact Now</a>
                       </Link>

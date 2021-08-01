@@ -70,7 +70,7 @@ export default function Home(): JSX.Element {
                 <p className="mb-4 text-3xl font-thin text-center text-white">
                   KEEPING YOU & OUR TEAM SAFE
                 </p>
-                <Button type="button" color="primary">
+                <Button type="button" color="yellow">
                   <Link href="/book-online">
                     <a>Book Now!</a>
                   </Link>
@@ -91,7 +91,7 @@ export default function Home(): JSX.Element {
                 About Blooms
               </p>
               <div>
-                <Button type="button" color="primary">
+                <Button type="button" color="yellow">
                   <Link href="/about">
                     <a>See More</a>
                   </Link>
