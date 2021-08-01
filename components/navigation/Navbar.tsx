@@ -87,7 +87,7 @@ const Navbar = () => {
         router.asPath === "/" ? "bg-transparent" : "bg-gray-900"
       }  navbar-expand-lg`}
     >
-      <div className="container flex items-center justify-between px-2 mx-auto text-3xl font-light text-gray-500 md:relative sm:px-1 md:px-0 md:flex-row">
+      <div className="container flex items-center justify-between px-2 mx-auto font-light text-gray-500 md:relative sm:px-1 md:px-0 md:flex-row">
         <Link href={"/"}>
           <a className="inline-block p-0 m-0 text-2xl font-bold cursor-pointer md:mr-4 ">
             <Image
@@ -113,10 +113,10 @@ const Navbar = () => {
         </button>
         <ul className={position.right}>
           {navLink.map((link) => (
-            <li key={link.id} className="flex px-1 m-0 text-base list-none ">
+            <li key={link.id} className="flex px-1 m-0 list-none ">
               <Link href={link.link}>
                 <a
-                  className="flex items-center md:block ml-4 mb-4 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1 text-gray-200 hover:text-gray-400 text-md font-medium list-none uppercase"
+                  className="flex items-center md:block ml-4 mb-4 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1 text-gray-200  hover:text-gray-400 text-sm font-medium list-none uppercase"
                   style={{
                     color: router.asPath === link.link ? "orange" : "",
                   }}
@@ -156,7 +156,7 @@ const Navbar = () => {
                   <FaUser className="text-gray-200 " />
                   <Link href={"/account/profile"}>
                     <a
-                      className="block font-medium text-gray-200 uppercase list-none cursor-pointer hover:text-yellow-400 text-md"
+                      className="block text-lg font-medium text-gray-200 uppercase list-none cursor-pointer hover:text-yellow-400"
                       style={{
                         color:
                           router.asPath === "/account/login" ? "orange" : "",
@@ -177,7 +177,7 @@ const Navbar = () => {
             </li>
           )}
           {!user && (
-            <li className="px-1 m-0 text-base list-none ">
+            <li className="px-1 m-0 list-none ">
               <button
                 className={`${
                   router.asPath === "/account/login"
@@ -188,9 +188,9 @@ const Navbar = () => {
                   color: router.asPath === "/account/login" ? "orange" : "",
                 }}
               >
-                <FiLogIn />
+                <FiLogIn className="text-base" />
                 <Link href={"/account/login"}>
-                  <a className="flex items-center md:block ml-4 mb-4 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1  text-md font-medium list-none uppercase">
+                  <a className="flex items-center md:block ml-4 mb-4 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1  text-sm font-medium list-none uppercase">
                     Sign In
                   </a>
                 </Link>
@@ -200,12 +200,12 @@ const Navbar = () => {
           <button className="flex items-center ml-1">
             <Link href={"/checkout/cart"}>
               <a
-                className="block text-gray-200 list-none cursor-pointer text-md hover:text-yellow-400"
+                className="block text-2xl text-gray-200 list-none cursor-pointer hover:text-yellow-400"
                 style={{
                   color: router.asPath === "/checkout/cart" ? "orange" : "",
                 }}
               >
-                <BiBasket className="" />
+                <BiBasket />
               </a>
             </Link>
           </button>
