@@ -1,4 +1,6 @@
-// import '../styles/globals.css'
+import { useState } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { Hydrate } from "react-query/hydration";
 import "tailwindcss/tailwind.css";
 
 import AuthProvider from "../context/AuthContext";
@@ -6,14 +8,19 @@ import OrderContextProvider from "../context/OrderContext";
 import ProductContextProvider from "../context/productContext";
 
 function MyApp({ Component, pageProps }) {
+  const [queryClient] = useState(() => new QueryClient());
   return (
-    <AuthProvider>
-      <ProductContextProvider>
-        <OrderContextProvider>
-          <Component {...pageProps} />
-        </OrderContextProvider>
-      </ProductContextProvider>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={pageProps.dehydratedState}>
+        <AuthProvider>
+          <ProductContextProvider>
+            <OrderContextProvider>
+              <Component {...pageProps} />
+            </OrderContextProvider>
+          </ProductContextProvider>
+        </AuthProvider>
+      </Hydrate>
+    </QueryClientProvider>
   );
 }
 
