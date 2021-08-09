@@ -20,7 +20,7 @@ function Products(props): JSX.Element {
         <div className="flex justify-center p-2 bg-gray-300">
           <SearchBox />
         </div>
-        <section className="container px-2 pt-2 pb-8 mb-4 md:mx-auto ">
+        <section className="container max-w-screen-lg px-2 pt-2 pb-8 mx-auto mb-4">
           <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
             <div>
               <h1 className="p-3 text-2xl font-bold md:p-5 md:text-5xl">
@@ -42,7 +42,7 @@ function Products(props): JSX.Element {
           </div>
 
           <div className="container flex flex-col justify-center">
-            <div className="grid grid-cols-1 gap-2 mx-auto my-8 md:grid-cols-3 sm:mx-0">
+            <div className="grid grid-cols-1 gap-2 my-8 md:mx-auto md:grid-cols-3 sm:mx-0">
               {products.map((product) => {
                 return (
                   <div key={product._id}>

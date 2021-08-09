@@ -44,7 +44,7 @@ function ProductDetails({ product, productId, userInfo }) {
     <Layout title={product.name}>
       {" "}
       <main className="flex-grow w-full p-2 mx-auto bg-gray-200 md:p-4">
-        <section className="container px-2 pt-6 pb-8 mb-4 bg-white rounded shadow-xl mx- md:px-12 md:mx-auto ">
+        <section className="container max-w-screen-lg px-2 pt-6 pb-8 mb-4 bg-white rounded shadow-xl md:px-12 md:mx-auto ">
           <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
             <div className="p-5">
               <Button type="button" color="dark" onClick={() => router.back()}>
@@ -81,9 +81,11 @@ function ProductDetails({ product, productId, userInfo }) {
                 <div>
                   <div className="mb-4">
                     <div className="flex flex-row">
-                      <span className="mr-2">Price:</span>
+                      <span className="mr-2 font-semibold uppercase">
+                        Price:
+                      </span>
                       <span>
-                        <strong>£ {product.price.toFixed(2)}</strong>
+                        <strong>£{product.price.toFixed(2)}</strong>
                       </span>
                     </div>
                   </div>
@@ -91,8 +93,10 @@ function ProductDetails({ product, productId, userInfo }) {
                   {!product.name.includes("Nashi") && (
                     <div className="mb-4">
                       <div className="flex flex-row">
-                        <span className="mr-1">Status:</span>
-                        <span>
+                        <span className="mr-1 font-semibold uppercase">
+                          Status:
+                        </span>
+                        <span className="font-semibold uppercase">
                           {product.countInStock > 0
                             ? "In Stock"
                             : "Out of Stock"}
@@ -103,13 +107,16 @@ function ProductDetails({ product, productId, userInfo }) {
 
                   {product.countInStock > 0 && (
                     <form className="mb-4">
-                      <label
-                        id="listbox-label"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Qty
+                      <div className="flex items-center ">
+                        <label
+                          id="listbox-label"
+                          className="block mr-2 text-sm text-gray-700 "
+                        >
+                          <span className="font-semibold uppercase">Qty</span>
+                        </label>
                         <select
                           value={product.qty}
+                          className="focus:outline-none"
                           onChange={(e) => setQty(Number(e.target.value))}
                         >
                           {[...Array(product.countInStock).keys()].map(
@@ -120,7 +127,7 @@ function ProductDetails({ product, productId, userInfo }) {
                             )
                           )}
                         </select>
-                      </label>
+                      </div>
                     </form>
                   )}
 

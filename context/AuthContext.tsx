@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext } from "react";
-
 import { useRouter } from "next/router";
+import { useQuery } from "react-query";
 
 import { NEXT_URL } from "../config";
 
@@ -17,7 +17,6 @@ type UserInfoProps = {
 
 interface AuthContextProps {
   loading: boolean;
-  userInfo: UserInfoProps | null;
   success: boolean;
   error: any;
   requestStatus: string;
@@ -37,11 +36,11 @@ interface AuthContextProps {
   setMessage?: (message: string) => void;
   setRequestStatus?: (requestStatus: string) => void;
   setError?: (error: string | Error | null) => void;
+  checkUserLoggedIn?: () => Promise<{ user?: UserInfoProps | null }>;
 }
 
-export const authContext = createContext<AuthContextProps>({
+export const authContext = createContext<AuthContextProps | null>({
   loading: false,
-  userInfo: null,
   success: false,
   error: null,
   requestStatus: "",
@@ -56,13 +55,13 @@ export const authContext = createContext<AuthContextProps>({
   setMessage: () => {},
   setRequestStatus: () => {},
   setError: () => {},
+  checkUserLoggedIn: () => null,
 });
 
 const { Provider } = authContext;
 
 const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
-  const [userInfo, setUserInfo] = useState<UserInfoProps>(null);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const [requestStatus, setRequestStatus] = useState("");
@@ -82,10 +81,6 @@ const AuthProvider = ({ children }) => {
       return () => clearTimeout(timer);
     }
   }, [requestStatus]);
-
-  useEffect(() => {
-    checkUserLoggedIn();
-  }, []);
 
   // Login User
   const login = async (email: string, password: string): Promise<void> => {
@@ -111,7 +106,6 @@ const AuthProvider = ({ children }) => {
         setMessage(
           "Unable to login. Please check your login credentials and try again"
         );
-        setUserInfo(user);
         setError(user.message);
         setError(null);
       }
@@ -175,14 +169,14 @@ const AuthProvider = ({ children }) => {
   };
 
   // Check if user is logged in
-  const checkUserLoggedIn = async (): Promise<void> => {
+  const checkUserLoggedIn = async (): Promise<{
+    user?: UserInfoProps;
+  } | null> => {
     const res = await fetch(`${NEXT_URL}/api/users/user`);
     const user = await res.json();
 
     if (res.ok) {
-      setUserInfo(user);
-    } else {
-      setUserInfo(null);
+      return user;
     }
   };
 
@@ -205,7 +199,6 @@ const AuthProvider = ({ children }) => {
         setLoading(false);
         setRequestStatus("success");
         setMessage("Profile updated successfully");
-        setUserInfo(data);
       } else {
         setRequestStatus("error");
         setMessage("Unable to update user profile");
@@ -252,7 +245,6 @@ const AuthProvider = ({ children }) => {
       method: "POST",
     });
     if (res.ok) {
-      setUserInfo(null);
       setLoading(false);
       setSuccess(false);
       setError(null);
@@ -262,7 +254,6 @@ const AuthProvider = ({ children }) => {
   return (
     <Provider
       value={{
-        userInfo,
         loading,
         success,
         error,
@@ -278,6 +269,7 @@ const AuthProvider = ({ children }) => {
         setMessage,
         setRequestStatus,
         setError,
+        checkUserLoggedIn,
       }}
     >
       {children}

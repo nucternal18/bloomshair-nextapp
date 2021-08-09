@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Layout from "../components/Layout";
@@ -5,6 +6,11 @@ import Button from "../components/Button";
 
 function NotFoundPage() {
   const router = useRouter();
+  useEffect(() => {
+    setTimeout(() => {
+      router.push("/");
+    }, 4000);
+  }, []);
   return (
     <Layout title="Page Not Found">
       <section className="h-screen bg-white">

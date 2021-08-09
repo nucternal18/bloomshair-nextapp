@@ -38,6 +38,7 @@ interface IOrder {
   createOrder: (newOrder: OrderProps) => void;
   addToCart: (id: string | string[], qty: number) => void;
   removeFromCart: (id: string) => void;
+  clearCart: () => void;
   saveShippingAddress: (data: ShippingAddressProps) => void;
   savePaymentMethod: (data: string) => void;
   payOrder: (orderId: string, paymentResult: PaymentResProps) => void;
@@ -57,6 +58,7 @@ interface IOrder {
 export const OrderContext = createContext<IOrder>({
   createOrder: () => {},
   addToCart: () => {},
+  clearCart: () => {},
   removeFromCart: () => {},
   saveShippingAddress: () => {},
   savePaymentMethod: () => {},
@@ -162,11 +164,13 @@ const OrderContextProvider = ({ children }) => {
       countInStock: data.data.countInStock,
       qty,
     };
-
+    console.log(items);
     const existItem = cartItems.find((i) => i.product === items.product);
 
     if (existItem) {
-      cartItems.map((i) => (i.product === existItem.product ? items : i));
+      cartItems.map((i, index) =>
+        i.product === existItem.product ? (cartItems[index] = items) : i
+      );
     } else {
       setCartItems((prevItems) => [...prevItems, items]);
     }
@@ -179,6 +183,11 @@ const OrderContextProvider = ({ children }) => {
     const updatedCartItems = cartItems.filter((i) => i.product !== id);
 
     localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+  };
+
+  // clear all cart items
+  const clearCart = () => {
+    localStorage.removeItem("cartItems");
   };
 
   // Save shipping information to local storage
@@ -229,6 +238,7 @@ const OrderContextProvider = ({ children }) => {
         savePaymentMethod,
         payOrder,
         setTotalPrice,
+        clearCart,
         shippingAddress,
         paymentMethod,
         cartItems,

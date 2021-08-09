@@ -6,9 +6,29 @@ import { useRouter } from "next/router";
 import { FaUser } from "react-icons/fa";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { BiBasket } from "react-icons/bi";
+import { useQuery, useQueryClient } from "react-query";
 
 // context
 import { authContext } from "../../context/AuthContext";
+import CartContainer from "../CartContainer";
+
+// .amount-container {
+//   position: absolute;
+//   top: -0.85rem;
+//   right: -0.85rem;
+//   width: 1.75rem;
+//   height: 1.75rem;
+//   border-radius: 50%;
+//   background: var(--clr-primary-light);
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+// .total-amount {
+//   color: var(--clr-white);
+//   margin-bottom: 0;
+//   font-size: 1.25rem;
+// }
 
 const navLink = [
   {
@@ -49,13 +69,20 @@ const navLink = [
 ];
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [user, setUser] = useState(null);
+  const queryClient = useQueryClient();
   const router = useRouter();
-  const { userInfo, loading, logout } = useContext(authContext);
 
-  const ref = useRef<HTMLElement>();
+  const [isOpen, setIsOpen] = useState(false);
+  const [cartIsOpen, setCartIsOpen] = useState(false);
+  const { checkUserLoggedIn, logout } = useContext(authContext);
+  const { data: user, isLoading } = useQuery("user", checkUserLoggedIn);
+  console.log(cartIsOpen);
+  // mobile nav bar ref
+  const mobileNavRef = useRef<HTMLElement>();
+  // user drop down ref
+  const ref = useRef<HTMLDivElement>();
+
+  // Close user drop down list when user clicks outside event window
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (!ref.current?.contains(event.target)) {
@@ -67,18 +94,32 @@ const Navbar = () => {
     return () => window.removeEventListener("mousedown", handleOutsideClick);
   }, [isOpen, ref]);
 
+  // Close mobile nav drawer when user clicks outside event window
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!mobileNavRef.current?.contains(event.target)) {
+        if (!isOpen) return;
+        toggle();
+      }
+    };
+    window.addEventListener("mousedown", handleOutsideClick);
+    return () => window.removeEventListener("mousedown", handleOutsideClick);
+  }, [isOpen, mobileNavRef]);
+
+  // toggle the mobile navigation bar and the user dropdown list
   const toggle = () => {
     setIsOpen(!isOpen);
   };
 
-  useEffect(() => {
-    if (userInfo && !loading) {
-      setUser(userInfo);
-    }
-  }, []);
+  // toggle cart drawer
+  const toggleCartDrawer = () => {
+    setCartIsOpen(!cartIsOpen);
+  };
 
+  // logout handler
   const logoutHandler = () => {
     logout();
+    queryClient.invalidateQueries("user");
   };
 
   return (
@@ -116,10 +157,11 @@ const Navbar = () => {
             <li key={link.id} className="flex px-1 m-0 list-none ">
               <Link href={link.link}>
                 <a
-                  className="flex items-center md:block ml-4 mb-4 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1 text-gray-200  hover:text-gray-400 text-sm font-medium list-none uppercase"
-                  style={{
-                    color: router.asPath === link.link ? "orange" : "",
-                  }}
+                  className={`${
+                    router.asPath === link.link
+                      ? "text-yellow-500"
+                      : "text-gray-200"
+                  } flex items-center md:block ml-4 mb-4 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1   hover:text-yellow-400 text-sm font-medium list-none uppercase`}
                 >
                   {link.title}
                 </a>
@@ -130,7 +172,7 @@ const Navbar = () => {
             <li className="px-1 m-0 text-base list-none">
               <button
                 className="flex items-center bg-white border-2 border-yellow-500 rounded-full"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+                onClick={toggle}
               >
                 <Image
                   src={
@@ -147,20 +189,21 @@ const Navbar = () => {
               </button>
               <div
                 className={
-                  dropdownOpen
+                  isOpen
                     ? "absolute right-0 z-20 w-32 mt-2 overflow-hidden bg-gray-900 rounded-md shadow-xl"
                     : "hidden"
                 }
+                ref={ref}
               >
                 <button className="flex items-center px-4 py-2 space-x-2">
                   <FaUser className="text-gray-200 " />
                   <Link href={"/account/profile"}>
                     <a
-                      className="block text-lg font-medium text-gray-200 uppercase list-none cursor-pointer hover:text-yellow-400"
-                      style={{
-                        color:
-                          router.asPath === "/account/login" ? "orange" : "",
-                      }}
+                      className={`${
+                        router.asPath === "/account/login"
+                          ? "text-yellow-500"
+                          : "text-gray-200"
+                      } block text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
                     >
                       Profile
                     </a>
@@ -176,7 +219,7 @@ const Navbar = () => {
               </div>
             </li>
           )}
-          {!user && (
+          {!user && !isLoading && (
             <li className="px-1 m-0 list-none ">
               <button
                 className={`${
@@ -197,27 +240,26 @@ const Navbar = () => {
               </button>
             </li>
           )}
-          <button className="flex items-center ml-1">
-            <Link href={"/checkout/cart"}>
-              <a
-                className="block text-2xl text-gray-200 list-none cursor-pointer hover:text-yellow-400"
-                style={{
-                  color: router.asPath === "/checkout/cart" ? "orange" : "",
-                }}
-              >
-                <BiBasket />
-              </a>
-            </Link>
+          <button
+            className={`${
+              router.asPath === "/checkout/cart"
+                ? "text-yellow-500"
+                : "text-gray-200"
+            } block text-2xl font-medium  uppercase list-none cursor-pointer hover:text-yellow-400flex items-center ml-1`}
+            onClick={toggleCartDrawer}
+          >
+            <BiBasket />
           </button>
         </ul>
       </div>
+      <CartContainer cartIsOpen={cartIsOpen} toggle={toggleCartDrawer} />
       <aside
         className={
           isOpen
             ? `${classNames.default} ${classNames.enabled}`
             : `${classNames.default} ${classNames.disabled}`
         }
-        ref={ref}
+        ref={mobileNavRef}
       >
         <div>
           <div className="flex items-center justify-between px-3 py-2 ml-4">
@@ -252,10 +294,11 @@ const Navbar = () => {
               <button className="">
                 <Link href={"/checkout/cart"}>
                   <a
-                    className="text-2xl text-gray-200 list-none cursor-pointer hover:text-yellow-400"
-                    style={{
-                      color: router.asPath === "/account/login" ? "orange" : "",
-                    }}
+                    className={`${
+                      router.asPath === "/account/login"
+                        ? "text-yellow-500"
+                        : "text-gray-200"
+                    }text-2xl  list-none cursor-pointer hover:text-yellow-400`}
                   >
                     <BiBasket />
                   </a>
@@ -272,10 +315,11 @@ const Navbar = () => {
                 >
                   <Link href={link.link}>
                     <a
-                      className="flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2  text-gray-200 hover:text-gray-400 text-lg font-medium list-none uppercase"
-                      style={{
-                        color: router.asPath === link.link ? "orange" : "",
-                      }}
+                      className={`${
+                        router.asPath === link.link
+                          ? "text-yellow-500"
+                          : "text-gray-200"
+                      }flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2   hover:text-yellow-400 text-lg font-medium list-none uppercase`}
                     >
                       {link.title}
                     </a>
@@ -289,13 +333,11 @@ const Navbar = () => {
                       <FaUser className="text-gray-200 " />
                       <Link href={"/account/profile"}>
                         <a
-                          className="flex items-center text-lg font-medium text-gray-200 uppercase list-none cursor-pointer hover:text-gray-400"
-                          style={{
-                            color:
-                              router.asPath === "/account/login"
-                                ? "orange"
-                                : "",
-                          }}
+                          className={`${
+                            router.asPath === "/account/login"
+                              ? "text-yellow-500"
+                              : "text-gray-200"
+                          }flex items-center text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
                         >
                           Profile
                         </a>
@@ -319,11 +361,11 @@ const Navbar = () => {
                     <FiLogIn className="ml-5 mr-1 text-gray-200 " />
                     <Link href={"/account/login"}>
                       <a
-                        className="py-1 text-lg font-medium text-gray-200 uppercase list-none cursor-pointer hover:text-gray-400"
-                        style={{
-                          color:
-                            router.asPath === "/account/login" ? "orange" : "",
-                        }}
+                        className={`${
+                          router.asPath === "/account/login"
+                            ? "text-yellow-500"
+                            : "text-gray-200"
+                        }py-1 text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
                       >
                         Sign In
                       </a>

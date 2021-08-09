@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
+import { ReactQueryDevtools } from "react-query/devtools";
 import "tailwindcss/tailwind.css";
 
 import AuthProvider from "../context/AuthContext";
@@ -19,6 +20,7 @@ function MyApp({ Component, pageProps }) {
             </OrderContextProvider>
           </ProductContextProvider>
         </AuthProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
       </Hydrate>
     </QueryClientProvider>
   );

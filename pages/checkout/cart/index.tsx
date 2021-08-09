@@ -43,15 +43,15 @@ function Cart() {
   return (
     <Layout>
       <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
-        <section className="container p-2 mb-4 bg-white rounded shadow-xl md:p-12 md:mx-auto ">
+        <section className="container max-w-screen-lg p-2 mb-4 bg-white rounded shadow-xl md:p-12 md:mx-auto">
           <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
             <h1 className="p-3 text-2xl font-bold md:p-5 md:text-5xl">
               Shopping Cart
             </h1>
           </div>
           <div className="flex justify-center w-full">
-            <div className="grid grid-cols-1 px-1 md:gap-2 lg:gap-4 md:px-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
-              <div className=" md:col-span-2 lg:col-span-3">
+            <div className="grid grid-cols-1 px-1 md:gap-2 lg:gap-4 md:px-2 sm:grid-cols-2 md:grid-cols-3 ">
+              <div className=" md:col-span-2">
                 {cart.length === 0 ? (
                   <ErrorMessage variant="default">
                     Your cart is empty
