@@ -21,9 +21,9 @@ function Products(props): JSX.Element {
           <SearchBox />
         </div>
         <section className="container max-w-screen-lg px-2 pt-2 pb-8 mx-auto mb-4">
-          <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
+          <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
             <div>
-              <h1 className="p-3 text-2xl font-bold md:p-5 md:text-5xl">
+              <h1 className="p-3 text-2xl font-thin md:p-5 md:text-5xl">
                 Products Available in Store
               </h1>
             </div>

@@ -1,18 +1,30 @@
 import { useContext } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useQuery, useQueryClient } from "react-query";
 
+// Context
 import { OrderContext } from "../context/OrderContext";
+
+// Component
 import CartItem from "./CartItem";
 import Button from "./Button";
 
-function CartContainer({ cartIsOpen, toggle }) {
+function CartContainer({ cartIsOpen, toggleCartDrawer }) {
   const router = useRouter();
-  const { cartItems, totalPrice, clearCart, removeFromCart, addToCart } =
+  const { cartItems, clearCart, removeFromCart, addToCart, getCartItems } =
     useContext(OrderContext);
+
+  const { data: cart, isLoading } = useQuery("cart", getCartItems, {
+    initialData: cartItems,
+  });
   const removeFromCartHandler = (itemId) => {
     removeFromCart(itemId);
     router.reload();
+  };
+
+  const checkoutHandler = () => {
+    router.push("/checkout/shipping");
   };
   if (cartItems.length === 0) {
     return (
@@ -23,20 +35,29 @@ function CartContainer({ cartIsOpen, toggle }) {
             : `${classNames.default} ${classNames.disabled}`
         }
       >
-        <div className="flex items-center justify-between px-3 py-2 ml-4">
+        {/* cart header */}
+        <div className="flex items-center justify-between mb-6 border-b">
+          <div></div>
+          <div>
+            <h2 className="mb-2 text-2xl text-center">your bag</h2>
+          </div>
           <button
             aria-label="Close"
-            className="flex items-center py-1 mr-12 text-4xl text-white cursor-pointer focus:outline-none"
-            onClick={toggle}
+            className="flex items-center text-gray-700 cursor-pointer focus:outline-none"
+            onClick={toggleCartDrawer}
           >
-            &times;
-            <p className="ml-2 text-base ">Close</p>
+            <p className="ml-2 text-3xl ">&times;</p>
           </button>
         </div>
-        {/* cart header */}
-        <div className="mb-2 border-b">
-          <h2 className="mb-2 text-3xl text-center">your bag</h2>
-          <h4 className="mb-2 text-3xl text-center">is currently empty</h4>
+        <div className="mb-2 ">
+          <h4 className="mb-2 text-3xl text-center">
+            Basket is currently empty
+          </h4>
+        </div>
+        <div>
+          <Button type="button" color="dark" className="w-full">
+            Continue Shopping
+          </Button>
         </div>
       </aside>
     );
@@ -49,23 +70,24 @@ function CartContainer({ cartIsOpen, toggle }) {
           : `${classNames.default} ${classNames.disabled}`
       }
     >
-      <div className="flex items-center mb-6">
+      <div className="flex items-center justify-between mb-6 border-b">
+        <div></div>
+        <div>
+          <h2 className="mb-2 text-2xl text-center">your bag</h2>
+        </div>
         <button
           aria-label="Close"
-          className="flex items-center text-white cursor-pointer focus:outline-none"
-          onClick={toggle}
+          className="flex items-center text-gray-700 cursor-pointer focus:outline-none"
+          onClick={toggleCartDrawer}
         >
-          <p className="ml-2 text-2xl ">&times;</p>
-          <p className="ml-2 text-base ">Close</p>
+          <p className="ml-2 text-3xl ">&times;</p>
         </button>
       </div>
       {/* cart header */}
-      <div className="mb-2 border-b">
-        <h2 className="mb-2 text-3xl text-center">your bag</h2>
-      </div>
+
       {/* cart items */}
       <div className="mb-4">
-        {cartItems.map((item) => {
+        {cart.map((item) => {
           return (
             <CartItem
               key={item.product}
@@ -79,32 +101,32 @@ function CartContainer({ cartIsOpen, toggle }) {
         })}
       </div>
       {/* cart footer */}
-      <footer className="border-t ">
-        <div className="flex justify-between my-2">
-          <h4 className="text-xl uppercase">total:</h4>
-          <p className="text-xl">£{totalPrice}</p>
+      <footer className="">
+        <div className="flex justify-between px-8 my-2">
+          <h4 className="text-xl font-thin ">Basket Subtotal:</h4>
+          <p className="text-xl font-medium">
+            £
+            {cart
+              .reduce((acc, item) => acc + item.qty * item.price, 0)
+              .toFixed(2)}
+          </p>
         </div>
-
-        <Button type="button" color="yellow" className="w-full">
-          <Link href={"/checkout/cart"}>
-            <a
-              className={`${
-                router.asPath === "/checkout/cart"
-                  ? "text-yellow-500"
-                  : "text-gray-200"
-              } block text-xl text-center font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
-            >
-              View Cart
-            </a>
-          </Link>
-        </Button>
         <Button
           type="button"
           color="danger"
-          className="w-full mt-2"
-          onClick={clearCart}
+          className="w-full my-4"
+          onClick={checkoutHandler}
         >
-          clear cart
+          Proceed to Checkout
+        </Button>
+        <Button type="button" color="dark" className="w-full">
+          <Link href={"/checkout/cart"}>
+            <a
+              className={`block text-xl text-center font-normal list-none cursor-pointer hover:text-yellow-400`}
+            >
+              View and Edit Basket
+            </a>
+          </Link>
         </Button>
       </footer>
     </aside>
@@ -112,7 +134,7 @@ function CartContainer({ cartIsOpen, toggle }) {
 }
 const classNames = {
   default: `hidden md:block flex flex-col h-screen fixed inset-y-0 right-0 transition-all ease duration-200 `,
-  enabled: ` md:w-1/4 bg-gray-900 z-50  text-white overflow-x-hidden p-4 `,
+  enabled: ` md:w-1/4 bg-gray-100 z-50  text-gray-700 overflow-x-hidden p-4 `,
   disabled: `w-0  bg-gray-800 text-white overflow-x-hidden`,
 };
 

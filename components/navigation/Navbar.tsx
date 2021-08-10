@@ -12,24 +12,6 @@ import { useQuery, useQueryClient } from "react-query";
 import { authContext } from "../../context/AuthContext";
 import CartContainer from "../CartContainer";
 
-// .amount-container {
-//   position: absolute;
-//   top: -0.85rem;
-//   right: -0.85rem;
-//   width: 1.75rem;
-//   height: 1.75rem;
-//   border-radius: 50%;
-//   background: var(--clr-primary-light);
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-// }
-// .total-amount {
-//   color: var(--clr-white);
-//   margin-bottom: 0;
-//   font-size: 1.25rem;
-// }
-
 const navLink = [
   {
     id: 1,
@@ -74,25 +56,26 @@ const Navbar = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [cartIsOpen, setCartIsOpen] = useState(false);
+  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const { checkUserLoggedIn, logout } = useContext(authContext);
   const { data: user, isLoading } = useQuery("user", checkUserLoggedIn);
-  console.log(cartIsOpen);
+
   // mobile nav bar ref
   const mobileNavRef = useRef<HTMLElement>();
   // user drop down ref
-  const ref = useRef<HTMLDivElement>();
+  // const ref = useRef<HTMLDivElement>();
 
-  // Close user drop down list when user clicks outside event window
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (!ref.current?.contains(event.target)) {
-        if (!isOpen) return;
-        toggle();
-      }
-    };
-    window.addEventListener("mousedown", handleOutsideClick);
-    return () => window.removeEventListener("mousedown", handleOutsideClick);
-  }, [isOpen, ref]);
+  // // Close user drop down list when user clicks outside event window
+  // useEffect(() => {
+  //   const handleOutsideClick = (event) => {
+  //     if (!ref.current?.contains(event.target)) {
+  //       if (!isDropDownOpen) return;
+  //       toggleUserDropdown();
+  //     }
+  //   };
+  //   window.addEventListener('mousedown', handleOutsideClick);
+  //   return () => window.removeEventListener('mousedown', handleOutsideClick);
+  // }, [isDropDownOpen, ref]);
 
   // Close mobile nav drawer when user clicks outside event window
   useEffect(() => {
@@ -109,6 +92,9 @@ const Navbar = () => {
   // toggle the mobile navigation bar and the user dropdown list
   const toggle = () => {
     setIsOpen(!isOpen);
+  };
+  const toggleUserDropdown = () => {
+    setIsDropDownOpen(!isDropDownOpen);
   };
 
   // toggle cart drawer
@@ -193,29 +179,30 @@ const Navbar = () => {
                     ? "absolute right-0 z-20 w-32 mt-2 overflow-hidden bg-gray-900 rounded-md shadow-xl"
                     : "hidden"
                 }
-                ref={ref}
               >
-                <button className="flex items-center px-4 py-2 space-x-2">
-                  <FaUser className="text-gray-200 " />
-                  <Link href={"/account/profile"}>
-                    <a
-                      className={`${
-                        router.asPath === "/account/login"
-                          ? "text-yellow-500"
-                          : "text-gray-200"
-                      } block text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
-                    >
-                      Profile
-                    </a>
-                  </Link>
-                </button>
-                <button
-                  className="flex items-center px-4 py-2 space-x-2 text-lg text-gray-200 hover:text-yellow-500"
-                  onClick={logoutHandler}
-                >
-                  <FiLogOut className="text-gray-200 " />
-                  <p>Logout</p>
-                </button>
+                <div>
+                  <button className="flex items-center px-4 py-2 space-x-2">
+                    <FaUser className="text-gray-200 " />
+                    <Link href={"/account/profile"}>
+                      <a
+                        className={`${
+                          router.asPath === "/account/login"
+                            ? "text-yellow-500"
+                            : "text-gray-200"
+                        } block text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
+                      >
+                        Profile
+                      </a>
+                    </Link>
+                  </button>
+                  <button
+                    className="flex items-center px-4 py-2 space-x-2 text-lg text-gray-200 hover:text-yellow-500"
+                    onClick={logoutHandler}
+                  >
+                    <FiLogOut className="text-gray-200 " />
+                    <p>Logout</p>
+                  </button>
+                </div>
               </div>
             </li>
           )}
@@ -252,7 +239,10 @@ const Navbar = () => {
           </button>
         </ul>
       </div>
-      <CartContainer cartIsOpen={cartIsOpen} toggle={toggleCartDrawer} />
+      <CartContainer
+        cartIsOpen={cartIsOpen}
+        toggleCartDrawer={toggleCartDrawer}
+      />
       <aside
         className={
           isOpen
@@ -391,7 +381,7 @@ const position = {
 
 const classNames = {
   default: `lg:hidden flex h-screen fixed top-0 right-0 transition-all ease duration-200`,
-  enabled: `w-7/12 md:w-1/3 bg-gray-900 z-50  text-white overflow-x-hidden `,
+  enabled: `w-7/12 md:w-1/3 bg-gray-900 z-50  text-white overflow-y-hidden `,
   disabled: `w-0  bg-gray-800 text-white overflow-x-hidden`,
 };
 

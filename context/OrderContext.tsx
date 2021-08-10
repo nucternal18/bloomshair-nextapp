@@ -39,6 +39,7 @@ interface IOrder {
   addToCart: (id: string | string[], qty: number) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
+  getCartItems: () => CartItemsProps[] | null;
   saveShippingAddress: (data: ShippingAddressProps) => void;
   savePaymentMethod: (data: string) => void;
   payOrder: (orderId: string, paymentResult: PaymentResProps) => void;
@@ -74,6 +75,7 @@ export const OrderContext = createContext<IOrder>({
   error: null,
   totalPrice: 0,
   order: null,
+  getCartItems: () => null,
 });
 
 const OrderContextProvider = ({ children }) => {
@@ -185,6 +187,17 @@ const OrderContextProvider = ({ children }) => {
     localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
   };
 
+  const getCartItems = () => {
+    const cart =
+      typeof window !== "undefined"
+        ? localStorage.getItem("cartItems")
+          ? JSON.parse(window.localStorage.getItem("cartItems"))
+          : []
+        : [];
+
+    return cart;
+  };
+
   // clear all cart items
   const clearCart = () => {
     localStorage.removeItem("cartItems");
@@ -239,6 +252,7 @@ const OrderContextProvider = ({ children }) => {
         payOrder,
         setTotalPrice,
         clearCart,
+        getCartItems,
         shippingAddress,
         paymentMethod,
         cartItems,
