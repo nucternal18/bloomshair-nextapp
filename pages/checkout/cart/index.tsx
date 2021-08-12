@@ -21,7 +21,7 @@ function Cart() {
   const { data: cart, isLoading } = useQuery("cart", getCartItems, {
     initialData: cartItems,
   });
-  console.log(cart.length);
+
   useEffect(() => {
     if (id) {
       addToCart(id, +qty);

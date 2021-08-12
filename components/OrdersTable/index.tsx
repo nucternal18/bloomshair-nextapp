@@ -20,9 +20,9 @@ const Table = ({ tableData, headingColumns }) => {
           {tableData.map((row) => {
             return (
               <tr key={row._id}>
-                <td data-heading={"_id"}>{row._id}</td>
-                <td data-heading={"price"}>{row.createdAt.substring(0, 10)}</td>
-                <td data-heading={"brand"}>{row.totalPrice}</td>
+                <td data-heading={"id"}>{row._id}</td>
+                <td data-heading={"date"}>{row.createdAt.substring(0, 10)}</td>
+                <td data-heading={"totalPrice"}>{row.totalPrice}</td>
                 <td data-heading={"countInStock"}>
                   {row.isPaid ? (
                     row.paidAt.substring(0, 10)

@@ -9,7 +9,10 @@ const url: string =
 
 function ContactUs(): JSX.Element {
   return (
-    <Layout>
+    <Layout
+      title="Blooms Hair - Contact page"
+      description="Contact page with the salon contact information"
+    >
       <main>
         <section className="relative flex items-center content-center justify-center">
           <div

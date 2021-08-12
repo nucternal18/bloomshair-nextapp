@@ -63,19 +63,19 @@ const Navbar = () => {
   // mobile nav bar ref
   const mobileNavRef = useRef<HTMLElement>();
   // user drop down ref
-  // const ref = useRef<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>();
 
-  // // Close user drop down list when user clicks outside event window
-  // useEffect(() => {
-  //   const handleOutsideClick = (event) => {
-  //     if (!ref.current?.contains(event.target)) {
-  //       if (!isDropDownOpen) return;
-  //       toggleUserDropdown();
-  //     }
-  //   };
-  //   window.addEventListener('mousedown', handleOutsideClick);
-  //   return () => window.removeEventListener('mousedown', handleOutsideClick);
-  // }, [isDropDownOpen, ref]);
+  // Close user drop down list when user clicks outside event window
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!ref.current?.contains(event.target)) {
+        if (!isDropDownOpen) return;
+        toggleUserDropdown();
+      }
+    };
+    window.addEventListener("mousedown", handleOutsideClick);
+    return () => window.removeEventListener("mousedown", handleOutsideClick);
+  }, [isDropDownOpen, ref]);
 
   // Close mobile nav drawer when user clicks outside event window
   useEffect(() => {
@@ -158,7 +158,7 @@ const Navbar = () => {
             <li className="px-1 m-0 text-base list-none">
               <button
                 className="flex items-center bg-white border-2 border-yellow-500 rounded-full"
-                onClick={toggle}
+                onClick={toggleUserDropdown}
               >
                 <Image
                   src={
@@ -175,10 +175,11 @@ const Navbar = () => {
               </button>
               <div
                 className={
-                  isOpen
+                  isDropDownOpen
                     ? "absolute right-0 z-20 w-32 mt-2 overflow-hidden bg-gray-900 rounded-md shadow-xl"
                     : "hidden"
                 }
+                ref={ref}
               >
                 <div>
                   <button className="flex items-center px-4 py-2 space-x-2">

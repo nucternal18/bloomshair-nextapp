@@ -9,7 +9,7 @@ const url: string =
 
 function about(): JSX.Element {
   return (
-    <Layout>
+    <Layout title="Blooms Hair - About" description="About us page">
       <main>
         <section className="relative flex items-center content-center justify-center">
           <div

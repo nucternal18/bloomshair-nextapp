@@ -17,7 +17,7 @@ const variants = {
 
 export default function Home(): JSX.Element {
   return (
-    <Layout>
+    <Layout title="Blooms Hair - Home page" description="blooms hair home page">
       <main>
         <section className="relative flex items-center content-center justify-center h-screen pt-16 pb-32">
           <div className="absolute top-0 w-full h-full bg-center bg-cover">

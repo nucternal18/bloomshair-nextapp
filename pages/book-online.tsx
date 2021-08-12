@@ -26,7 +26,10 @@ function BookOnline(): JSX.Element {
     };
   }, []);
   return (
-    <Layout>
+    <Layout
+      title="Blooms Hair - Online Bookings"
+      description="book online with us now"
+    >
       <div className="flex flex-col justify-between w-full h-full py-6 bg-white">
         {loading ? (
           <Spinner />

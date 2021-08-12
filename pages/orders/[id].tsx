@@ -31,7 +31,7 @@ const OrderDetails = (props) => {
   }, [order]);
 
   const refreshData = () => {
-    router.replace(router.asPath);
+    router.reload();
     setIsRefreshing(true);
   };
 
@@ -61,7 +61,7 @@ const OrderDetails = (props) => {
   }
 
   return (
-    <Layout>
+    <Layout title={`Order ${order._id}`}>
       <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
         <section className="container px-2 pt-6 pb-8 mb-4 bg-white rounded shadow-2xl md:mx-auto ">
           <div className="flex flex-col items-center justify-between mb-4 border-b-4 border-current border-gray-200 sm:px-4 sm:flex-row">
