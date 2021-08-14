@@ -44,13 +44,15 @@ function ContactUs(): JSX.Element {
                 }}
                 transition={{ duration: 2.0 }}
               >
-                <h1 className="text-gray-500 text-7xl">Contact Blooms Hair</h1>
+                <h1 className="text-4xl font-thin text-gray-300 sm:text-7xl">
+                  Contact Blooms Hair
+                </h1>
               </motion.div>
             </div>
           </div>
         </section>
         <section className="flex-grow w-full bg-white">
-          <div className="container grid max-w-6xl grid-cols-1 mx-auto my-8 lg:grid-cols-2">
+          <div className="container grid max-w-screen-lg grid-cols-1 mx-auto my-8 lg:grid-cols-2">
             <div className="flex justify-center col-span-1 px-4 py-6 my-6 item-center">
               <div className="flex-col text-justify">
                 <h1 className="mb-4 text-3xl sm:text-5xl">Get In Touch</h1>
@@ -63,22 +65,22 @@ function ContactUs(): JSX.Element {
                 </p>
               </div>
             </div>
-            <div className="col-span-1 px-4 py-6 my-6">
-              <div className="grid grid-cols-2">
-                <div className="col-span-1 px-4 py-2 font-bold">PHONE</div>
-                <div className="col-span-1 px-4 py-2">07838849597</div>
-                <div className="col-span-1 px-4 py-2 font-bold">EMAIL</div>
-                <div className="col-span-1 px-4 py-2 break-words">
+            <div className="col-span-1 px-2 py-6 my-6 sm:px-4">
+              <div className="grid grid-cols-2 gap-1">
+                <div className="col-span-1 py-2 font-thin">PHONE</div>
+                <div className="col-span-1 py-2">07838849597</div>
+                <div className="col-span-1 py-2 font-thin">EMAIL</div>
+                <div className="col-span-1 py-2 break-words">
                   <a href="mailto:appointments@bloomshair.co.uk">
                     appointments@bloomshair.co.uk
                   </a>
                 </div>
-                <div className="col-span-1 px-4 py-2 font-bold">ADDRESS</div>
-                <div className="col-span-1 px-4 py-2">
+                <div className="col-span-1 py-2 font-thin">ADDRESS</div>
+                <div className="col-span-1 py-2">
                   9 Lever St, London EC1V 3QU
                 </div>
-                <div className="col-span-1 px-4 py-2 font-bold">FOLLOW</div>
-                <div className="col-span-1 px-4 py-2">
+                <div className="col-span-1 py-2 font-thin">FOLLOW</div>
+                <div className="col-span-1 py-2">
                   <ul className="flex flex-row text-gray-600 ">
                     <li className="px-2 text-2xl hover:text-blue-500">
                       <a href="https://www.facebook.com/pages/category/Pizza-Place/Viaromanonsolopizza-108686514250214/">

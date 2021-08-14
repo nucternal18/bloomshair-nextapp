@@ -43,14 +43,14 @@ function ServiceMenu(): JSX.Element {
                 }}
                 transition={{ duration: 2.0 }}
               >
-                <h1 className="text-4xl text-gray-400 md:text-7xl">
+                <h1 className="text-4xl font-thin text-gray-400 md:text-7xl">
                   Service & Price Menu
                 </h1>
               </motion.div>
             </div>
           </div>
         </section>
-        <div className="w-full bg-white">
+        <div className="w-full max-w-screen-lg mx-auto bg-white">
           <div className="container px-4 py-6 mx-auto">
             <h1 className="mb-4 text-3xl text-center sm:text-5xl">
               Our Hair Services

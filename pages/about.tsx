@@ -41,7 +41,7 @@ function about(): JSX.Element {
                 }}
                 transition={{ duration: 2.0 }}
               >
-                <p className="text-4xl text-gray-400 md:text-7xl">
+                <p className="text-4xl font-thin text-gray-400 md:text-7xl">
                   About Blooms Hair
                 </p>
               </motion.div>

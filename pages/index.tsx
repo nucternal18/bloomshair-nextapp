@@ -42,7 +42,7 @@ export default function Home(): JSX.Element {
                 variants={variants}
                 transition={{ duration: 2.0 }}
               >
-                <p className="mb-4 text-3xl font-semibold text-gray-300 md:text-5xl lg:text-7xl">
+                <p className="mb-4 text-3xl font-thin text-gray-300 md:text-5xl lg:text-7xl">
                   Welcome to Blooms Hair
                 </p>
                 <Button type="button" color="yellow">
@@ -87,7 +87,7 @@ export default function Home(): JSX.Element {
                 height: "450px",
               }}
             >
-              <p className="text-4xl font-bold text-center text-white">
+              <p className="mb-2 text-4xl font-thin text-center text-white">
                 About Blooms
               </p>
               <div>

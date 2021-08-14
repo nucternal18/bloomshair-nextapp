@@ -26,7 +26,7 @@ function BottomPageContainer() {
             />
             <div className="absolute">
               <div className="flex flex-col items-center justify-center">
-                <p className="text-4xl font-bold text-center text-gray-500">
+                <p className="mb-2 text-4xl font-thin text-center text-gray-400">
                   Book Online
                 </p>
                 <div>
@@ -56,7 +56,7 @@ function BottomPageContainer() {
             />
             <div className="absolute ">
               <div className="flex flex-col items-center justify-center">
-                <p className="text-4xl font-bold text-center text-gray-500">
+                <p className="mb-2 text-4xl font-thin text-center text-gray-400">
                   Service Menu
                 </p>
                 <div>
@@ -87,7 +87,7 @@ function BottomPageContainer() {
             <div className="absolute ">
               <div className="flex flex-wrap items-center justify-center ">
                 <div className="flex flex-col items-center justify-center">
-                  <p className="text-4xl font-bold text-center text-gray-500">
+                  <p className="mb-2 text-4xl font-thin text-center text-gray-400">
                     Contact Blooms
                   </p>
                   <div>
@@ -129,7 +129,9 @@ function BottomPageContainer() {
               transition={{ duration: 2.0 }}
             >
               {/* eslint-disable-next-line react/no-unescaped-entities */}
-              <h2 className="text-5xl text-gray-300">Let's Get Social</h2>
+              <h2 className="text-5xl font-thin text-gray-300">
+                Lets Get Social
+              </h2>
               <p className="text-xl text-center text-yellow-500">
                 Keep up to date with Blooms Hair on our social media channels
               </p>
