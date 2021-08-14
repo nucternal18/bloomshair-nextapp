@@ -1,4 +1,5 @@
 import { useState, createContext, useEffect } from "react";
+import { useRouter } from "next/router";
 
 import { NEXT_URL } from "../config";
 
@@ -13,6 +14,7 @@ export type ShippingAddressProps = {
   city: string;
   postalCode: string;
   country: string;
+  deliveryMethod?: string;
 };
 
 export type CartItemsProps = {
@@ -79,6 +81,7 @@ export const OrderContext = createContext<IOrder>({
 });
 
 const OrderContextProvider = ({ children }) => {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -166,7 +169,7 @@ const OrderContextProvider = ({ children }) => {
       countInStock: data.data.countInStock,
       qty,
     };
-    console.log(items);
+
     const existItem = cartItems.find((i) => i.product === items.product);
 
     if (existItem) {
@@ -201,6 +204,7 @@ const OrderContextProvider = ({ children }) => {
   // clear all cart items
   const clearCart = () => {
     localStorage.removeItem("cartItems");
+    router.reload();
   };
 
   // Save shipping information to local storage

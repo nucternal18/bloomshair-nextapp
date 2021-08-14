@@ -17,13 +17,15 @@ const CheckoutSteps: FC<ICheckout> = ({
 }): JSX.Element => {
   const router = useRouter();
   return (
-    <nav className="container flex justify-around mx-auto mb-4 sm:px-8">
+    <nav className="container flex justify-around max-w-screen-md mx-auto mb-4 sm:px-8">
       <div>
         {step1 ? (
           <Link href="/account/login">
             <a
               className={`${
-                router.asPath === "/account/login" ? "text-yellow-500" : ""
+                router.asPath === "/account/login"
+                  ? "text-yellow-500 border-b border-yellow-500"
+                  : "opacity-60"
               }`}
             >
               Sign-In
@@ -39,7 +41,9 @@ const CheckoutSteps: FC<ICheckout> = ({
           <Link href="/checkout/shipping">
             <a
               className={`${
-                router.asPath === "/checkout/shipping" ? "text-yellow-500" : ""
+                router.asPath === "/checkout/shipping"
+                  ? "text-yellow-500 border-b border-yellow-500"
+                  : "opacity-60"
               }`}
             >
               Shipping
@@ -55,7 +59,9 @@ const CheckoutSteps: FC<ICheckout> = ({
           <Link href="/checkout/payment">
             <a
               className={`${
-                router.asPath === "/checkout/payment" ? "text-yellow-500" : ""
+                router.asPath === "/checkout/payment"
+                  ? "text-yellow-500 border-b border-yellow-500"
+                  : "opacity-60"
               }`}
             >
               Payment
@@ -72,8 +78,8 @@ const CheckoutSteps: FC<ICheckout> = ({
             <a
               className={`${
                 router.asPath === "/checkout/placeorder"
-                  ? "text-yellow-500"
-                  : ""
+                  ? "text-yellow-500 border-b border-yellow-500"
+                  : "opacity-60"
               }`}
             >
               Place Order
