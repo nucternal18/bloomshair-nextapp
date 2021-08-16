@@ -19,10 +19,10 @@ function Products(props): JSX.Element {
       description="list of hair care products"
     >
       <main className="w-full mx-auto overflow-auto bg-white ">
-        <section className="container px-2 pt-2 pb-8 mb-4 md:mx-auto ">
-          <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
+        <section className="container max-w-screen-lg px-2 pt-2 pb-8 mb-4 md:mx-auto">
+          <div className="flex items-center justify-between mb-6 border-b-2 border-gray-200">
             <div>
-              <h1 className="p-3 text-3xl font-bold md:p-5 md:text-5xl">
+              <h1 className="p-3 text-3xl font-thin md:p-5 md:text-5xl">
                 Search Result for {router.query.keyword}
               </h1>
             </div>

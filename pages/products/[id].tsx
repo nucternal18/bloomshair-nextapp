@@ -45,7 +45,7 @@ function ProductDetails({ product, productId, userInfo }) {
       {" "}
       <main className="flex-grow w-full p-2 mx-auto bg-gray-200 md:p-4">
         <section className="container max-w-screen-lg px-2 pt-6 pb-8 mb-4 bg-white rounded shadow-xl md:px-12 md:mx-auto ">
-          <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
+          <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
             <div className="p-5">
               <Button type="button" color="dark" onClick={() => router.back()}>
                 Go Back

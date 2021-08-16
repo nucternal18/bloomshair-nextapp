@@ -19,8 +19,8 @@ function Products(props): JSX.Element {
       title="Blooms Hair - Products"
       description="list of hair care products"
     >
-      <main className="w-full mx-auto overflow-auto bg-white ">
-        <div className="flex justify-center p-2 bg-gray-300">
+      <main className="w-full mx-auto overflow-auto bg-gray-100 ">
+        <div className="flex justify-center p-2 bg-gray-200">
           <SearchBox />
         </div>
         <section className="container max-w-screen-lg px-2 pt-2 pb-8 mx-auto mb-4">
