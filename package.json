@@ -25,6 +25,7 @@
     "react-paypal-button-v2": "^2.6.3",
     "react-query": "^3.19.1",
     "react-redux": "^7.2.4",
+    "react-square-payment-form": "^0.7.2",
     "redux": "^4.1.0",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
