@@ -1,36 +1,45 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
-import cookie from "cookie";
-import { SERVER_URL } from "../../../config";
+import { getSession } from "next-auth/client";
+import User from "../../../models/userModel";
+import db from "../../../lib/db";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+  /**
+   * @desc Get user profile
+   * @route GET /api/users/profile
+   * @access Private
+   */
   if (req.method === "GET") {
-    if (!req.headers.cookie) {
-      res.status(403).json({ message: "Not Authorized" });
+    let headers = {};
+    const session = await getSession({ req });
+
+    if (!session) {
+      res.status(401).json({ message: "Not Authorized" });
       return;
     }
 
-    const { token } = cookie.parse(req.headers.cookie);
-    if (!token) {
-      res.status(403).json({ message: "Not Authorized" });
-      return;
+    if (session) {
+      headers = { Authorization: `Bearer ${session.jwt}` };
     }
-    const response = await fetch(`${SERVER_URL}/api/users/profile`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    await db.connectDB();
 
-    const user = await response.json();
-
-    if (response.ok) {
-      res.status(200).json({ user });
+    const user = await User.findOne({ email: session.user.email });
+    if (user) {
+      res.json({
+        _id: user._id,
+        image: user.image,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        shippingAddress: user.shippingAddress,
+      });
     } else {
-      res.status(403).json({ message: "User forbidden" });
+      res.status(404);
+      throw new Error("User not found");
     }
   } else {
-    res.setHeader("Allow", ["POST"]);
+    res.setHeader("Allow", ["GET"]);
     res.status(405).json({ message: `Method ${req.method} not allowed` });
   }
 };

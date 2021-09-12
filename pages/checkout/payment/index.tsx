@@ -1,55 +1,73 @@
-import { useContext, useEffect, useState } from "react";
-import cookie from "cookie";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { GetServerSideProps } from "next";
+import { getSession } from "next-auth/client";
+import { toast } from "react-toastify";
 
 // Components
-import Layout from "../../../components/Layout";
+import Layout from "../../../components/Layout/Layout";
 import Button from "../../../components/Button";
 import CheckoutSteps from "../../../components/navigation/CheckoutStepsNav";
 
 // context
-import { OrderContext } from "../../../context/OrderContext";
-function Shipping() {
+import { useCart } from "../../../context/cart/cartContext";
+import { savePaymentMethod } from "../../../context/cart/cartActions";
+function Payment() {
   const router = useRouter();
-  const { shippingAddress, savePaymentMethod } = useContext(OrderContext);
-  const [paymentMethod, setPaymentMethod] = useState("PayPal");
+  const { state, dispatch } = useCart();
+  const {
+    cart: { shippingAddress },
+  } = state;
+  const [paymentMethod, setPaymentMethod] = useState("");
 
   useEffect(() => {
-    if (!shippingAddress) {
+    if (!shippingAddress.address) {
       router.push("/checkout/shipping");
+    } else {
+      setPaymentMethod(localStorage.getItem("paymentMethod") || "");
     }
-  }, [router, shippingAddress]);
+  }, []);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    savePaymentMethod(paymentMethod);
-    router.push("/checkout/placeorder");
+    if (!paymentMethod) {
+      toast.error("Payment method is required");
+    } else {
+      dispatch(savePaymentMethod(paymentMethod));
+      router.push("/checkout/placeorder");
+    }
   };
   return (
-    <Layout>
+    <Layout title="Checkout - Blooms Hair">
       <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
         <CheckoutSteps step1 step2 step3 />
-        <section className="container p-2 mb-4 bg-white rounded shadow-xl md:p-12 md:mx-auto ">
-          <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
-            <h1 className="p-3 text-2xl font-bold md:p-5 md:text-5xl">
+        <section className="container p-2 mb-4 max-w-screen-md bg-white rounded shadow-xl md:p-12 md:mx-auto ">
+          <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
+            <h1 className="p-3 text-2xl font-thin md:p-5 md:text-4xl">
               Payment Method
             </h1>
+            <Button
+              type="button"
+              color="yellow"
+              onClick={() => router.replace("/checkout/shipping")}
+            >
+              return to shipping
+            </Button>
           </div>
           <form onSubmit={submitHandler}>
-            <div className="mb-4">
+            <div className="mb-8">
               <label className="block mb-2 font-light text-gray-600">
                 Select Payment Method
               </label>
-              <div className="flex items-center mb-2">
+              <div className="flex items-center mb-1">
                 <input
                   type="radio"
                   id="PayPal"
                   name="paymentMethod"
                   value="PayPal"
-                  checked
-                  className="w-4 h-4 px-3 py-3 mr-4 text-gray-700 border rounded"
-                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  className="form-radio p-2 mr-4 text-gray-700 border rounded-full focus:ring-transparent focus:outline-none"
+                  onChange={() => setPaymentMethod("PayPal")}
                 />
                 <label htmlFor="PayPal" className="text-gray-600">
                   <Image
@@ -60,14 +78,14 @@ function Shipping() {
                   />
                 </label>
               </div>
-              <div className="flex items-center mb-2">
+              <div className="flex items-center mb-1">
                 <input
                   type="radio"
                   id="Square"
                   name="paymentMethod"
                   value="Square"
-                  className="w-4 h-4 px-3 py-3 mr-2 text-gray-700 border rounded"
-                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  className="form-radio p-2 mr-2 text-gray-700 border rounded-full focus:ring-transparent focus:outline-none"
+                  onChange={() => setPaymentMethod("Square")}
                 />
                 <label htmlFor="Square" className="text-gray-600">
                   Credit or Debit Card
@@ -84,4 +102,22 @@ function Shipping() {
   );
 }
 
-export default Shipping;
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const req = context.req;
+  const session = await getSession({ req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/account/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+};
+
+export default Payment;

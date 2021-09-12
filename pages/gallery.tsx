@@ -2,11 +2,11 @@ import { useState } from "react";
 import { GetServerSideProps } from "next";
 
 // Components
-import Layout from "../components/Layout";
+import Layout from "../components/Layout/Layout";
 import ImageCard from "../components/pictures/ImageCard";
 import Modal from "../components/Modal";
 // Server Url
-import { SERVER_URL } from "../config";
+import { NEXT_URL } from "../config";
 
 function Gallery(props): JSX.Element {
   const [selectedImg, setSelectedImg] = useState(null);
@@ -41,7 +41,7 @@ function Gallery(props): JSX.Element {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const res = await fetch(`${SERVER_URL}/api/gallery`);
+  const res = await fetch(`${NEXT_URL}/api/gallery`);
   const data = await res.json();
 
   if (!data) {

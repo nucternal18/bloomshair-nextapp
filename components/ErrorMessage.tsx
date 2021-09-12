@@ -1,11 +1,11 @@
 const ErrorMessage = ({ children, variant }) => {
   const color = {
-    success: 'text-green-500 text-lg',
-    danger: 'text-red-500 text-lg',
-    default: 'text-yellow-500 text-xl',
+    success: "text-green-500 text-sm",
+    danger: "text-red-500 text-sm",
+    default: "text-yellow-500 text-sm",
   };
   return (
-    <div className={`${color[variant]} py-2 font-semibold italic text-center`}>
+    <div className={`${color[variant]} py-1 font-medium italic text-center`}>
       {children}
     </div>
   );

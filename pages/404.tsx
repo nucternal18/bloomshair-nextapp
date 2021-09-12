@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import Layout from "../components/Layout";
+import Layout from "../components/Layout/Layout";
 import Button from "../components/Button";
 
 function NotFoundPage() {
@@ -9,7 +9,7 @@ function NotFoundPage() {
   useEffect(() => {
     setTimeout(() => {
       router.push("/");
-    }, 4000);
+    }, 5000);
   }, []);
   return (
     <Layout title="Page Not Found">

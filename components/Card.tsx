@@ -4,7 +4,7 @@ interface ICard {
 }
 const Card: React.FC<ICard> = ({ children, className }): JSX.Element => (
   <div
-    className={`${className} relative flex flex-col bg-white rounded-lg`}
+    className={`${className} relative flex flex-col bg-white rounded`}
     style={style}
   >
     {children}

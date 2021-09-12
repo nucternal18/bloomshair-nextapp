@@ -1,37 +1,53 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useQuery, useQueryClient } from "react-query";
 
 // Context
-import { OrderContext } from "../context/OrderContext";
+import { useCart } from "../context/cart/cartContext";
+import { removeFromCart, addToCart } from "../context/cart/cartActions";
 
 // Component
 import CartItem from "./CartItem";
 import Button from "./Button";
+import { NEXT_URL } from "../config";
+import { CartItemsProps } from "../context/cart/cartState";
 
 function CartContainer({ cartIsOpen, toggleCartDrawer }) {
   const router = useRouter();
-  const { cartItems, clearCart, removeFromCart, addToCart, getCartItems } =
-    useContext(OrderContext);
-
-  const { data: cart, isLoading } = useQuery("cart", getCartItems, {
-    initialData: cartItems,
-  });
+  const { state, dispatch } = useCart();
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
   }, []);
   const removeFromCartHandler = (itemId) => {
-    removeFromCart(itemId);
+    dispatch(removeFromCart(itemId));
     router.reload();
   };
 
-  const checkoutHandler = () => {
-    router.push("/checkout/shipping");
+  const updateCartHandler = async (id, qty) => {
+    const res = await fetch(`${NEXT_URL}/api/products/${id}`, {
+      method: "GET",
+    });
+    const data = await res.json();
+    const items: CartItemsProps = {
+      product: data.product._id,
+      name: data.product.name,
+      image: data.product.image,
+      price: data.product.price,
+      countInStock: data.product.countInStock,
+      qty,
+    };
+    dispatch(addToCart(items));
   };
-  if (cartItems.length === 0 && mounted) {
+
+  // const checkoutHandler = () => {
+  //   if (!loadedSession) {
+  //     router.push('/account/login?redirect=/checkout/shipping');
+  //   }
+  //   router.push('/checkout/shipping');
+  // };
+  if (state.cart.cartItems.length === 0 && mounted) {
     return (
       <aside
         className={
@@ -94,14 +110,14 @@ function CartContainer({ cartIsOpen, toggleCartDrawer }) {
 
           {/* cart items */}
           <div className="mb-4">
-            {cart.map((item) => {
+            {state.cart.cartItems?.map((item) => {
               return (
                 <div key={item.product}>
                   <CartItem
                     {...item}
                     size={40}
                     textSize={"text-sm"}
-                    addToCart={addToCart}
+                    updateCartHandler={updateCartHandler}
                     removeFromCartHandler={removeFromCartHandler}
                   />
                 </div>
@@ -114,19 +130,18 @@ function CartContainer({ cartIsOpen, toggleCartDrawer }) {
               <h4 className="text-xl font-thin ">Basket Subtotal:</h4>
               <p className="text-xl font-medium">
                 £
-                {cart
-                  .reduce((acc, item) => acc + item.qty * item.price, 0)
+                {state.cart.cartItems
+                  ?.reduce((acc, item) => acc + item.qty * item.price, 0)
                   .toFixed(2)}
               </p>
             </div>
-            <Button
-              type="button"
-              color="danger"
-              className="w-full my-4"
-              onClick={checkoutHandler}
-            >
+            {/* <Button
+              type='button'
+              color='danger'
+              className='w-full my-4'
+              onClick={checkoutHandler}>
               Proceed to Checkout
-            </Button>
+            </Button> */}
             <Button type="button" color="dark" className="w-full">
               <Link href={"/checkout/cart"}>
                 <a

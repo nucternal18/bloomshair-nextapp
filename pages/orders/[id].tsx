@@ -1,139 +1,130 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
-import ReactDOM from "react-dom";
-import cookie from "cookie";
+import { getSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import { GetServerSideProps } from "next";
 
 // context
-import { OrderContext } from "../../context/OrderContext";
+import { useOrder } from "../../context/order/OrderContext";
 
 // components
 import ErrorMessage from "../../components/ErrorMessage";
 import Button from "../../components/Button";
-import Notification from "../../components/notification/notification";
-import Layout from "../../components/Layout";
+import Layout from "../../components/Layout/Layout";
 
-import { SERVER_URL } from "../../config";
-const PayPalButton = dynamic(() => import("../../components/PayPalButton"));
+import { NEXT_URL } from "../../config";
+import { Card } from "../../components/Card";
 
-const OrderDetails = (props) => {
-  const { userInfo, order, orderId } = props;
+const OrderDetails = ({ order }) => {
   const router = useRouter();
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  const { error, payOrder, message, requestStatus } = useContext(OrderContext);
-
-  useEffect(() => {
-    setIsRefreshing(false);
-  }, [order]);
-
-  const refreshData = () => {
-    router.reload();
-    setIsRefreshing(true);
-  };
-
-  function addDecimals(num) {
-    return (Math.round(num * 100) / 100).toFixed(2);
-  }
-
-  const successPaymentHandler = (paymentResult) => {
-    payOrder(orderId, paymentResult);
-    refreshData();
-  };
-
-  let notification;
-  if (requestStatus === "success") {
-    notification = {
-      status: "success",
-      title: "Success!",
-      message: message,
-    };
-  }
-  if (requestStatus === "error") {
-    notification = {
-      status: "error",
-      title: "Error!",
-      message: error,
-    };
-  }
+  const { state, payOrder } = useOrder();
 
   return (
-    <Layout title={`Order ${order._id}`}>
-      <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
-        <section className="container px-2 pt-6 pb-8 mb-4 bg-white rounded shadow-2xl md:mx-auto ">
-          <div className="flex flex-col items-center justify-between mb-4 border-b-4 border-current border-gray-200 sm:px-4 sm:flex-row">
-            <div className="mt-6">
-              <Button type="button" color="dark" onClick={() => router.back()}>
-                Go Back
+    <Layout title={`Order Details: ${order._id}`}>
+      <main className="w-full p-2  bg-gray-200 md:p-4">
+        <section className="container max-w-screen-lg   md:mx-auto ">
+          <Card className="flex flex-col items-center justify-between mb-4   sm:p-4 sm:flex-row">
+            <div className="">
+              <Button
+                type="button"
+                color="dark"
+                onClick={() => router.push("/products")}
+              >
+                continue shopping
               </Button>
             </div>
             <div>
-              <h1 className="p-5 mt-6 font-bold md:text-5xl">
-                Order {order._id}
-              </h1>
+              <h1 className="font-thin md:text-3xl">Order: {order._id}</h1>
             </div>
-          </div>
+          </Card>
 
-          <div>
-            <div>
-              <div>
+          <div className="grid grid-cols-1 gap-2  mb-4  max-w-screen-lg md:grid-cols-2 lg:grid-cols-4 ">
+            <div className="md:col-span-3">
+              <Card className="mb-4  p-4">
+                <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
+                  <h2 className="p-2 text-2xl font-thin md:p-3 md:text-3xl">
+                    Shipping
+                  </h2>
+                </div>
                 <div>
-                  <h2>Shipping</h2>
-                  <p>
-                    <strong>Name: </strong>
-                    {order.user.name}
-                  </p>
-                  <p>
-                    <strong>Email: </strong>
+                  <p className="mb-1">{order.user.name}</p>
+                  <p className="mb-1">
                     <a href={`mailto:${order.user.email}`}>
                       {order.user.email}
                     </a>
                   </p>
-                  <p>
-                    <strong>Address: </strong>
-                    {order.shippingAddress.address},{" "}
-                    {order.shippingAddress.city},{" "}
-                    {order.shippingAddress.postalCode}{" "}
-                    {order.shippingAddress.country}
+                  <p className="text-xl font-thin mb-1">
+                    {order.shippingAddress?.address}{" "}
+                    {order.shippingAddress?.city}{" "}
+                    {order.hippingAddress?.postalCode}{" "}
+                    {order.shippingAddress?.country}
                   </p>
+                </div>
+                <div className="flex items-center">
+                  <p className="mr-2 font-thin">status:</p>
                   {order.isDelivered ? (
-                    <ErrorMessage variant="success">
-                      Delivered on {order.deliveredAt}
-                    </ErrorMessage>
+                    <p className="text-green-600">
+                      Delivered on {order.deliveredAt.slice(0, 10)}
+                    </p>
                   ) : (
-                    <ErrorMessage variant="danger">Not Delivered</ErrorMessage>
+                    <p className="text-red-500">Not Delivered</p>
                   )}
                 </div>
-                <div>
-                  <h2>Payment Method</h2>
-                  <p>
-                    <strong>Method: </strong>
-                    {order.paymentMethod}
-                  </p>
+              </Card>
+
+              <Card className="mb-4   p-4">
+                <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
+                  <h2 className="p-2 text-2xl font-thin md:text-3xl">
+                    Payment Method
+                  </h2>
+                </div>
+                <div className="mb-2 text-xl">
+                  <p className="font-thin">{order.paymentMethod}</p>
+                </div>
+
+                <div className="flex items-center">
+                  <p className="mr-2 font-thin">status:</p>
                   {order.isPaid ? (
-                    <ErrorMessage variant="success">
-                      Paid on {order.paidAt}
-                    </ErrorMessage>
+                    <p className="text-green-600">
+                      Paid on {order.paidAt.slice(0, 10)}
+                    </p>
                   ) : (
-                    <ErrorMessage variant="danger">Not Paid</ErrorMessage>
+                    <p className="text-red-500">Not Paid</p>
                   )}
                 </div>
-                <div>
-                  <h2>Order Items</h2>
-                  {order.orderItems.length === 0 ? (
-                    <ErrorMessage variant="default">
-                      {" "}
-                      Your cart is empty
-                    </ErrorMessage>
-                  ) : (
-                    <div>
-                      {order.orderItems.map((item, index) => (
-                        <div key={index}>
-                          <div className="flex flex-row">
-                            <div>
+              </Card>
+              <Card className="mb-4 p-4">
+                <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
+                  <h2 className="p-2 text-2xl font-thin md:p-3 md:text-3xl">
+                    Order Items
+                  </h2>
+                </div>
+
+                {order.orderItems.length === 0 ? (
+                  <ErrorMessage variant="default">
+                    {" "}
+                    You currently have no orders
+                  </ErrorMessage>
+                ) : (
+                  <div className="bg-white  px-4 md:px-10 pt-4 md:pt-7 pb-5 overflow-y-auto">
+                    <table className="w-full whitespace-nowrap">
+                      <thead>
+                        <tr className="h-16 w-full text-base leading-none text-gray-800">
+                          <th className="font-medium text-left pl-4">
+                            Product
+                          </th>
+                          <th className="font-medium text-left pl-12">Name</th>
+                          <th className="font-medium text-left pl-12">Qty</th>
+                          <th className="font-medium text-left pl-12">Price</th>
+                        </tr>
+                      </thead>
+                      <tbody className="w-full">
+                        {order.orderItems.map((item, index) => (
+                          <tr
+                            key={index}
+                            className="h-20 text-base leading-none text-gray-800 bg-white hover:bg-gray-100 border-b border-t border-gray-100"
+                          >
+                            <td className="pl-4 text-left ">
                               <Image
                                 src={item.image}
                                 alt={item.name}
@@ -141,114 +132,117 @@ const OrderDetails = (props) => {
                                 height={50}
                                 className="rounded"
                               />
-                            </div>
-                            <div>
+                            </td>
+                            <td className="pl-12 text-left font-thin">
                               <Link href={`/product/${item.product}`}>
                                 <a>{item.name}</a>
                               </Link>
-                            </div>
-                            <div>
-                              {item.qty} x £{item.price} = £
-                              {item.qty * item.price}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
+                            </td>
+                            <td className="pl-12 text-left font-thin">
+                              {item.qty}
+                            </td>
+                            <td className="pl-12 text-left font-thin">
+                              £{item.price}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </Card>
             </div>
-            <div>
-              <div className="relative flex flex-col mb-2 bg-white rounded-b">
+            <div className="md:col-span-1">
+              <Card className="p-1 md:w-64">
                 <div>
-                  <div>
-                    <h2>Order Summary</h2>
+                  <div className="p-3 border-b">
+                    <h2 className="text-2xl font-thin ">Order Summary</h2>
                   </div>
-                  <div>
-                    <div className="flex items-center">
-                      <h3>Items</h3>
-                      <p>£{addDecimals(order.itemsPrice)}</p>
+                  <div className="w-full p-3">
+                    <div>
+                      <div className="flex items-center justify-between mb-4 text-lg ">
+                        <div className="mr-1 font-thin">Items:</div>
+                        <div className="font-light text-lg">
+                          £{order.itemsPrice}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex items-center justify-between mb-4 text-lg ">
+                        <div className="mr-1 font-thin">Shipping:</div>
+                        <div className="font-light text-lg">
+                          £{order.shippingPrice}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex items-center justify-between mb-4 text-lg ">
+                        <div className="mr-1 font-thin">Tax:</div>
+                        <div className="font-light text-lg">{"(inc. VAT)"}</div>
+                      </div>
+                    </div>
+                    <div className="w-full mt-4 border-t">
+                      <div className="flex items-center justify-between my-4 text-lg ">
+                        <div className="mr-1 font-thin">Total:</div>
+                        <div className="font-light text-lg">
+                          £{order.totalPrice}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <div className="flex items-center">
-                      <h3>Shipping</h3>
-                      <p>£{addDecimals(order.shippingPrice)}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex items-center">
-                      <h3>Tax</h3>
-                      <p>£{addDecimals(order.taxPrice)}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex items-center">
-                      <h3>Total</h3>
-                      <p>£{addDecimals(order.totalPrice)}</p>
-                    </div>
-                  </div>
-
-                  {error && (
-                    <ErrorMessage variant="danger">{error}</ErrorMessage>
-                  )}
-                  {!order.isPaid && !userInfo.isAdmin && (
-                    <>
-                      <PayPalButton
-                        successPaymentHandler={successPaymentHandler}
-                        totalPrice={order.totalPrice}
-                      />
-                    </>
-                  )}
                 </div>
-              </div>
+              </Card>
             </div>
           </div>
         </section>
-        {notification && (
-          <Notification
-            status={notification.status}
-            title={notification.title}
-            message={notification.message}
-          />
-        )}
       </main>
     </Layout>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { token } = cookie.parse(context.req.headers.cookie);
   const { id } = context.params;
+  const req = context.req;
+  const session = await getSession({ req });
 
-  if (!token) {
+  if (!session) {
+    // If no token is present redirect user to the login page
     return {
       redirect: {
-        destination: "/",
+        destination: "/account/login",
         permanent: false,
       },
     };
   }
 
-  const [userRes, orderRes] = await Promise.all([
-    fetch(`${SERVER_URL}/api/users/profile`, {
+  const [userRes, orderRes, payPalRes] = await Promise.all([
+    fetch(`${NEXT_URL}/api/users/user`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        cookie: context.req.headers.cookie,
       },
     }),
-    fetch(`${SERVER_URL}/api/orders/${id}`, {
+    fetch(`${NEXT_URL}/api/orders/myOrders/${id}`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        cookie: context.req.headers.cookie,
+      },
+    }),
+    fetch(`${NEXT_URL}/api/paypal`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        cookie: context.req.headers.cookie,
       },
     }),
   ]);
 
-  const [userData, orderData] = await Promise.all([
+  const [userData, orderData, paypalData] = await Promise.all([
     userRes.json(),
     orderRes.json(),
+    payPalRes.json(),
   ]);
 
   if (!userData) {
@@ -261,7 +255,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: { userInfo: userData, order: orderData, orderId: id }, // will be passed to the page component as props
+    props: {
+      userInfo: userData,
+      order: orderData,
+      orderId: id,
+    }, // will be passed to the page component as props
   };
 };
 

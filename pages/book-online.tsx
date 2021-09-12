@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 // Components
-import Layout from "../components/Layout";
+import Layout from "../components/Layout/Layout";
 import Spinner from "../components/Spinner";
 
 const url: string =
@@ -32,7 +32,7 @@ function BookOnline(): JSX.Element {
     >
       <div className="flex flex-col justify-between w-full h-full py-6 bg-white">
         {loading ? (
-          <Spinner />
+          <Spinner className="w-12 h-12" />
         ) : (
           <>
             <div

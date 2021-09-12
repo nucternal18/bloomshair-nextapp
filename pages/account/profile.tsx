@@ -1,88 +1,85 @@
 import { useState, useContext, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import cookie from "cookie";
+import { getSession } from "next-auth/client";
 import { GetServerSideProps } from "next";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 // Components
-import Layout from "../../components/Layout";
+import Layout from "../../components/Layout/Layout";
 import ErrorMessage from "../../components/ErrorMessage";
 import Spinner from "../../components/Spinner";
 import Notification from "../../components/notification/notification";
 import Table from "../../components/OrdersTable";
-import Button from "../../components/Button";
+
+import UpdateProfileForm from "../../components/Forms/UpdateProfileForm";
 
 // context
-import { authContext } from "../../context/AuthContext";
+import { useAuth } from "../../context/auth/AuthContext";
 
-import { SERVER_URL } from "../../config";
-import { FaPlusCircle } from "react-icons/fa";
+import { NEXT_URL } from "../../config";
+import { toast } from "react-toastify";
+
+type Inputs = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 function Profile({ userData, orders }) {
-  const [name, setName] = useState(userData.name);
-  const [email, setEmail] = useState(userData.email);
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [mounted, setMounted] = useState(false);
-
   const {
-    loading,
-    success,
-    error,
-    requestStatus,
-    image,
-    uploading,
-    message,
-    uploadImage,
-    updateUserProfile,
-    setError,
-  } = useContext(authContext);
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<Inputs>();
+  const { state, uploadUserImage, updateUserProfile } = useAuth();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  let notification;
-  if (requestStatus === "success") {
-    notification = {
-      status: "success",
-      title: "Success!",
-      message: message,
+  useEffect(() => {
+    if (state.success) {
+      toast.success(state.message);
+    }
+  }, [state.success]);
+
+  const submitHandler: SubmitHandler<Inputs> = ({
+    name,
+    email,
+    password,
+    confirmPassword,
+  }) => {
+    const user = {
+      id: userData._id,
+      name,
+      email,
+      password,
+      image: state.image,
     };
-  }
-  if (requestStatus === "error") {
-    notification = {
-      status: "error",
-      title: "Error!",
-      message: error,
-    };
-  }
+    if (
+      !password ||
+      password.trim().length < 7 ||
+      password !== confirmPassword
+    ) {
+      toast.error("Invalid input - password must be at least 7 characters");
+      return;
+    }
+    updateUserProfile(user);
+  };
 
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
-      uploadImage(reader.result);
+      uploadUserImage(reader.result);
     };
     reader.onerror = () => {
-      console.error("something went wrong!");
+      toast.error("something went wrong!");
     };
   };
 
-  const submitHandler = () => {
-    console.log("submitted");
-    const user = { id: userData._id, name, email, password, image };
-    if (
-      !password ||
-      password.trim().length < 5 ||
-      password !== confirmPassword
-    ) {
-      setError("Invalid input - password must be at least 5 characters");
-      return;
-    }
-    updateUserProfile(user);
-  };
   return (
     mounted && (
       <Layout>
@@ -93,123 +90,25 @@ function Profile({ userData, orders }) {
                 Profile
               </h1>
             </div>
-            {error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
-            {success && (
-              <ErrorMessage variant="success">Profile updated</ErrorMessage>
+            {state.error && (
+              <ErrorMessage variant="danger">{state.error}</ErrorMessage>
             )}
-            {loading ? (
-              <Spinner />
+            {state.loading ? (
+              <Spinner className="w-12 h-12" />
             ) : (
               <div className="flex flex-col items-center justify-around md:flex-row">
                 {/* Update user details form */}
-                <form
-                  onSubmit={submitHandler}
-                  className="w-full px-2 pt-6 pb-8 mb-4 bg-white rounded md:px-12 sm:mx-auto"
-                >
-                  <div className="flex flex-col items-center justify-around mb-4 md:flex-row">
-                    <div className="flex flex-col items-center w-full ">
-                      {image ? (
-                        <Image
-                          src={image}
-                          alt={name}
-                          width={450}
-                          height={350}
-                          layout="responsive"
-                          objectFit="cover"
-                        />
-                      ) : (
-                        <Image
-                          src={userData.image}
-                          alt={name}
-                          width={450}
-                          height={350}
-                          objectFit="cover"
-                        />
-                      )}
-                      {uploading && <Spinner />}
-                      {error && (
-                        <ErrorMessage variant="danger">{error}</ErrorMessage>
-                      )}
-                      {!uploading && (
-                        <label className="block py-2 my-2 mr-2 text-base font-bold text-gray-700">
-                          <FaPlusCircle className="text-4xl" />
-                          <input
-                            type="file"
-                            onChange={uploadFileHandler}
-                            className="hidden"
-                          />
-                        </label>
-                      )}
-                    </div>
-                    <div className="w-full">
-                      <div className="mb-4">
-                        <label
-                          htmlFor="name"
-                          className="block mb-2 text-base font-bold text-gray-700"
-                        >
-                          Name
-                        </label>
-                        <input
-                          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-                          type="name"
-                          placeholder="Enter your name"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                        ></input>
-                      </div>
-                      <div className="mb-4">
-                        <label
-                          htmlFor="email"
-                          className="block mb-2 text-base font-bold text-gray-700"
-                        >
-                          Email Address
-                        </label>
-                        <input
-                          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-                          type="email"
-                          placeholder="Enter email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        ></input>
-                      </div>
-                      <div className="mb-4">
-                        <label
-                          htmlFor="password"
-                          className="block mb-2 text-base font-bold text-gray-700"
-                        >
-                          Password
-                        </label>
-                        <input
-                          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-                          type="password"
-                          placeholder="Enter password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        ></input>
-                      </div>
-                      <div className="mb-4">
-                        <label
-                          htmlFor="confirmPassword"
-                          className="block mb-2 text-base font-bold text-gray-700"
-                        >
-                          Confirm Password
-                        </label>
-                        <input
-                          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-                          type="password"
-                          placeholder="Confirm password"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                        ></input>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-center px-4 pt-4 mb-4 border-t-4 border-current border-gray-200">
-                    <Button type="submit" color="dark">
-                      Update
-                    </Button>
-                  </div>
-                </form>
+                <UpdateProfileForm
+                  userData={userData}
+                  image={state.image}
+                  uploading={state.loading}
+                  submitHandler={submitHandler}
+                  uploadError={state.error}
+                  errors={errors}
+                  handleSubmit={handleSubmit}
+                  register={register}
+                  uploadFileHandler={uploadFileHandler}
+                />
               </div>
             )}
           </section>
@@ -232,13 +131,6 @@ function Profile({ userData, orders }) {
               ]}
             />
           </section>
-          {notification && (
-            <Notification
-              status={notification.status}
-              title={notification.title}
-              message={notification.message}
-            />
-          )}
         </main>
       </Layout>
     )
@@ -246,8 +138,10 @@ function Profile({ userData, orders }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { token } = cookie.parse(context.req.headers.cookie);
-  if (!token) {
+  const req = context.req;
+  const session = await getSession({ req });
+
+  if (!session) {
     // If no token is present redirect user to the login page
     return {
       redirect: {
@@ -257,20 +151,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  if (token) {
+  if (session) {
     // If user has logged in and there is a JWT token present,
     // Fetch user data and order data
     const [userRes, orderRes] = await Promise.all([
-      fetch(`${SERVER_URL}/api/users/profile`, {
+      fetch(`${NEXT_URL}/api/users/user`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          cookie: context.req.headers.cookie,
         },
       }),
-      fetch(`${SERVER_URL}/api/orders/myorders`, {
+      fetch(`${NEXT_URL}/api/orders/myOrders`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          cookie: context.req.headers.cookie,
         },
       }),
     ]);

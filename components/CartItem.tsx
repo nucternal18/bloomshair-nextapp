@@ -12,11 +12,10 @@ function CartItem({
   qty,
   countInStock,
   removeFromCartHandler,
-  addToCart,
+  updateCartHandler,
   size,
   textSize,
 }) {
-  // const { remove, increase, decrease, toggleAmount } = useGlobalContext();
   return (
     <div className="w-full mb-2 border-b">
       <div className="flex items-center justify-around w-full mb-2 ">
@@ -39,7 +38,7 @@ function CartItem({
           <select
             className="w-full px-3 py-2 my-2 bg-white border rounded outline-none"
             value={qty}
-            onChange={(e) => addToCart(product, Number(e.target.value))}
+            onChange={(e) => updateCartHandler(product, Number(e.target.value))}
           >
             {[...Array(countInStock).keys()].map((x) => (
               <option key={x + 1} value={x + 1} className="py-1">

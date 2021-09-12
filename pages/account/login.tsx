@@ -1,51 +1,49 @@
-import { useContext, useState } from "react";
+import { signIn, getSession } from "next-auth/client";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
-import cookie from "cookie";
 import { GetServerSideProps } from "next";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { toast } from "react-toastify";
 
 // Components
-import Spinner from "../../components/Spinner";
-import Button from "../../components/Button";
-import ErrorMessage from "../../components/ErrorMessage";
-import Notification from "../../components/notification/notification";
-import Layout from "../../components/Layout";
+import Layout from "../../components/Layout/Layout";
 
-import { authContext } from "../../context/AuthContext";
+import LoginForm from "../../components/Forms/LoginForm";
 const url =
   "https://res.cloudinary.com/dtkjg8f0n/image/upload/ar_16:9,c_fill,e_sharpen,g_auto,w_1000/v1625089267/blooms_hair_products/shari-sirotnak-oM5YoMhTf8E-unsplash_rcpxsj.webp";
 
+type Inputs = {
+  email: string;
+  password: string;
+};
+
 export default function Login() {
-  const { loading, login, error, requestStatus, setError } =
-    useContext(authContext);
+  const router = useRouter();
+  const { redirect } = router.query; // login?redirect=/checkout/shipping
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<Inputs>();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-    if (
-      !email ||
-      !email.includes("@") ||
-      !password ||
-      password.trim().length < 5
-    ) {
-      setError("Invalid input - password must be at least 5 characters");
-      return;
+  const submitHandler: SubmitHandler<Inputs> = async (data) => {
+    const result = await signIn("credentials", {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+    });
+    if (result.error) {
+      toast.error(result.error ? "Invalid email or password" : "");
     }
-    //dispatch login
-    login(email, password);
+    if (!result.error && redirect === "/checkout/shipping") {
+      router.push("/checkout/shipping");
+    }
+    if (!result.error) {
+      router.push("/");
+    }
   };
 
-  let notification;
-
-  if (requestStatus === "error") {
-    notification = {
-      status: "error",
-      title: "Error!",
-      message: error,
-    };
-  }
   return (
     <Layout>
       <main className="h-screen bg-gray-200">
@@ -63,51 +61,12 @@ export default function Login() {
           </div>
           <section className="right-0 z-50 flex items-center justify-center py-8 md:w-4/12">
             <div className="w-full px-4">
-              {loading ? (
-                <Spinner />
-              ) : (
-                <form
-                  onSubmit={submitHandler}
-                  className="px-2 pt-6 pb-8 mx-2 mb-4 bg-transparent "
-                >
-                  <div className="mb-4">
-                    <label
-                      htmlFor="email"
-                      className="block mb-2 text-base font-bold text-gray-700"
-                    >
-                      Email Address
-                    </label>
-                    <input
-                      className="z-0 w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-                      type="email"
-                      placeholder="Enter email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    ></input>
-                  </div>
-                  <div className="mb-4">
-                    <label
-                      htmlFor="password"
-                      className="block mb-2 text-base font-bold text-gray-700"
-                    >
-                      Password
-                    </label>
-                    <input
-                      className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-                      type="password"
-                      placeholder="Enter password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    ></input>
-                  </div>
-                  {error && (
-                    <ErrorMessage variant="danger">{error}</ErrorMessage>
-                  )}
-                  <Button type="submit" color="dark">
-                    Sign In
-                  </Button>
-                </form>
-              )}
+              <LoginForm
+                submitHandler={submitHandler}
+                handleSubmit={handleSubmit}
+                register={register}
+                errors={errors}
+              />
               <div className="flex flex-row justify-center py-3 text-lg">
                 <p className="mr-2">New Customer?</p>{" "}
                 <Link href={"/account/register"}>
@@ -115,13 +74,6 @@ export default function Login() {
                 </Link>
               </div>
             </div>
-            {notification && (
-              <Notification
-                status={notification.status}
-                title={notification.title}
-                message={notification.message}
-              />
-            )}
           </section>
         </div>
       </main>
@@ -130,12 +82,13 @@ export default function Login() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { token } = cookie.parse(context.req.headers.cookie || "");
+  const req = context.req;
+  const session = await getSession({ req });
 
-  if (token) {
+  if (session) {
     return {
       redirect: {
-        destination: "/dashboard",
+        destination: "/",
         permanent: false,
       },
     };

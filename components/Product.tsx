@@ -1,7 +1,7 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import Rating from './Rating';
-import { Card, CardBody, CardTitle, CardText } from './Card';
+import Link from "next/link";
+import Image from "next/image";
+import Rating from "./Rating";
+import { Card, CardBody, CardTitle, CardText } from "./Card";
 
 const Product = ({ product }) => {
   return (
@@ -11,18 +11,18 @@ const Product = ({ product }) => {
           <Image
             src={product.image}
             alt={product.name}
-            className=''
+            className="rounded"
             width={400}
             height={400}
-            layout='responsive'
-            objectFit='cover'
+            layout="responsive"
+            objectFit="cover"
           />
         </a>
       </Link>
-      <CardBody className='px-3'>
-        <CardTitle className='text-lg truncate'>
+      <CardBody className="px-3">
+        <CardTitle className="text-lg truncate">
           <Link href={`/products/${product._id}`}>
-            <a className='font-semibold '>{product.name}</a>
+            <a className="font-semibold ">{product.name}</a>
           </Link>
         </CardTitle>
         <div>
@@ -31,7 +31,7 @@ const Product = ({ product }) => {
             text={`${product.numReviews} reviews`}
           />
         </div>
-        <CardText className='text-xl'>£{product.price.toFixed(2)}</CardText>
+        <CardText className="text-xl">£{product.price.toFixed(2)}</CardText>
       </CardBody>
     </Card>
   );

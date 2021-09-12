@@ -1,25 +1,57 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
-import { SERVER_URL } from "../../../config";
+
+import User from "../../../models/userModel";
+
+import db from "../../../lib/db";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
-    const { displayName, email, password, isAdmin } = req.body;
+    const { displayName, password, email, isAdmin, image, shippingAddress } =
+      req.body;
 
-    const response = await fetch(`${SERVER_URL}/api/users/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ displayName, email, password, isAdmin }),
+    if (
+      !displayName ||
+      !password ||
+      password.trim().length < 7 ||
+      !email ||
+      !email.includes("@")
+    ) {
+      res
+        .status(422)
+        .send({
+          message: "Invalid inputs - password should be at least 7 characters",
+        });
+      return;
+    }
+    await db.connectDB();
+
+    const userExist = await User.findOne({ email });
+
+    if (userExist) {
+      res.status(422).json({ message: "User already exists" });
+      await db.disconnect();
+      return;
+    }
+
+    const user = await User.create({
+      name: displayName,
+      email,
+      password,
+      image: image
+        ? image
+        : "https://res.cloudinary.com/dtkjg8f0n/image/upload/e_sharpen:100,q_auto/v1621633003/sample.webp",
+      isAdmin,
+      shippingAddress: shippingAddress,
     });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      res.status(200).json({ data });
+    await db.disconnect();
+    if (user) {
+      res
+        .status(201)
+        .json({ success: true, message: "Created user successfully" });
     } else {
-      res.status(data.statusCode).json({ message: data });
+      res.status(400);
+      throw new Error("Invalid user data");
     }
   } else {
     res.setHeader("Allow", ["POST"]);

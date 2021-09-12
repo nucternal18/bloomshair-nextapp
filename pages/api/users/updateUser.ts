@@ -1,32 +1,57 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
-import cookie from "cookie";
-import { SERVER_URL } from "../../../config";
+import { getSession } from "next-auth/client";
+import User from "../../../models/userModel";
+import db from "../../../lib/db";
+import { getUser } from "../../../lib/getUser";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "PUT") {
-    if (!req.headers.cookie) {
-      res.status(403).json({ message: "Not Authorized" });
+    /**
+     * @desc Get user session
+     */
+    const session = await getSession({ req });
+    /**
+     * @desc check to see if their is a user session
+     */
+    if (!session) {
+      res.status(401).json({ message: "Not Authorized" });
       return;
     }
-    const { user } = req.body;
+    /**
+     * @desc Get current user session
+     */
+    const userData = await getUser(req);
 
-    const { token } = cookie.parse(req.headers.cookie);
+    await db.connectDB();
 
-    const response = await fetch(`${SERVER_URL}/api/users/profile`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ user }),
-    });
+    const user = await User.findById(userData._id);
 
-    const updatedUser = await response.json();
+    if (user) {
+      user.name = req.body.user.displayName || user.name;
+      user.image = req.body.user.image || user.image;
+      user.email = req.body.user.email || user.email;
+      user.shippingAddress =
+        req.body.user.shippingAddress || user.shippingAddress;
+      if (req.body.password) {
+        user.password = req.body.user.password;
+      }
 
-    if (response.ok) {
-      res.status(200).json({ updatedUser });
+      const updatedUser = await user.save();
+      await db.disconnect();
+
+      res.json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        image: updatedUser.image,
+        email: updatedUser.email,
+        isAdmin: updatedUser.isAdmin,
+        shippingAddress: updatedUser.shippingAddress,
+      });
     } else {
-      res.status(403).json({ message: "User not updated" });
+      await db.disconnect();
+      res.status(404);
+      throw new Error("User not found");
     }
   } else {
     res.setHeader("Allow", ["POST"]);

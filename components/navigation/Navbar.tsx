@@ -1,69 +1,52 @@
 /* eslint-disable react/display-name */
-import { useState, useEffect, useRef, useCallback, useContext } from "react";
+import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { FaUser } from "react-icons/fa";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
-import { BiBasket } from "react-icons/bi";
-import { useQuery, useQueryClient } from "react-query";
+import { RiAdminFill } from "react-icons/ri";
+import { getSession, signOut } from "next-auth/client";
+import { useQuery } from "react-query";
 
 // context
-import { authContext } from "../../context/AuthContext";
-import CartContainer from "../CartContainer";
+import { useCart } from "../../context/cart/cartContext";
 
-const navLink = [
-  {
-    id: 1,
-    link: "/",
-    title: "HOME",
-  },
-  {
-    id: 2,
-    link: "/about",
-    title: "ABOUT US",
-  },
-  {
-    id: 3,
-    link: "/service-menu",
-    title: "SERVICE MENU",
-  },
-  {
-    id: 4,
-    link: "/gallery",
-    title: "GALLERY",
-  },
-  {
-    id: 5,
-    link: "/products",
-    title: "PRODUCTS",
-  },
-  {
-    id: 6,
-    link: "/contact-us",
-    title: "CONTACT US",
-  },
-  {
-    id: 7,
-    link: "/book-online",
-    title: "BOOK ONLINE",
-  },
-];
+// components
+import CartContainer from "../CartContainer";
+const CartIcon = dynamic(() => import("../CartIcon"), { ssr: false });
+
+// navlinks
+import { navLink } from "../../data";
+import { getCartItems } from "../../context/cart/cartActions";
 
 const Navbar = () => {
-  const queryClient = useQueryClient();
   const router = useRouter();
-
+  const [loading, setLoading] = useState(true);
+  const [loadedSession, setLoadedSession] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [cartIsOpen, setCartIsOpen] = useState(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
-  const { checkUserLoggedIn, logout } = useContext(authContext);
-  const { data: user, isLoading } = useQuery("user", checkUserLoggedIn);
+
+  const { state } = useCart();
+  const { isLoading, data: cartItems } = useQuery("cart", getCartItems, {
+    initialData: state.cart.cartItems,
+  });
 
   // mobile nav bar ref
   const mobileNavRef = useRef<HTMLElement>();
   // user drop down ref
   const ref = useRef<HTMLDivElement>();
+
+  useEffect(() => {
+    getSession().then((session) => {
+      setLoading(false);
+      if (session) {
+        setLoadedSession(session);
+      }
+    });
+  }, []);
 
   // Close user drop down list when user clicks outside event window
   useEffect(() => {
@@ -104,8 +87,7 @@ const Navbar = () => {
 
   // logout handler
   const logoutHandler = () => {
-    logout();
-    queryClient.invalidateQueries("user");
+    signOut();
   };
 
   return (
@@ -127,17 +109,56 @@ const Navbar = () => {
             />
           </a>
         </Link>
-        <button
-          type="button"
-          aria-expanded="false"
-          aria-disabled={isOpen}
-          disabled={isOpen}
-          aria-label="Toggle navigation"
-          className="block float-right text-4xl text-gray-200 lg:hidden focus:outline-none focus:shadow-none"
-          onClick={toggle}
-        >
-          &#8801;
-        </button>
+        <div>
+          <button
+            type="button"
+            aria-expanded="false"
+            aria-disabled={isOpen}
+            disabled={isOpen}
+            aria-label="Toggle navigation"
+            className="block float-right text-4xl text-gray-200 lg:hidden focus:outline-none focus:shadow-none"
+            onClick={toggle}
+          >
+            &#8801;
+          </button>
+          <div className="flex items-center lg:hidden ">
+            {loadedSession && (
+              <button
+                className="flex items-center  bg-gray-200 border-2 border-yellow-500 rounded-full"
+                disabled
+              >
+                <Image
+                  src={loadedSession.user.image}
+                  alt={loadedSession.user.name}
+                  width={30}
+                  height={30}
+                  className="rounded-full"
+                  objectFit="cover"
+                />
+              </button>
+            )}
+            <button className="">
+              <Link href={"/checkout/cart"}>
+                <a
+                  className={`${
+                    router.asPath === "/checkout/cart"
+                      ? "text-yellow-500"
+                      : "text-gray-200"
+                  }text-2xl  list-none cursor-pointer hover:text-yellow-400`}
+                >
+                  {!isLoading && (
+                    <CartIcon
+                      itemCount={cartItems?.reduce(
+                        (acc, item) => acc + +item.qty,
+                        0
+                      )}
+                    />
+                  )}
+                </a>
+              </Link>
+            </button>
+          </div>
+        </div>
         <ul className={position.right}>
           {navLink.map((link) => (
             <li key={link.id} className="flex px-1 m-0 list-none ">
@@ -154,19 +175,15 @@ const Navbar = () => {
               </Link>
             </li>
           ))}
-          {user && (
+          {loadedSession && (
             <li className="px-1 m-0 text-base list-none">
               <button
                 className="flex items-center bg-white border-2 border-yellow-500 rounded-full"
                 onClick={toggleUserDropdown}
               >
                 <Image
-                  src={
-                    user
-                      ? user.user.image
-                      : "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1625765848/blooms_hair_products/icons8-user-96_wyguya.png"
-                  }
-                  alt={user.user.name}
+                  src={loadedSession.user.image}
+                  alt={loadedSession.user.name}
                   width={30}
                   height={30}
                   className="rounded-full"
@@ -196,18 +213,34 @@ const Navbar = () => {
                       </a>
                     </Link>
                   </button>
+                  {loadedSession.user.isAdmin && (
+                    <button className="flex items-center px-4 py-2 space-x-2">
+                      <RiAdminFill className="text-gray-200 " />
+                      <Link href={"/admin"}>
+                        <a
+                          className={`${
+                            router.asPath === "/account/login"
+                              ? "text-yellow-500"
+                              : "text-gray-200"
+                          } block text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
+                        >
+                          admin
+                        </a>
+                      </Link>
+                    </button>
+                  )}
                   <button
                     className="flex items-center px-4 py-2 space-x-2 text-lg text-gray-200 hover:text-yellow-500"
                     onClick={logoutHandler}
                   >
                     <FiLogOut className="text-gray-200 " />
-                    <p>Logout</p>
+                    <p>Logout </p>
                   </button>
                 </div>
               </div>
             </li>
           )}
-          {!user && !isLoading && (
+          {!loadedSession && !loading && (
             <li className="px-1 m-0 list-none ">
               <button
                 className={`${
@@ -236,7 +269,12 @@ const Navbar = () => {
             } block text-2xl font-medium  uppercase list-none cursor-pointer hover:text-yellow-400flex items-center ml-1`}
             onClick={toggleCartDrawer}
           >
-            <BiBasket />
+            <CartIcon
+              itemCount={state.cart.cartItems?.reduce(
+                (acc, item) => acc + item.qty,
+                0
+              )}
+            />
           </button>
         </ul>
       </div>
@@ -252,53 +290,20 @@ const Navbar = () => {
         }
         ref={mobileNavRef}
       >
-        <div>
-          <div className="flex items-center justify-between px-3 py-2 ml-4">
-            <button
-              aria-label="Close"
-              className="flex items-center py-1 mr-12 text-4xl text-white cursor-pointer focus:outline-none"
-              onClick={toggle}
-            >
-              &times;
-              <p className="ml-2 text-base ">Close</p>
-            </button>
-            <div className="flex items-center ">
-              {user && (
-                <button
-                  className="flex items-center mr-2 bg-white border-2 border-yellow-500 rounded-full"
-                  disabled
-                >
-                  <Image
-                    src={
-                      user
-                        ? user.user.image
-                        : "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1625765848/blooms_hair_products/icons8-user-96_wyguya.png"
-                    }
-                    alt={user.user.name}
-                    width={30}
-                    height={30}
-                    className="rounded-full"
-                    objectFit="cover"
-                  />
-                </button>
-              )}
-              <button className="">
-                <Link href={"/checkout/cart"}>
-                  <a
-                    className={`${
-                      router.asPath === "/account/login"
-                        ? "text-yellow-500"
-                        : "text-gray-200"
-                    }text-2xl  list-none cursor-pointer hover:text-yellow-400`}
-                  >
-                    <BiBasket />
-                  </a>
-                </Link>
+        <div className="flex flex-col">
+          <div className="flex items-center px-3 py-2 ml-4">
+            <div className="mr-12">
+              <button
+                aria-label="Close"
+                className=" py-1  text-4xl text-gray-200 cursor-pointer focus:outline-none"
+                onClick={toggle}
+              >
+                &times;
               </button>
             </div>
           </div>
-          <div className="mt-12">
-            <ul>
+          <div className="mt-2">
+            <ul className="overscroll-y-auto">
               {navLink.map((link) => (
                 <li
                   key={link.id}
@@ -310,17 +315,17 @@ const Navbar = () => {
                         router.asPath === link.link
                           ? "text-yellow-500"
                           : "text-gray-200"
-                      }flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2   hover:text-yellow-400 text-lg font-medium list-none uppercase`}
+                      }flex items-center  ml-4 mb-2 cursor-pointer py-1.5  px-2   hover:text-yellow-400 text-lg font-medium list-none uppercase`}
                     >
                       {link.title}
                     </a>
                   </Link>
                 </li>
               ))}
-              {user && (
+              {loadedSession ? (
                 <>
                   <li className="px-1 m-0 text-base list-none text-md">
-                    <button className="flex items-center py-1.5  px-2 mb-4 ml-4 space-x-2">
+                    <button className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2">
                       <FaUser className="text-gray-200 " />
                       <Link href={"/account/profile"}>
                         <a
@@ -335,18 +340,35 @@ const Navbar = () => {
                       </Link>
                     </button>
                   </li>
+                  {loadedSession.user.isAdmin && (
+                    <li className="px-1 m-0 text-base list-none text-md">
+                      <button className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2">
+                        <RiAdminFill className="text-gray-200 " />
+                        <Link href={"/admin"}>
+                          <a
+                            className={`${
+                              router.asPath === "/account/login"
+                                ? "text-yellow-500"
+                                : "text-gray-200"
+                            } block text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
+                          >
+                            admin
+                          </a>
+                        </Link>
+                      </button>
+                    </li>
+                  )}
                   <li className="px-1 m-0 text-base list-none text-md">
                     <button
                       className="flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2  space-x-2 text-gray-200 hover:text-gray-400 text-lg font-medium list-none uppercase"
                       onClick={logoutHandler}
                     >
                       <FiLogOut className="text-gray-200 " />
-                      <p>Logout</p>
+                      <p>Logout </p>
                     </button>
                   </li>
                 </>
-              )}
-              {!user && (
+              ) : (
                 <li className="flex items-center px-1 m-0 text-base list-none text-md">
                   <button className="flex items-center">
                     <FiLogIn className="ml-5 mr-1 text-gray-200 " />

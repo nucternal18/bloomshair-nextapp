@@ -19,7 +19,7 @@ const Paginate = ({ pages, page, isAdmin = false, keyword = "" }) => {
                   ? keyword
                     ? `/search?keyword=${keyword}?pageNumber=${x + 1}`
                     : `/products?pageNumber=${x + 1}`
-                  : `/products?pageNumber=${x + 1}`
+                  : `/admin/products?pageNumber=${x + 1}`
               }
             >
               <a

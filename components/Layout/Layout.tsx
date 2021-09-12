@@ -1,8 +1,11 @@
 import React from "react";
 import Head from "next/head";
-import Navbar from "./navigation/Navbar";
-import Footer from "./Footer";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { ToastContainer } from "react-toastify";
+
+import Navbar from "../navigation/Navbar";
+import Footer from "../Footer";
 
 interface ILayout {
   title?: string;
@@ -27,6 +30,7 @@ function Layout({ title, description, children }: ILayout): JSX.Element {
       <main className={`relative ${router.asPath === "/" ? "mt-0" : "mt-20"}`}>
         {children}
       </main>
+      <ToastContainer autoClose={4000} />
       <Footer />
     </div>
   );

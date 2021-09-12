@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
-import cookie from "cookie";
+import { getSession } from "next-auth/client";
 import {
   locationsApi,
   idempotencyKey,
@@ -11,27 +11,26 @@ import {
  * @param
  */
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+  const session = await getSession({ req });
   if (req.method === "POST") {
-    if (!req.headers.cookie) {
-      res.status(403).json({ message: "Not Authorized" });
+    if (!session) {
+      res.status(401).json({ message: "Not Authorized" });
       return;
     }
 
     const { paymentToken, paymentAmount } = req.body;
 
-    // get the currency for the location
+    /**
+     * @desc get the currency for the location
+     */
     const locationResponse = await locationsApi.retrieveLocation(
       process.env.SQUARE_LOCATION_ID
     );
     const currency = locationResponse.result.location.currency;
 
-    const { token } = cookie.parse(req.headers.cookie);
-    if (!token) {
-      res.status(403).json({ message: "Not Authorized" });
-      return;
-    }
-
-    // Charge the customer's card
+    /**
+     * @desc Charge the customer's card
+     */
     const requestBody = {
       idempotencyKey,
       sourceId: paymentToken,

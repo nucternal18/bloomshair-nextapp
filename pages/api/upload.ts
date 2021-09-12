@@ -1,31 +1,36 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
-import cookie from "cookie";
-// Server Url
-import { SERVER_URL } from "../../config";
+import { getSession } from "next-auth/client";
+import { getUser } from "../../lib/getUser";
+import cloudinary from "../../lib/cloudinary";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+  const session = await getSession({ req });
   if (req.method == "POST") {
+    /**
+     * @desc Upload image to cloudinary
+     * @route POST /api/upload
+     * @access Private/admin
+     */
+
+    if (!session) {
+      res.status(401).json({ message: "Not Authorized" });
+      return;
+    }
+    const userData = await getUser(req);
+    /**
+     * @desc check to see if logged in user is admin
+     */
+    if (!userData.isAdmin) {
+      res.status(401).json({ message: "Not Authorized" });
+      return;
+    }
     try {
-      const { data } = req.body;
-
-      const { token } = cookie.parse(req.headers.cookie);
-      const response = await fetch(`${SERVER_URL}/api/upload`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ data }),
+      const fileStr = req.body.data;
+      const uploadedResponse = await cloudinary.uploader.upload(fileStr, {
+        upload_preset: "blooms_hair_products",
       });
-
-      const url = await response.json();
-
-      if (response.ok) {
-        res.status(201).json({ url });
-      } else {
-        res.status(403).json({ message: "Image not uploaded" });
-      }
+      res.status(201).json(uploadedResponse);
     } catch (error) {
       console.error(error);
       res.status(500).json({ err: "Something went wrong uploading image" });

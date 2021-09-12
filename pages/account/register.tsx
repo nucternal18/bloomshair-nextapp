@@ -1,72 +1,60 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect } from "react";
+import { getSession } from "next-auth/client";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
-import cookie from "cookie";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { GetServerSideProps } from "next";
+import { toast } from "react-toastify";
 
 // Components
 import Spinner from "../../components/Spinner";
-import Button from "../../components/Button";
-import ErrorMessage from "../../components/ErrorMessage";
-import Notification from "../../components/notification/notification";
-import Layout from "../../components/Layout";
+import Layout from "../../components/Layout/Layout";
 
-import { authContext } from "../../context/AuthContext";
+import { useAuth } from "../../context/auth/AuthContext";
+import RegisterForm from "../../components/Forms/RegisterForm";
+
 const url =
   "https://res.cloudinary.com/dtkjg8f0n/image/upload/ar_16:9,c_fill,e_sharpen,g_auto,w_1000/v1625089267/blooms_hair_products/shari-sirotnak-oM5YoMhTf8E-unsplash_rcpxsj.webp";
 
+type Inputs = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
 export default function Register() {
+  const router = useRouter();
+  const { state, registerUser } = useAuth();
   const {
-    loading,
+    handleSubmit,
     register,
-    error,
-    setError,
-    requestStatus,
-    message,
-    setMessage,
-    setRequestStatus,
-  } = useContext(authContext);
+    formState: { errors },
+  } = useForm<Inputs>();
 
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  useEffect(() => {
+    if (state.success) {
+      toast.success(state.message);
+      router.replace("/account/login");
+    }
+  }, [state.success]);
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-    //dispatch login
-    if (
-      !email ||
-      !email.includes("@") ||
-      !password ||
-      password.trim().length < 5
-    ) {
-      setError("Invalid input - password must be at least 5 characters");
-      return;
+  const submitHandler: SubmitHandler<Inputs> = async ({
+    name,
+    email,
+    password,
+    confirmPassword,
+  }) => {
+    if (name === "") {
+      toast.error("Please enter a valid name");
     }
     if (password !== confirmPassword) {
-      setRequestStatus("error");
-      setMessage("Passwords do not match");
-    } else {
-      register(name, email, password);
+      toast.error("Passwords do not match. please check your password");
     }
+    registerUser(name, email, password);
   };
 
-  let notification;
-  if (requestStatus === "success") {
-    notification = {
-      status: "success",
-      title: "Success!",
-      message: message,
-    };
-  }
-  if (requestStatus === "error") {
-    notification = {
-      status: "error",
-      title: "Error!",
-      message: error,
-    };
-  }
   return (
     <Layout>
       <main className="h-screen bg-gray-200">
@@ -84,68 +72,15 @@ export default function Register() {
           </div>
           <section className="right-0 z-50 flex items-center justify-center py-8 md:w-4/12">
             <div className="w-full px-4">
-              {loading ? (
-                <Spinner />
+              {state.loading ? (
+                <Spinner className="w-12 h-12" />
               ) : (
-                <form
-                  onSubmit={submitHandler}
-                  className="px-2 pt-6 pb-8 mx-2 mb-4 bg-transparent "
-                >
-                  <div className="mb-4">
-                    <label className="block mb-2 text-base font-bold text-gray-700">
-                      Name
-                    </label>
-                    <input
-                      className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-                      type="name"
-                      placeholder="Enter your name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    ></input>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block mb-2 text-base font-bold text-gray-700">
-                      Email Address
-                    </label>
-                    <input
-                      className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-                      type="email"
-                      placeholder="Enter email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    ></input>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block mb-2 text-base font-bold text-gray-700">
-                      Password
-                    </label>
-                    <input
-                      className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-                      type="password"
-                      placeholder="Enter password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    ></input>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block mb-2 text-base font-bold text-gray-700">
-                      Confirm Password
-                    </label>
-                    <input
-                      className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-                      type="password"
-                      placeholder="Confirm password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                    ></input>
-                  </div>
-                  {error && (
-                    <ErrorMessage variant="danger">{error}</ErrorMessage>
-                  )}
-                  <Button type="submit" color="dark">
-                    Register
-                  </Button>
-                </form>
+                <RegisterForm
+                  submitHandler={submitHandler}
+                  errors={errors}
+                  handleSubmit={handleSubmit}
+                  register={register}
+                />
               )}
               <div className="flex flex-row justify-center py-3 text-lg">
                 <p className="mr-2">Have account?</p>{" "}
@@ -154,13 +89,6 @@ export default function Register() {
                 </Link>
               </div>
             </div>
-            {notification && (
-              <Notification
-                status={notification.status}
-                title={notification.title}
-                message={notification.message}
-              />
-            )}
           </section>
         </div>
       </main>
@@ -169,9 +97,10 @@ export default function Register() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { token } = cookie.parse(context.req.headers.cookie || "");
+  const req = context.req;
+  const session = await getSession({ req });
 
-  if (token) {
+  if (session) {
     return {
       redirect: {
         destination: "/",

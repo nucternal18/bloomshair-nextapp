@@ -3,11 +3,11 @@ import { GetServerSideProps } from "next";
 
 // Components
 import Paginate from "../../components/Paginate";
-import Layout from "../../components/Layout";
+import Layout from "../../components/Layout/Layout";
 import Product from "../../components/Product";
 import Button from "../../components/Button";
 
-import { SERVER_URL } from "../../config";
+import { NEXT_URL } from "../../config";
 
 function Products(props): JSX.Element {
   const router = useRouter();
@@ -67,7 +67,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   query: { pageNumber = 1, keyword = "" },
 }) => {
   const res = await fetch(
-    `${SERVER_URL}/api/products?keyword=${keyword}&pageNumber=${pageNumber}`,
+    `${NEXT_URL}/api/products?keyword=${keyword}&pageNumber=${pageNumber}`,
     {
       method: "GET",
       headers: {

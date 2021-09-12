@@ -1,39 +1,51 @@
 import { useState, useContext, FormEvent } from "react";
 import { useRouter } from "next/router";
+import { getSession } from "next-auth/client";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import marked from "marked";
-import cookie from "cookie";
 import { GetServerSideProps } from "next";
 
 import styles from "../../styles/Home.module.css";
 
 //Components
-import Layout from "../../components/Layout";
+import Layout from "../../components/Layout/Layout";
 import Button from "../../components/Button";
 import Spinner from "../../components/Spinner";
 import Rating from "../../components/Rating";
 import ErrorMessage from "../../components/ErrorMessage";
 
 // Server URL
-import { SERVER_URL } from "../../config";
+import { NEXT_URL } from "../../config";
 
 // Context
-import { ProductContext } from "../../context/productContext";
+import { ProductContext } from "../../context/product/productContext";
+import { useCart } from "../../context/cart/cartContext";
+import { addToCart, saveQty } from "../../context/cart/cartActions";
+import { CartItemsProps } from "../../context/cart/cartState";
 
 function ProductDetails({ product, productId, userInfo }) {
   const router = useRouter();
-  const [qty, setQty] = useState<number>(1);
+  const { state, dispatch } = useCart();
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
   const { createProductReview } = useContext(ProductContext);
 
-  const addToCartHandler = () => {
-    router.push({
-      pathname: `/checkout/cart`,
-      query: { id: productId, qty: qty },
+  const addToCartHandler = async () => {
+    const res = await fetch(`${NEXT_URL}/api/products/${productId}`, {
+      method: "GET",
     });
+    const data = await res.json();
+    const items: CartItemsProps = {
+      product: data.product._id,
+      name: data.product.name,
+      image: data.product.image,
+      price: data.product.price,
+      countInStock: data.product.countInStock,
+      qty: state.cart.qty,
+    };
+    dispatch(addToCart(items));
   };
 
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
@@ -117,7 +129,9 @@ function ProductDetails({ product, productId, userInfo }) {
                         <select
                           value={product.qty}
                           className="focus:outline-none"
-                          onChange={(e) => setQty(Number(e.target.value))}
+                          onChange={(e) =>
+                            dispatch(saveQty(Number(e.target.value)))
+                          }
                         >
                           {[...Array(product.countInStock).keys()].map(
                             (item) => (
@@ -283,18 +297,20 @@ function ProductDetails({ product, productId, userInfo }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const req = context.req;
+  const session = await getSession({ req });
   const { id } = context.params;
-  const { token } = cookie.parse(context.req.headers.cookie || "");
 
-  if (token) {
+  if (session) {
     const [userRes, productRes] = await Promise.all([
-      fetch(`${SERVER_URL}/api/users/profile`, {
+      fetch(`${NEXT_URL}/api/users/user`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          cookie: context.req.headers.cookie,
         },
       }),
-      fetch(`${SERVER_URL}/api/products/${id}`),
+      fetch(`${NEXT_URL}/api/products/${id}`),
     ]);
 
     const [userData, productData] = await Promise.all([
@@ -308,18 +324,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
     return {
       props: {
-        product: productData,
+        product: productData.product,
         productId: id,
         userInfo: userData,
       }, // will be passed to the page component as props
     };
   }
 
-  if (!token) {
-    const productRes = await fetch(`${SERVER_URL}/api/products/${id}`);
+  if (!session) {
+    const productRes = await fetch(`${NEXT_URL}/api/products/${id}`);
     const productData = await productRes.json();
     return {
-      props: { product: productData, productId: id },
+      props: { product: productData.product, productId: id },
     };
   }
 };

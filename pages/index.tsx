@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 
 // components
-import Layout from "../components/Layout";
+import Layout from "../components/Layout/Layout";
 import Button from "../components/Button";
 import BottomPageContainer from "../components/BottomPageContainer";
 
