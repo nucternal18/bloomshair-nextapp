@@ -10,20 +10,28 @@ import Paginate from "../../../components/Paginate";
 import AdminLayout from "../../../components/Layout/AdminLayout";
 import Button from "../../../components/Button";
 import Table from "../../../components/Tables/ProductTable";
-import Notification from "../../../components/notification/notification";
 
 // Context
-import { ProductContext } from "../../../context/product/productContext";
+import { useProduct } from "../../../context/product/productContext";
 
 import { getUser } from "../../../lib/getUser";
 import { NEXT_URL } from "../../../config";
+import { toast } from "react-toastify";
 
 const Products = (props) => {
   const { products } = props;
   const router = useRouter();
-  const { error, deleteProduct, createProduct, message, requestStatus } =
-    useContext(ProductContext);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const { state, deleteProduct, createProduct } = useProduct();
+  const { success, error, message } = state;
+
+  useEffect(() => {
+    if (success) {
+      toast.success(message);
+    }
+    if (error) {
+      toast.error(error);
+    }
+  }, [success, error]);
 
   const data = products.map((row) => {
     return {
@@ -38,43 +46,18 @@ const Products = (props) => {
     };
   });
 
-  useEffect(() => {
-    setIsRefreshing(false);
-  }, [data]);
-
-  const refreshData = () => {
-    router.replace(router.asPath);
-    setIsRefreshing(true);
-  };
-
   const deleteHandler = (id) => {
     if (window.confirm("Are you sure?")) {
       // DELETE Products
       deleteProduct(id);
-      refreshData();
+      router.reload();
     }
   };
 
   const createProductHandler = () => {
     createProduct();
-    refreshData();
+    router.reload();
   };
-
-  let notification;
-  if (requestStatus === "success") {
-    notification = {
-      status: "success",
-      title: "Success!",
-      message: message,
-    };
-  }
-  if (requestStatus === "error") {
-    notification = {
-      status: "error",
-      title: "Error!",
-      message: error,
-    };
-  }
 
   return (
     <AdminLayout>
@@ -93,43 +76,26 @@ const Products = (props) => {
             </div>
           </div>
           <div>
-            {isRefreshing ? (
-              <Spinner className="w-12 h-12" />
-            ) : error ? (
-              <ErrorMessage variant="danger">{error}</ErrorMessage>
-            ) : (
-              <div className="w-full mx-auto overscroll-auto">
-                <Table
-                  tableData={data}
-                  headingColumns={[
-                    "ID",
-                    "IMAGE",
-                    "NAME",
-                    "PRICE",
-                    "CATEGORY",
-                    "BRAND",
-                    "COUNT IN STOCK",
-                    "ACTION",
-                  ]}
-                  deleteHandler={deleteHandler}
-                />
+            <div className="w-full mx-auto overscroll-auto">
+              <Table
+                tableData={data}
+                headingColumns={[
+                  "ID",
+                  "IMAGE",
+                  "NAME",
+                  "PRICE",
+                  "CATEGORY",
+                  "BRAND",
+                  "COUNT IN STOCK",
+                  "ACTION",
+                ]}
+                deleteHandler={deleteHandler}
+              />
 
-                <Paginate
-                  pages={props.pages}
-                  page={props.page}
-                  isAdmin={true}
-                />
-              </div>
-            )}
+              <Paginate pages={props.pages} page={props.page} isAdmin={true} />
+            </div>
           </div>
         </section>
-        {notification && (
-          <Notification
-            status={notification.status}
-            title={notification.title}
-            message={notification.message}
-          />
-        )}
       </main>
     </AdminLayout>
   );

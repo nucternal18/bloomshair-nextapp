@@ -3,8 +3,8 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/client";
 import { FaPlusCircle } from "react-icons/fa";
-import { EditorState, ContentState } from "draft-js";
-import { convertToHTML } from "draft-convert";
+
+import "react-quill/dist/quill.snow.css";
 
 //components
 import Spinner from "../../../components/Spinner";
@@ -15,62 +15,30 @@ import AdminLayout from "../../../components/Layout/AdminLayout";
 import TextEditor from "../../../components/Editor";
 
 //Context
-import { ProductContext } from "../../../context/product/productContext";
+import { useProduct } from "../../../context/product/productContext";
 
 // Server Url
 import { getUser } from "../../../lib/getUser";
 import { NEXT_URL } from "../../../config";
+import { toast } from "react-toastify";
 
 const ProductEditScreen = (props): JSX.Element => {
   const router = useRouter();
-  const {
-    loading,
-    error,
-    success,
-    image,
-    uploading,
-    uploadProdImage,
-    updateProduct,
-  } = useContext(ProductContext);
+  const { state, uploadProdImage, updateProduct } = useProduct();
+  const { loading, image, error, message } = state;
   const [name, setName] = useState(props.product.name);
   const [price, setPrice] = useState(props.product.price);
   const [brand, setBrand] = useState(props.product.brand);
   const [category, setCategory] = useState(props.product.category);
   const [countInStock, setCountInStock] = useState(props.product.countInStock);
   const [mounted, setMounted] = useState(false);
-
-  const [editorState, setEditorState] = useState(
-    props.product.description
-      ? EditorState.createWithContent(
-          ContentState.createFromText(props.product.description)
-        )
-      : EditorState.createEmpty()
-  );
-  const [convertedContent, setConvertedContent] = useState(null);
+  const [value, setValue] = useState(props.product.description);
 
   const ALLOWED_FORMATS = ["image/jpeg", "image/png", "image/jpg"];
-
-  const handleEditorChange = (state) => {
-    setEditorState(state);
-    convertContentToHTML();
-  };
 
   useEffect(() => {
     setMounted(true);
   }, []);
-  const convertContentToHTML = () => {
-    const currentContentAsHTML = JSON.stringify(
-      convertToHTML(editorState.getCurrentContent())
-    );
-    setConvertedContent(currentContentAsHTML);
-  };
-
-  useEffect(() => {
-    if (success) {
-      router.push("/admin/products");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [success]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -79,12 +47,13 @@ const ProductEditScreen = (props): JSX.Element => {
       _id: props.productId,
       name,
       price,
-      image,
+      image: image ? image : props.product.image,
       brand,
       category,
       countInStock,
-      description: convertedContent,
+      description: value,
     });
+    toast.success(message);
     router.push("/admin/products");
   };
 
@@ -96,7 +65,7 @@ const ProductEditScreen = (props): JSX.Element => {
       uploadProdImage(reader.result);
     };
     reader.onerror = () => {
-      console.error("something went wrong!");
+      toast.error("something went wrong!");
     };
   };
 
@@ -122,8 +91,6 @@ const ProductEditScreen = (props): JSX.Element => {
               </div>
             </div>
             <FormContainer>
-              {error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
-              {loading && <Spinner className="w-12 h-12" />}
               <form
                 onSubmit={submitHandler}
                 className="w-full px-12 pt-6 pb-8 mx-2 mb-4 bg-white sm:mx-auto"
@@ -140,17 +107,20 @@ const ProductEditScreen = (props): JSX.Element => {
                         height={250}
                       />
                     )}
-                    <label className="block py-2 my-2 mr-2 text-base font-bold text-gray-700">
-                      <FaPlusCircle className="text-4xl" />
-                      <input
-                        type="file"
-                        onChange={uploadFileHandler}
-                        className="hidden"
-                      />
-                      {uploading && <Spinner className="w-12 h-12" />}
-                      {error && <div className="justify-center">{error}</div>}
-                    </label>
+                    {loading ? (
+                      <Spinner className="w-12 h-12" />
+                    ) : (
+                      <label className="block py-2 my-2 mr-2 text-base font-bold text-gray-700">
+                        <FaPlusCircle className="text-4xl" />
+                        <input
+                          type="file"
+                          onChange={uploadFileHandler}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
                   </div>
+                  {error && <div className="justify-center">{error}</div>}
                   <div className="w-full">
                     <div className="flex flex-col w-full mb-4">
                       <label className="block mb-1 mr-2 text-base font-bold text-gray-700">
@@ -215,10 +185,7 @@ const ProductEditScreen = (props): JSX.Element => {
                     </div>
                   </div>
                 </div>
-                <TextEditor
-                  editorState={editorState}
-                  handleEditorChange={handleEditorChange}
-                />
+                <TextEditor value={value} setValue={setValue} />
                 <div className="flex items-center justify-center px-4 pt-4 mb-4 border-t-4 border-current border-gray-200">
                   <Button type="submit" color="dark">
                     <p className="text-3xl font-semibold">Update</p>

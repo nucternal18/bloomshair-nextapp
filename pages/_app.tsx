@@ -6,11 +6,12 @@ import { Provider } from "next-auth/client";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import "tailwindcss/tailwind.css";
 import "react-toastify/dist/ReactToastify.css";
+import "react-quill/dist/quill.snow.css";
 
 // Context
 import { AuthProvider } from "../context/auth/AuthContext";
 import { OrderContextProvider } from "../context/order/OrderContext";
-import ProductContextProvider from "../context/product/productContext";
+import { ProductContextProvider } from "../context/product/productContext";
 import { CartProvider } from "../context/cart/cartContext";
 
 declare global {

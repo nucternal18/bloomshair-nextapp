@@ -47,7 +47,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
     try {
-      const product = await Product.findById(id);
+      const product = await Product.findOne({ _id: id });
 
       if (product && userData.isAdmin) {
         await product.remove();
@@ -78,7 +78,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const { name, price, description, image, brand, category, countInStock } =
       req.body;
 
-    const product = await Product.findById(id);
+    const product = await Product.findOne({ _id: id });
 
     if (product) {
       product.name = name;

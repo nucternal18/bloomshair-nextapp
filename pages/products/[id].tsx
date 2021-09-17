@@ -1,10 +1,10 @@
-import { useState, useContext, FormEvent } from "react";
+import { useState, useContext, FormEvent, useEffect } from "react";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/client";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import marked from "marked";
+import parse from "html-react-parser";
 import { GetServerSideProps } from "next";
 
 import styles from "../../styles/Home.module.css";
@@ -20,17 +20,18 @@ import ErrorMessage from "../../components/ErrorMessage";
 import { NEXT_URL } from "../../config";
 
 // Context
-import { ProductContext } from "../../context/product/productContext";
+import { useProduct } from "../../context/product/productContext";
 import { useCart } from "../../context/cart/cartContext";
 import { addToCart, saveQty } from "../../context/cart/cartActions";
 import { CartItemsProps } from "../../context/cart/cartState";
+import { toast } from "react-toastify";
 
 function ProductDetails({ product, productId, userInfo }) {
   const router = useRouter();
   const { state, dispatch } = useCart();
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
-  const { createProductReview } = useContext(ProductContext);
+  const { createProductReview } = useProduct();
 
   const addToCartHandler = async () => {
     const res = await fetch(`${NEXT_URL}/api/products/${productId}`, {
@@ -45,12 +46,14 @@ function ProductDetails({ product, productId, userInfo }) {
       countInStock: data.product.countInStock,
       qty: state.cart.qty,
     };
+
     dispatch(addToCart(items));
   };
 
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     createProductReview(productId, { rating, comment });
+    toast.success("Review created successfully");
   };
   return (
     <Layout title={product.name}>
@@ -170,11 +173,7 @@ function ProductDetails({ product, productId, userInfo }) {
               </h1>
             </div>
             <div className={`mt-2 px-2 ${styles.description_text}`}>
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: marked(product.description),
-                }}
-              ></div>
+              {parse(product.description)}
             </div>
           </div>
           {/* Reviews section */}
