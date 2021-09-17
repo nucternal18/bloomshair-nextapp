@@ -97,19 +97,6 @@ const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
   }, [error]);
 
   /**
-   * @desc Load the square web payment sdk
-   */
-  // useEffect(() => {
-  //   const sqPaymentScript = document.createElement('script')
-  //   sqPaymentScript.src = 'https://sandbox.web.squarecdn.com/v1/square.js';
-  //   sqPaymentScript.crossOrigin = 'anonymous';
-  //   sqPaymentScript.async = true
-  //   sqPaymentScript.onload = () => setScriptLoaded(true)
-  //   sqPaymentScript.onerror = () => toast.error(`Failed to load payment form`);
-  //   document.getElementsByTagName('head')[0].appendChild(sqPaymentScript);
-  // },[])
-
-  /**
    * @description Creates a paypal order and returns the paypal orderID
    * @param data
    * @param actions

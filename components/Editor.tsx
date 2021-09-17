@@ -6,10 +6,10 @@ const QuillNoSSRWrapper = dynamic(import("react-quill"), {
 
 const modules = {
   toolbar: [
-    [{ header: "1" }, { header: "2" }, { header: "3" }, { font: [] }],
+    [{ header: "1" }, { header: "2" }, { font: [] }],
     [{ size: ["small", false, "large", "huge"] }],
     ["bold", "italic", "underline", "strike", "blockquote"],
-    ["blockquote", "code-block"],
+    ["blockquote"],
     [
       { list: "ordered" },
       { list: "bullet" },
@@ -17,10 +17,10 @@ const modules = {
       { indent: "+1" },
     ],
     ["link", "image", "video"],
-    [{ color: [] }, { background: [] }],
+
     [{ header: [1, 2, 3, 4, 5, 6, false] }],
     [{ font: [] }],
-    [{ align: [] }],
+
     ["clean"],
   ],
   clipboard: {
@@ -49,7 +49,7 @@ const formats = [
   "video",
 ];
 
-const TextEditor = ({ value, setValue }): JSX.Element => {
+const TextEditor = ({ value, setValue }) => {
   return (
     <div>
       <QuillNoSSRWrapper
