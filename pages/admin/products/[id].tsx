@@ -3,16 +3,17 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/client";
 import { FaPlusCircle } from "react-icons/fa";
-
-import "react-quill/dist/quill.snow.css";
+import dynamic from "next/dynamic";
+import { toast } from "react-toastify";
 
 //components
 import Spinner from "../../../components/Spinner";
-import ErrorMessage from "../../../components/ErrorMessage";
 import FormContainer from "../../../components/FormContainer";
 import Button from "../../../components/Button";
 import AdminLayout from "../../../components/Layout/AdminLayout";
-import TextEditor from "../../../components/Editor";
+const TextEditor = dynamic(() => import("../../../components/Editor"), {
+  ssr: false,
+});
 
 //Context
 import { useProduct } from "../../../context/product/productContext";
@@ -20,7 +21,6 @@ import { useProduct } from "../../../context/product/productContext";
 // Server Url
 import { getUser } from "../../../lib/getUser";
 import { NEXT_URL } from "../../../config";
-import { toast } from "react-toastify";
 
 const ProductEditScreen = (props): JSX.Element => {
   const router = useRouter();
