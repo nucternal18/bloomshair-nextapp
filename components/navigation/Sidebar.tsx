@@ -21,7 +21,7 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     signOut();
-    router.replace("/");
+    router.push("/");
   };
 
   return (
