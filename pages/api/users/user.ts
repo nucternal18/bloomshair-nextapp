@@ -22,9 +22,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     const user = await User.findOne({ email: session.user.email });
 
-    await db.disconnect();
     if (user) {
-      res.json({
+      res.status(200).json({
         _id: user._id,
         image: user.image,
         name: user.name,
@@ -33,7 +32,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         shippingAddress: user.shippingAddress,
       });
     } else {
-      res.status(404);
+      res.status(404).json({ message: "User not found" });
       throw new Error("User not found");
     }
   } else {
