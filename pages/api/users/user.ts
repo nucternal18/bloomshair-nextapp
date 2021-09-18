@@ -11,7 +11,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
    * @access Private
    */
   if (req.method === "GET") {
-    let headers = {};
     const session = await getSession({ req });
 
     if (!session) {
@@ -19,9 +18,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    if (session) {
-      headers = { Authorization: `Bearer ${session.jwt}` };
-    }
     await db.connectDB();
 
     const user = await User.findOne({ email: session.user.email });
