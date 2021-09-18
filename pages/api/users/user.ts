@@ -21,6 +21,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     await db.connectDB();
 
     const user = await User.findOne({ email: session.user.email });
+
+    await db.disconnect();
     if (user) {
       res.json({
         _id: user._id,
