@@ -12,7 +12,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
    * @access Private/admin
    */
   if (req.method === "GET") {
-    let headers = {};
     /**
      * @desc Get user session
      */
@@ -23,10 +22,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (!session) {
       res.status(401).json({ message: "Not Authorized" });
       return;
-    }
-
-    if (session) {
-      headers = { Authorization: `Bearer ${session.jwt}` };
     }
     const userData = await getUser(req);
     /**
