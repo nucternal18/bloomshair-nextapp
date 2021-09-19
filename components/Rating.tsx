@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
+import React from "react";
+import PropTypes from "prop-types";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 const Rating = ({ value, text, color }) => {
   return (
-    <div className='flex items-center'>
+    <div className="flex items-center">
       <span>
         {value >= 1 ? (
           <FaStar className={`${color}`} />
@@ -49,7 +49,6 @@ const Rating = ({ value, text, color }) => {
         ) : (
           <FaRegStar className={`${color}`} />
         )}
-        
       </span>
       <span className="ml-2">{text && text}</span>
     </div>
@@ -57,12 +56,12 @@ const Rating = ({ value, text, color }) => {
 };
 
 Rating.defaultProps = {
-  color: 'text-yellow-500',
+  color: "text-yellow-500",
 };
 
 Rating.propTypes = {
   value: PropTypes.number.isRequired,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.string,
   color: PropTypes.string,
 };
 
