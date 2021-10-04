@@ -168,7 +168,7 @@ const Navbar = () => {
                     router.asPath === link.link
                       ? "text-yellow-500"
                       : "text-gray-200"
-                  } flex items-center md:block ml-4 mb-4 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1   hover:text-yellow-400 text-sm font-medium list-none uppercase`}
+                  } flex items-center lg:block ml-0 mb-0 cursor-pointer py-1   hover:text-yellow-400 text-xs md:text-sm font-normal list-none uppercase`}
                 >
                   {link.title}
                 </a>

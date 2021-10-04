@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Button from "../Button";
 import ErrorMessage from "../ErrorMessage";
 
@@ -61,10 +62,15 @@ function LoginForm({ submitHandler, handleSubmit, errors, register }) {
           })}
         ></input>
       </div>
+      <div className="mb-4">
+        <Link href={"/account/requestResetPassword"}>
+          <a className="text-left text-gray-600 text-sm">Forgot Password?</a>
+        </Link>
+      </div>
       {errors.password && (
         <ErrorMessage variant="danger">{errors.password.message}</ErrorMessage>
       )}
-      <Button type="submit" color="dark">
+      <Button type="submit" color="dark" className="w-full">
         Sign In
       </Button>
     </form>

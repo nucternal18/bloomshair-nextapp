@@ -121,7 +121,7 @@ export async function getServerSideProps({
   if (!userData?.isAdmin) {
     return {
       redirect: {
-        destination: "/",
+        destination: "/not-authorized",
         permanent: false,
       },
     };

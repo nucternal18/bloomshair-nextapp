@@ -219,7 +219,7 @@ export async function getServerSideProps(context) {
   if (!userData?.isAdmin) {
     return {
       redirect: {
-        destination: "/",
+        destination: "/not-authorized",
         permanent: false,
       },
     };

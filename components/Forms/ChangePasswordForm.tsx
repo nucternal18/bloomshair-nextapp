@@ -3,64 +3,12 @@ import React from "react";
 import Button from "../Button";
 import ErrorMessage from "../ErrorMessage";
 
-function RegisterForm({ submitHandler, errors, handleSubmit, register }) {
+function ChangePasswordForm({ submitHandler, errors, handleSubmit, register }) {
   return (
     <form
       onSubmit={handleSubmit(submitHandler)}
       className="px-2 pt-6 pb-8 mx-2 mb-4 bg-transparent w-full"
     >
-      <div className="mb-4">
-        <label
-          htmlFor="name"
-          className="block mb-2 text-base font-bold text-gray-700"
-        >
-          Name
-        </label>
-        <input
-          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-          id="name"
-          type="text"
-          placeholder="Enter your name"
-          {...register("name", {
-            required: "This is required",
-            minLength: {
-              value: 2,
-              message: "Please enter a name with at least 2 characters",
-            },
-            pattern: {
-              value: /^[a-z]([-']?[a-z]+)*( [a-z]([-']?[a-z]+)*)+$/,
-              message: "Please enter a valid name",
-            },
-          })}
-        />
-        {errors.name && (
-          <ErrorMessage variant="danger">{errors.name.message}</ErrorMessage>
-        )}
-      </div>
-      <div className="mb-4">
-        <label
-          htmlFor="email"
-          className="block mb-2 text-base font-bold text-gray-700"
-        >
-          Email Address
-        </label>
-        <input
-          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-          id="email"
-          type="email"
-          placeholder="Enter email"
-          {...register("email", {
-            required: "This is required",
-            pattern: {
-              value: /\S+@\S+\.\S+/,
-              message: "Please enter a valid email address",
-            },
-          })}
-        />
-        {errors.email && (
-          <ErrorMessage variant="danger">{errors.email.message}</ErrorMessage>
-        )}
-      </div>
       <div className="mb-4">
         <label
           htmlFor="password"
@@ -140,4 +88,4 @@ function RegisterForm({ submitHandler, errors, handleSubmit, register }) {
   );
 }
 
-export default RegisterForm;
+export default ChangePasswordForm;

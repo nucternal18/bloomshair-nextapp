@@ -37,13 +37,16 @@ const initialState = {
   message: "",
 };
 
-enum ActionType {
+export enum ActionType {
   USER_ACTION_REQUEST = "USER_ACTION_REQUEST",
   USER_ACTION_FAIL = "USER_ACTION_FAIL",
   USER_REGISTER_SUCCESS = "USER_REGISTER_SUCCESS",
   USER_UPDATE_PROFILE_SUCCESS = "USER_UPDATE_PROFILE_SUCCESS",
   USER_DELETE_SUCCESS = "USER_DELETE_SUCCESS",
   USER_EDIT_SUCCESS = "USER_EDIT_SUCCESS",
+  USER_REQUEST_PASSWORD_RESET_SUCCESS = "USER_REQUEST_PASSWORD_RESET_SUCCESS",
+  USER_RESET_PASSWORD_SUCCESS = "USER_RESET_PASSWORD_SUCCESS",
+  USER_EMAIL_VERIFICATION_SUCCESS = "USER_EMAIL_VERIFICATION_SUCCESS",
   USER_IMAGE_UPLOAD_SUCCESS = "USER_IMAGE_UPLOAD_SUCCESS",
 }
 
@@ -66,6 +69,7 @@ export const authContext = createContext<{
     isAdmin: boolean
   ) => void;
   uploadUserImage: (base64EncodedImage: string | ArrayBuffer) => void;
+  resetPassword: (password: string, token: string) => void;
 }>({
   state: initialState,
   dispatch: () => null,
@@ -74,6 +78,7 @@ export const authContext = createContext<{
   deleteUser: () => {},
   editUser: () => {},
   uploadUserImage: () => {},
+  resetPassword: () => {},
 });
 
 const { Provider } = authContext;
@@ -99,6 +104,27 @@ const authReducer = (state: InitialAuthState, action) => {
         message: action.payload,
       };
     case ActionType.USER_DELETE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        message: action.payload,
+      };
+    case ActionType.USER_REQUEST_PASSWORD_RESET_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        message: action.payload,
+      };
+    case ActionType.USER_RESET_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        message: action.payload,
+      };
+    case ActionType.USER_EMAIL_VERIFICATION_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -165,6 +191,42 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
         error.response && error.response.data.message
           ? error.response.data.message
           : "User registration Unsuccessful. Please try again.";
+      dispatch({
+        type: ActionType.USER_ACTION_FAIL,
+        payload: err,
+      });
+    }
+  };
+
+  /**
+   * @desc reset a Users password
+   * @param password
+   * @param token
+   */
+  const resetPassword = async (password, token) => {
+    try {
+      dispatch({
+        type: ActionType.USER_ACTION_REQUEST,
+      });
+
+      const res = await fetch(`${NEXT_URL}/api/auth/reset-password`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, password }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        dispatch({
+          type: ActionType.USER_RESET_PASSWORD_SUCCESS,
+          payload: data.message,
+        });
+      }
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : "Unable to reset password. Please try again.";
       dispatch({
         type: ActionType.USER_ACTION_FAIL,
         payload: err,
@@ -328,6 +390,7 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
         deleteUser,
         editUser,
         uploadUserImage,
+        resetPassword,
       }}
     >
       {children}

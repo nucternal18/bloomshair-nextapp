@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode } from "react";
+import React, { forwardRef, ReactNode } from "react";
 
 export type Ref = HTMLButtonElement;
 
@@ -12,7 +12,13 @@ type ButtonProps = {
   onClick?: () => void;
 };
 
-const Button = forwardRef<Ref, ButtonProps>(
+const Button: React.FunctionComponent<
+  React.DetailedHTMLProps<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  > &
+    ButtonProps
+> = forwardRef<Ref, ButtonProps>(
   (
     { children, disabled, className, type, color, ...props }: ButtonProps,
     ref
@@ -32,7 +38,7 @@ const Button = forwardRef<Ref, ButtonProps>(
 );
 
 const colors = {
-  primary: `border-blue-700 border-2 text-blue-700 active:bg-blue-700 active:text-white`,
+  primary: `border-blue-700 border-2 text-blue-700 active:bg-blue-700 active:text-white hover:bg-blue-700 hover:text-white`,
   success: `border-green-700 border-2 text-green-700 active:bg-green-700 active:text-white`,
   danger: `border-red-600 border text-red-600 active:bg-red-600 active:text-white`,
   dark: `border-black border text-gray-900 active:bg-black active:text-white hover:bg-black hover:text-white`,
