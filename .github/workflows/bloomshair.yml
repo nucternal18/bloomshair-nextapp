@@ -39,6 +39,8 @@ jobs:
           echo PAYPAL_CLIENT_ID=${{ secrets.PAYPAL_CLIENT_ID }} >> .env.local
           echo NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }} >> .env.local
           echo JWT_SIGNING_PRIVATE_KEY=${{ secrets.JWT_SIGNING_PRIVATE_KEY }} >> .env.local
+          echo USER_EMAIL=${{ secrets.USER_EMAIL }} >> .env.local
+          echo USER_PASS=${{ secrets.USER_PASS }} >> .env.local
           cat .env.local
       - name: Cache multiple paths
         uses: actions/cache@v2
