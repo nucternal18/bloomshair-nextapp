@@ -38,8 +38,10 @@ function Layout({ title, description, children }: ILayout): JSX.Element {
 
 Layout.defaultProps = {
   title: "Welcome to Blooms Hair | Online Shop",
-  description: "We sell great hair care products",
-  keywords: "Hair Care, Shampoo, Conditioner, Nashi Hair Products",
+  description:
+    "Hair Salon. We sell great hair care products and provide a good hair service",
+  keywords:
+    "Hair Care, Shampoo, Conditioner, Nashi Hair Products, hair color, haircuts, blow-dry, coloring",
 };
 
 export default Layout;
