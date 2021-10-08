@@ -30,7 +30,7 @@ function RequestResetPassword() {
     }
   };
   return (
-    <Layout title="Forgot password">
+    <Layout title="Reset Password">
       <main className="py-10">
         <div className="mx-auto max-w-screen-sm my-10">
           <div className="flex flex-col items-center justify-center w-full">

@@ -8,16 +8,35 @@ import Button from "../components/Button";
 import BottomPageContainer from "../components/BottomPageContainer";
 
 const url =
-  "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1621805386/blooms_hair_products/AdobeStock_53052353_xwep1d.jpg";
+  "https://res.cloudinary.com/dtkjg8f0n/image/upload/e_sharpen:100,q_auto:good/v1621805800/blooms_hair_products/AdobeStock_53052353_xwep1d.webp";
 
 const variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
 };
 
+const shimmer = (w, h) => `
+<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="g">
+      <stop stop-color="#333" offset="20%" />
+      <stop stop-color="#222" offset="50%" />
+      <stop stop-color="#333" offset="70%" />
+    </linearGradient>
+  </defs>
+  <rect width="${w}" height="${h}" fill="#333" />
+  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
+  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+</svg>`;
+
+const toBase64 = (str) =>
+  typeof window === "undefined"
+    ? Buffer.from(str).toString("base64")
+    : window.btoa(str);
+
 export default function Home(): JSX.Element {
   return (
-    <Layout title="Blooms Hair - Home page" description="blooms hair home page">
+    <Layout title="Home page" description="blooms hair home page">
       <main>
         <section className="relative flex items-center content-center justify-center h-screen pt-16 pb-32">
           <div className="absolute top-0 w-full h-full bg-center bg-cover">
@@ -27,6 +46,11 @@ export default function Home(): JSX.Element {
               layout="fill"
               objectFit="cover"
               quality={75}
+              placeholder="blur"
+              blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                shimmer(700, 475)
+              )}`}
+              loading="lazy"
             />
             <span
               id="blackOverlay"

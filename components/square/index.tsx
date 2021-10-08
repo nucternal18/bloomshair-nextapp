@@ -88,7 +88,7 @@ function Square({ paymentAmount }) {
 
   useEffect(() => {
     const createCard = async () => {
-      if (typeof window !== undefined) {
+      if (typeof window !== "undefined") {
         if (!window.Square) {
           toast.error("Square.js failed to load properly");
         }

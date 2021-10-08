@@ -9,8 +9,8 @@ const url =
 function ServiceMenu(): JSX.Element {
   return (
     <Layout
-      title="Blooms Hair - Service Menu"
-      description="Salon service prices"
+      title="Service Menu"
+      description="Blooms Hair Salon services prices"
     >
       <main className="flex-grow">
         <section className="relative flex items-center content-center justify-center">

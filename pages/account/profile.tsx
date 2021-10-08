@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { getSession } from "next-auth/client";
 import { GetServerSideProps } from "next";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -7,7 +7,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Layout from "../../components/Layout/Layout";
 import ErrorMessage from "../../components/ErrorMessage";
 import Spinner from "../../components/Spinner";
-import Notification from "../../components/notification/notification";
 import Table from "../../components/OrdersTable";
 
 import UpdateProfileForm from "../../components/Forms/UpdateProfileForm";
@@ -82,7 +81,7 @@ function Profile({ userData, orders }) {
 
   return (
     mounted && (
-      <Layout>
+      <Layout title="Profile">
         <main className="w-full p-4 bg-gray-200 md:mx-auto">
           <section className="container px-2 pt-6 pb-8 mb-4 bg-white rounded shadow-xl md:px-12 md:mx-auto ">
             <div className="mb-6 border-b-4 border-current border-gray-200">
@@ -151,37 +150,32 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  if (session) {
-    // If user has logged in and there is a JWT token present,
-    // Fetch user data and order data
-    const [userRes, orderRes] = await Promise.all([
-      fetch(`${NEXT_URL}/api/users/user`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          cookie: context.req.headers.cookie,
-        },
-      }),
-      fetch(`${NEXT_URL}/api/orders/myOrders`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          cookie: context.req.headers.cookie,
-        },
-      }),
-    ]);
+  // If user has logged in and there is a JWT token present,
+  // Fetch user data and order data
+  const [userRes, orderRes] = await Promise.all([
+    fetch(`${NEXT_URL}/api/users/user`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        cookie: context.req.headers.cookie,
+      },
+    }),
+    fetch(`${NEXT_URL}/api/orders/myOrders`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        cookie: context.req.headers.cookie,
+      },
+    }),
+  ]);
 
-    const [userData, ordersData] = await Promise.all([
-      userRes.json(),
-      orderRes.json(),
-    ]);
+  const [userData, ordersData] = await Promise.all([
+    userRes.json(),
+    orderRes.json(),
+  ]);
 
-    return {
-      props: { userData: userData, orders: ordersData }, // if  will be passed to the page component as props
-    };
-  }
   return {
-    props: {}, // If no token, an empty object will be passed to the page component as props
+    props: { userData: userData, orders: ordersData }, // if  will be passed to the page component as props
   };
 };
 

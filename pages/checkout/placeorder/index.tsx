@@ -151,7 +151,7 @@ const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
   };
 
   return (
-    <Layout title="Checkout - Blooms Hair">
+    <Layout title="Checkout">
       <Script
         src={`https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=GBP`}
         id="PayPal"

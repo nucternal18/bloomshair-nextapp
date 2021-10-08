@@ -41,7 +41,7 @@ function OrderScreen(props): JSX.Element {
             </div>
             <div>
               <h1 className="p-3 mt-6 text-sm md:text-2xl font-light">
-                Order Id: {order._id}
+                Order Id: {order?._id}
               </h1>
             </div>
           </div>

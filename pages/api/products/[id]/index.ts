@@ -42,10 +42,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    if (!userData.isAdmin) {
-      res.status(401).json({ message: "Not Authorized" });
-      return;
-    }
     try {
       const product = await Product.findOne({ _id: id });
 

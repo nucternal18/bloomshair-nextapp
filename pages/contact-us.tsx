@@ -10,7 +10,7 @@ const url: string =
 function ContactUs(): JSX.Element {
   return (
     <Layout
-      title="Blooms Hair - Contact page"
+      title="Contact page"
       description="Contact page with the salon contact information"
     >
       <main>

@@ -52,7 +52,7 @@ export default function ResetPassword({ valid, token }) {
 
   if (!valid) {
     return (
-      <Layout>
+      <Layout title="Reset Password">
         <main className="h-screen bg-gray-200">
           <div className="flex items-center justify-center ">
             <h1 className="my-5 text-6xl text-gray-800">Invalid Link</h1>

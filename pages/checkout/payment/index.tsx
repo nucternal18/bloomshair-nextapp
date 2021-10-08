@@ -39,7 +39,7 @@ function Payment() {
     }
   };
   return (
-    <Layout title="Checkout - Blooms Hair">
+    <Layout title="Checkout">
       <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
         <CheckoutSteps step1 step2 step3 />
         <section className="container p-2 mb-4 max-w-screen-md bg-white rounded shadow-xl md:p-12 md:mx-auto ">

@@ -47,7 +47,7 @@ function CartContainer({ cartIsOpen, toggleCartDrawer }) {
   //   }
   //   router.push('/checkout/shipping');
   // };
-  if (state.cart.cartItems.length === 0 && mounted) {
+  if (state.cart.cartItems?.length === 0 && mounted) {
     return (
       <aside
         className={

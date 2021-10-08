@@ -56,7 +56,7 @@ export default function Register() {
   };
 
   return (
-    <Layout>
+    <Layout title="Register">
       <main className="h-screen bg-gray-200">
         <div className="flex flex-col w-full h-screen md:flex-row">
           <div className="relative hidden transform md:left-0 md:block md:top-0 md:bottom-0 md:overflow-y-auto md:w-8/12">

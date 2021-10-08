@@ -34,7 +34,7 @@ export default function Login() {
       password: data.password,
     });
     if (result.error) {
-      toast.error(result.error ? "Invalid email or password" : "");
+      toast.error("Invalid email or password");
     }
     if (!result.error && redirect === "/checkout/shipping") {
       router.push("/checkout/shipping");
@@ -45,7 +45,7 @@ export default function Login() {
   };
 
   return (
-    <Layout>
+    <Layout title="Login Page">
       <main className="h-screen bg-gray-200">
         <div className="z-0 flex flex-col w-full h-screen md:flex-row">
           <div className="relative hidden transform md:left-0 md:block md:top-0 md:bottom-0 md:overflow-y-auto md:w-8/12">

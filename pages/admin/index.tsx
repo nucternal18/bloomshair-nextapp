@@ -8,7 +8,7 @@ import { getUser } from "../../lib/getUser";
 
 export default function Dashboard() {
   return (
-    <AdminLayout title="Blooms Hair - admin">
+    <AdminLayout title="Admin">
       <section className="flex items-center justify-center flex-grow w-full h-screen px-4 mx-auto bg-gray-100 md:px-10">
         <h1 className="text-2xl">Welcome to Blooms hair</h1>
       </section>

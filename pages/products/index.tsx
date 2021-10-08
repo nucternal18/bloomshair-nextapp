@@ -15,10 +15,7 @@ function Products(props): JSX.Element {
   const { products, keyword, pages, page } = props;
 
   return (
-    <Layout
-      title="Blooms Hair - Products"
-      description="list of hair care products"
-    >
+    <Layout title="Products" description="list of hair care products">
       <main className="w-full mx-auto overflow-auto bg-gray-100 ">
         <div className="flex justify-center p-2 bg-gray-200">
           <SearchBox />

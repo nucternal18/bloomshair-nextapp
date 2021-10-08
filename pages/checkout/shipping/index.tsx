@@ -94,7 +94,7 @@ function Shipping({ userData }) {
     setShow(false);
   };
   return (
-    <Layout title="Checkout - Blooms Hair">
+    <Layout title="Checkout">
       <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
         <CheckoutSteps step1 step2 />
         <section className="container p-2 mb-4 bg-white rounded shadow-xl md:p-8 md:mx-auto ">
