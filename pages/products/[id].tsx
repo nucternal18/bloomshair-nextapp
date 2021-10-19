@@ -1,4 +1,4 @@
-import { useState, useContext, FormEvent, useEffect } from "react";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/client";
 import { motion } from "framer-motion";
@@ -12,7 +12,6 @@ import styles from "../../styles/Home.module.css";
 //Components
 import Layout from "../../components/Layout/Layout";
 import Button from "../../components/Button";
-import Spinner from "../../components/Spinner";
 import Rating from "../../components/Rating";
 import ErrorMessage from "../../components/ErrorMessage";
 
@@ -300,36 +299,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession({ req });
   const { id } = context.params;
 
-  if (session) {
-    const [userRes, productRes] = await Promise.all([
-      fetch(`${NEXT_URL}/api/users/user`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          cookie: context.req.headers.cookie,
-        },
-      }),
-      fetch(`${NEXT_URL}/api/products/${id}`),
-    ]);
-
-    const [userData, productData] = await Promise.all([
-      userRes.json(),
-      productRes.json(),
-    ]);
-    if (!productData) {
-      return {
-        notFound: true,
-      };
-    }
-    return {
-      props: {
-        product: productData.product,
-        productId: id,
-        userInfo: userData,
-      }, // will be passed to the page component as props
-    };
-  }
-
   if (!session) {
     const productRes = await fetch(`${NEXT_URL}/api/products/${id}`);
     const productData = await productRes.json();
@@ -337,6 +306,34 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: { product: productData.product, productId: id },
     };
   }
+
+  const [userRes, productRes] = await Promise.all([
+    fetch(`${NEXT_URL}/api/users/user`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        cookie: context.req.headers.cookie,
+      },
+    }),
+    fetch(`${NEXT_URL}/api/products/${id}`),
+  ]);
+
+  const [userData, productData] = await Promise.all([
+    userRes.json(),
+    productRes.json(),
+  ]);
+  if (!productData) {
+    return {
+      notFound: true,
+    };
+  }
+  return {
+    props: {
+      product: productData.product,
+      productId: id,
+      userInfo: userData,
+    }, // will be passed to the page component as props
+  };
 };
 
 export default ProductDetails;

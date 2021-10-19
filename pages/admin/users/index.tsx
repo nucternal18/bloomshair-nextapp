@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useEffect } from "react";
 import { getSession } from "next-auth/client";
 import { FaPlus } from "react-icons/fa";
 import { useRouter } from "next/router";
@@ -19,11 +19,11 @@ import { getUser } from "../../../lib/getUser";
 
 import { NEXT_URL } from "../../../config";
 
-const UserListScreen = (props) => {
+const UserListScreen = ({ users, loading }) => {
   const router = useRouter();
   const { state, deleteUser } = useAuth();
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const data = props.users.map((row) => {
+
+  const data = users.map((row) => {
     return {
       id: row["_id"],
       image: row["image"],
@@ -62,7 +62,7 @@ const UserListScreen = (props) => {
               </Button>
             </div>
           </div>
-          {isRefreshing ? (
+          {loading ? (
             <Spinner className="w-12 h-12" />
           ) : (
             <div className="overflow-hidden">
@@ -120,7 +120,7 @@ export async function getServerSideProps(context) {
   const data = await res.json();
 
   return {
-    props: { users: data }, // will be passed to the page component as props
+    props: { users: data, loading: !!data }, // will be passed to the page component as props
   };
 }
 

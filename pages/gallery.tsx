@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { GetServerSideProps } from "next";
+import { GetStaticProps } from "next";
 
 // Components
 import Layout from "../components/Layout/Layout";
@@ -37,7 +37,7 @@ function Gallery(props): JSX.Element {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getStaticProps: GetStaticProps = async (context) => {
   const res = await fetch(`${NEXT_URL}/api/gallery`);
   const data = await res.json();
 
@@ -48,7 +48,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: { pictures: data }, // will be passed to the page component as props
+    props: { pictures: data },
+    revalidate: 5,
   };
 };
 

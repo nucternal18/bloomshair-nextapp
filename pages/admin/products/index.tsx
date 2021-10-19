@@ -138,7 +138,12 @@ export async function getServerSideProps({
   const data = await res.json();
 
   return {
-    props: { products: data.products, page: data.page, pages: data.pages }, // will be passed to the page component as props
+    props: {
+      products: data.products,
+      page: data.page,
+      pages: data.pages,
+      loading: !!data,
+    }, // will be passed to the page component as props
   };
 }
 export default Products;

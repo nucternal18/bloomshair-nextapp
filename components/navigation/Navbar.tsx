@@ -28,6 +28,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [cartIsOpen, setCartIsOpen] = useState(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+  const [pos, setPos] = useState("top");
 
   const { state } = useCart();
   const { isLoading, data: cartItems } = useQuery("cart", getCartItems, {
@@ -72,6 +73,18 @@ const Navbar = () => {
     return () => window.removeEventListener("mousedown", handleOutsideClick);
   }, [isOpen, mobileNavRef]);
 
+  // Check the top position of the navigation in the window
+  useEffect(() => {
+    document.addEventListener("scroll", (e) => {
+      const scrolled = document.scrollingElement.scrollTop;
+      if (scrolled >= 5) {
+        setPos("moved");
+      } else {
+        setPos("top");
+      }
+    });
+  }, []);
+
   // toggle the mobile navigation bar and the user dropdown list
   const toggle = () => {
     setIsOpen(!isOpen);
@@ -93,7 +106,11 @@ const Navbar = () => {
   return (
     <nav
       className={`absolute top-0 z-50 flex flex-wrap items-center justify-between w-full px-2 py-2 ${
-        router.asPath === "/" ? "bg-transparent" : "bg-gray-900"
+        router.asPath === "/" && pos === "top"
+          ? "bg-transparent absolute"
+          : pos === "top"
+          ? "absolute bg-gray-900"
+          : "fixed shadow-b-2xl bg-gray-900"
       }  navbar-expand-lg`}
     >
       <div className="container flex items-center justify-between px-2 mx-auto font-light text-gray-500 md:relative sm:px-1 md:px-0 md:flex-row">

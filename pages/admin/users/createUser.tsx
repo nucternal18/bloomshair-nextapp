@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/client";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import Button from "../../../components/Button";
 import AdminLayout from "../../../components/Layout/AdminLayout";
 
 // context
-import { authContext } from "../../../context/auth/AuthContext";
+import { useAuth } from "../../../context/auth/AuthContext";
 
 // Get user to confirm if admin
 import { getUser } from "../../../lib/getUser";
@@ -23,7 +23,7 @@ function CreateUser() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const { state, registerUser } = useContext(authContext);
+  const { state, registerUser } = useAuth();
 
   useEffect(() => {
     if (state.success) {

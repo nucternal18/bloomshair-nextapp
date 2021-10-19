@@ -1,9 +1,8 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { getSession } from "next-auth/client";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { FaPlusCircle } from "react-icons/fa";
 
 import Spinner from "../../../components/Spinner";
 import ErrorMessage from "../../../components/ErrorMessage";
@@ -22,7 +21,7 @@ import { toast } from "react-toastify";
 
 const UserEditScreen = (props) => {
   const router = useRouter();
-  const { state, editUser, uploadUserImage } = useAuth();
+  const { state, editUser } = useAuth();
 
   const [name, setName] = useState(props.user.name);
   const [email, setEmail] = useState(props.user.email);
@@ -34,18 +33,6 @@ const UserEditScreen = (props) => {
       router.push("/admin/users");
     }
   }, [state.success]);
-
-  const uploadFileHandler = async (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      uploadUserImage(reader.result);
-    };
-    reader.onerror = () => {
-      toast.error("something went wrong!");
-    };
-  };
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -76,7 +63,7 @@ const UserEditScreen = (props) => {
               className="px-12 pt-6 pb-8 mx-2 mb-4 bg-white rounded sm:mx-auto "
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="flex flex-col items-center mb-4">
+                <div className="flex flex-col items-center rounded-full mb-4">
                   {state.image ? (
                     <Image
                       src={state.image}
@@ -92,15 +79,6 @@ const UserEditScreen = (props) => {
                       height={350}
                     />
                   )}
-                  <label className="block my-4 mr-2 text-base font-bold text-gray-700">
-                    <FaPlusCircle className="text-4xl" />
-                    <input
-                      type="file"
-                      onChange={uploadFileHandler}
-                      className="hidden"
-                    />
-                  </label>
-                  {state.loading && <Spinner className="w-12 h-12" />}
                 </div>
                 <div className="w-full">
                   <div className="mb-4">

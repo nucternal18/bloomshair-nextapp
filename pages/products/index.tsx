@@ -10,9 +10,8 @@ import SearchBox from "../../components/SearchBox";
 
 import { NEXT_URL } from "../../config";
 
-function Products(props): JSX.Element {
+function Products({ products, keyword, pages, page }): JSX.Element {
   const router = useRouter();
-  const { products, keyword, pages, page } = props;
 
   return (
     <Layout title="Products" description="list of hair care products">
