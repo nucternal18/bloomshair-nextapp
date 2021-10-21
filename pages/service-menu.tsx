@@ -98,17 +98,17 @@ function ServiceMenu(): JSX.Element {
                 <div className="col-span-2 px-4 py-2">
                   Wash, Restyle & Finish
                 </div>
-                <div className="col-span-1 px-4 py-2">£55.00</div>
+                <div className="col-span-1 px-4 py-2">£65.00</div>
                 <div className="col-span-2 px-4 py-2 bg-gray-100">
                   Wash & Blow-Dry from
                 </div>
                 <div className="col-span-1 px-4 py-2 bg-gray-100">£30.00</div>
                 <div className="col-span-2 px-4 py-2">Wash & Cut</div>
-                <div className="col-span-1 px-4 py-2">£39.00</div>
+                <div className="col-span-1 px-4 py-2">£49.00</div>
                 <div className="col-span-2 px-4 py-2 bg-gray-100">
                   Wash, Cut & Finish
                 </div>
-                <div className="col-span-1 px-4 py-2 bg-gray-100">£48.00</div>
+                <div className="col-span-1 px-4 py-2 bg-gray-100">£55.00</div>
                 <div className="col-span-2 px-4 py-2">
                   Wedding Hair + Trial run (Bride)
                 </div>

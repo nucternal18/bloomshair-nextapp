@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { Provider } from "next-auth/client";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+
 import "tailwindcss/tailwind.css";
 import "react-toastify/dist/ReactToastify.css";
 import "react-quill/dist/quill.snow.css";

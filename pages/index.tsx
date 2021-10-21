@@ -54,7 +54,7 @@ export default function Home(): JSX.Element {
             />
             <span
               id="blackOverlay"
-              className="absolute w-full h-full bg-black opacity-75"
+              className="absolute w-full h-full bg-black opacity-50"
             ></span>
           </div>
           <div className="container relative mx-auto">
