@@ -5,6 +5,7 @@ import { ApiError, Client, Environment } from "square";
 import { v4 as uuidv4 } from "uuid";
 
 const client = new Client({
+  timeout: 3000,
   environment: Environment.Sandbox,
   accessToken: process.env.SQUARE_ACCESS_TOKEN,
 });
@@ -25,12 +26,12 @@ const createCustomer = async (firstName: string, lastName: string) => {
 
   try {
     const { result } = await customersApi.createCustomer(requestBody);
-    console.log(result);
+    return result;
   } catch (error) {
     if (error instanceof ApiError) {
-      console.log(error.errors);
+      throw new Error(error.message);
     } else {
-      console.log("Unexpected Error: ", error);
+      throw new Error("Unexpected Error: " + error);
     }
   }
 };
