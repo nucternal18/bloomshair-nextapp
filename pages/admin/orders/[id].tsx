@@ -1,5 +1,4 @@
-import { useContext, useEffect } from "react";
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
@@ -11,7 +10,6 @@ import { useOrder } from "../../../context/order/OrderContext";
 import Spinner from "../../../components/Spinner";
 import ErrorMessage from "../../../components/ErrorMessage";
 import Button from "../../../components/Button";
-import Notification from "../../../components/notification/notification";
 import AdminLayout from "../../../components/Layout/AdminLayout";
 
 import { NEXT_URL } from "../../../config";

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
 import { ReactQueryDevtools } from "react-query/devtools";
-import { Provider } from "next-auth/client";
+import { SessionProvider } from "next-auth/react";
 
 import "tailwindcss/tailwind.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
-        <Provider session={pageProps.session}>
+        <SessionProvider session={pageProps.session}>
           <CartProvider>
             <AuthProvider>
               <ProductContextProvider>
@@ -37,7 +37,7 @@ function MyApp({ Component, pageProps }) {
               </ProductContextProvider>
             </AuthProvider>
           </CartProvider>
-        </Provider>
+        </SessionProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </Hydrate>
     </QueryClientProvider>

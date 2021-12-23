@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";

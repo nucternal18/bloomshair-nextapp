@@ -1,6 +1,6 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";

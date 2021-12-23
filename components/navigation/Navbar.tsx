@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { FaUser } from "react-icons/fa";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { RiAdminFill } from "react-icons/ri";
-import { getSession, signOut } from "next-auth/client";
+import { getSession, signOut } from "next-auth/react";
 import { useQuery } from "react-query";
 
 // context

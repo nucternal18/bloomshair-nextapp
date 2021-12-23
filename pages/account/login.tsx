@@ -1,4 +1,4 @@
-import { signIn, getSession } from "next-auth/client";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";

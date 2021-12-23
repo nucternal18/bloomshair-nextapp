@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 import { FaPlus } from "react-icons/fa";
 import { useRouter } from "next/router";
 

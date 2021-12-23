@@ -11,7 +11,7 @@ import {
   FaShoppingBasket,
   FaShippingFast,
 } from "react-icons/fa";
-import { signOut } from "next-auth/client";
+import { signOut } from "next-auth/react";
 import { FiLogOut } from "react-icons/fi";
 import ActiveLink from "../ActiveLink";
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import { useForm, SubmitHandler } from "react-hook-form";
 

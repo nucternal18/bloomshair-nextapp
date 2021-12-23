@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 import { FaPlusCircle } from "react-icons/fa";
 import dynamic from "next/dynamic";
 import { toast } from "react-toastify";

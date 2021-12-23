@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 
 // context
 import { useOrder } from "../../../context/order/OrderContext";

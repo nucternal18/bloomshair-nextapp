@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { FaPlusCircle } from "react-icons/fa";
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 
 // Components
 import Table from "../../../components/Tables/GalleryTable";

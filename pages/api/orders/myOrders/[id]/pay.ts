@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 import Order from "../../../../../models/orderModel";
 import db from "../../../../../lib/db";
 import { getUser } from "../../../../../lib/getUser";

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import NextAuth from "next-auth";
-import Providers from "next-auth/providers";
+import CredentialsProvider from "next-auth/providers/credentials";
 import User from "../../../models/userModel";
 
 import db from "../../../lib/db";
@@ -23,17 +23,17 @@ type SessionProps = {
 
 export default NextAuth({
   session: {
-    jwt: true,
     // Seconds - How long until an idle session expires and is no longer valid.
     maxAge: 30 * 24 * 60 * 60, // 30 days
+    strategy: "jwt",
   },
   jwt: {
     secret: process.env.JWT_SIGNING_PRIVATE_KEY,
-    encryption: true,
+    maxAge: 60 * 60 * 24 * 30,
   },
   debug: true,
   providers: [
-    Providers.Credentials({
+    CredentialsProvider({
       async authorize(credentials: CredentialsProps, req: NextApiRequest) {
         await db.connectDB();
 
@@ -42,6 +42,7 @@ export default NextAuth({
         await db.disconnect();
 
         if (user && (await user.matchPassword(credentials.password))) {
+          console.log(user);
           return {
             _id: user._id,
             image: user.image,
@@ -53,8 +54,10 @@ export default NextAuth({
           return null;
         }
       },
+      credentials: undefined,
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     /**
      * @param  {object} session      Session object
@@ -63,7 +66,7 @@ export default NextAuth({
      * @param  {object}  user      User object      (only available on sign in)
      * @return {object}              Session that will be returned to the client
      */
-    session: async (session, user) => {
+    async session({ session, user }) {
       // Add property to session, like an access_token from a provider.
       user && (session.user = user.user);
       return session;
@@ -74,7 +77,7 @@ export default NextAuth({
      * @param  {object}  account   Provider account (only available on sign in)
      * @return {object}            JSON Web Token that will be saved
      */
-    jwt: async (token, user, account) => {
+    async jwt({ token, user, account }) {
       // Add access_token to the token right after signin
       if (user) {
         token.accessToken = user._id;

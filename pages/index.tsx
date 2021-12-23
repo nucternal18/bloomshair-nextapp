@@ -59,11 +59,12 @@ export default function Home(): JSX.Element {
             ></span>
           </div>
           <div className="container relative mx-auto">
-            <div className="flex flex-wrap items-center justify-center ">
+            <div className="flex flex-col flex-wrap items-center justify-center ">
               <motion.div
                 className="flex flex-col items-center opacity-75"
+                initial="hidden"
                 animate={{ opacity: 0 }}
-                transition={{ duration: 5.0, ease: [0.17, 0.67, 0.83, 0.67] }}
+                transition={{ duration: 7.0, ease: [0.17, 0.67, 0.83, 0.67] }}
               >
                 <p className="mb-4 text-3xl font-thin text-gray-300 md:text-5xl lg:text-7xl">
                   Welcome to Blooms Hair
@@ -99,7 +100,7 @@ export default function Home(): JSX.Element {
                 transition={{ duration: 2.0 }}
               >
                 <p className="mb-4 text-3xl font-thin text-center text-yellow-500">
-                  We will be closed from 24th December until 30th January 2022
+                  We will be closed from 24th December until 3rd January 2022
                 </p>
                 {/* <p className="mb-4 text-3xl font-thin text-center text-white">
                   KEEPING YOU & OUR TEAM SAFE
