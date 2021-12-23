@@ -6,7 +6,6 @@ import Document, {
   DocumentContext,
 } from "next/document";
 import React from "react";
-import Script from "next/script";
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -27,7 +26,6 @@ class MyDocument extends Document {
           <Main />
           <NextScript />
           <div id="notifications"></div>
-          <Script src="https://www.paypal.com/sdk/js?client-id=AVWa8N4iHxN5XSlZoJerbtPPdJbVkCHLaJgmmYfqKdY6ncElIYgSz-0GUwc0SRiIlIyDzSIM6mcEWcyv" />
         </body>
       </Html>
     );
