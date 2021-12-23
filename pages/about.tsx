@@ -59,11 +59,11 @@ function about(): JSX.Element {
                     Special, Every Day.
                   </h2>
                   <p className="text-2xl font-light leading-relaxed text-gray-700">
-                    That’s why we offer a wide selection of quality services in
-                    our salon in Islington London. We have Wella Colour Master
-                    experts on hand that can deliver full hair colours to
-                    balayage’s and highlights, achieving your perfect shade is
-                    simple. Get healthier, fuller looking hair with our
+                    ThatU+2019s why we offer a wide selection of quality
+                    services in our salon in Islington London. We have Wella
+                    Colour Master experts on hand that can deliver full hair
+                    colours to balayage’s and highlights, achieving your perfect
+                    shade is simple. Get healthier, fuller looking hair with our
                     Brazillian smoothing treatments. We love to provide you with
                     the latest haircut trends and insider info too so that you
                     can leave looking, and feeling fantastic!
