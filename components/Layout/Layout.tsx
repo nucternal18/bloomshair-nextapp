@@ -39,7 +39,7 @@ function Layout({ title, description, children }: ILayout): JSX.Element {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Navbar />
-      <main className={`relative ${router.asPath === "/" ? "mt-0" : "mt-20"}`}>
+      <main className={`relative ${router.asPath === "/" ? "mt-0" : "mt-24"}`}>
         {children}
       </main>
       <ToastContainer autoClose={4000} />

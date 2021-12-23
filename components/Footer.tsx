@@ -110,7 +110,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col justify-center py-4 sm:flex-row">
+        <div className="flex flex-col justify-center py-2 sm:flex-row">
           <div>
             <p className="text-xs text-center text-gray-500">
               &copy;2020 Blooms Hair. All rights reserved. |
@@ -121,6 +121,11 @@ const Footer = () => {
               maintained by aolausoro.tech
             </p>
           </div>
+        </div>
+        <div className="text-xs text-center text-gray-500">
+          <a href="https://www.freepik.com/vectors/frame">
+            Frame vector created by BiZkettE1 - www.freepik.com
+          </a>
         </div>
       </footer>
     </>

@@ -109,8 +109,8 @@ const Navbar = () => {
         router.asPath === "/" && pos === "top"
           ? "bg-transparent absolute"
           : pos === "top"
-          ? "absolute bg-gray-100 "
-          : "fixed shadow-b-2xl bg-gray-100"
+          ? "absolute bg-gray-900 "
+          : "fixed shadow-b-2xl bg-gray-900"
       }  navbar-expand-lg`}
     >
       <div className="container flex items-center justify-between px-2 mx-auto font-light text-gray-500 md:relative sm:px-1 md:px-0 md:flex-row">
@@ -133,7 +133,7 @@ const Navbar = () => {
             aria-disabled={isOpen}
             disabled={isOpen}
             aria-label="Toggle navigation"
-            className="block float-right text-4xl text-gray-500 lg:hidden focus:outline-none focus:shadow-none"
+            className="block float-right text-4xl text-gray-200 lg:hidden focus:outline-none focus:shadow-none"
             onClick={toggle}
           >
             &#8801;
@@ -184,7 +184,7 @@ const Navbar = () => {
                   className={`${
                     router.asPath === link.link
                       ? "text-yellow-500"
-                      : "text-gray-500"
+                      : "text-gray-200"
                   } flex items-center lg:block ml-0 mb-0 cursor-pointer py-1   hover:text-yellow-400 text-xs md:text-sm font-normal list-none uppercase`}
                 >
                   {link.title}
@@ -223,7 +223,7 @@ const Navbar = () => {
                         className={`${
                           router.asPath === "/account/login"
                             ? "text-yellow-500"
-                            : "text-gray-500"
+                            : "text-gray-200"
                         } block text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
                       >
                         Profile
@@ -238,7 +238,7 @@ const Navbar = () => {
                           className={`${
                             router.asPath === "/account/login"
                               ? "text-yellow-500"
-                              : "text-gray-500"
+                              : "text-gray-200"
                           } block text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
                         >
                           admin
@@ -250,7 +250,7 @@ const Navbar = () => {
                     className="flex items-center px-4 py-2 space-x-2 text-lg text-gray-500 hover:text-yellow-500"
                     onClick={logoutHandler}
                   >
-                    <FiLogOut className="text-gray-500 " />
+                    <FiLogOut className="text-gray-200 " />
                     <p>Logout </p>
                   </button>
                 </div>
@@ -263,7 +263,7 @@ const Navbar = () => {
                 className={`${
                   router.asPath === "/account/login"
                     ? "text-yellow-500"
-                    : "text-gray-500"
+                    : "text-gray-200"
                 } flex items-center px-1`}
                 style={{
                   color: router.asPath === "/account/login" ? "orange" : "",
@@ -282,7 +282,7 @@ const Navbar = () => {
             className={`${
               router.asPath === "/checkout/cart"
                 ? "text-yellow-500"
-                : "text-gray-500"
+                : "text-gray-200"
             } block text-2xl font-medium  uppercase list-none cursor-pointer hover:text-yellow-400flex items-center ml-1`}
             onClick={toggleCartDrawer}
           >

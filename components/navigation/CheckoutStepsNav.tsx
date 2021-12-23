@@ -17,14 +17,14 @@ const CheckoutSteps: FC<ICheckout> = ({
 }): JSX.Element => {
   const router = useRouter();
   return (
-    <nav className="container flex justify-around max-w-screen-md mx-auto mb-4 sm:px-8">
+    <nav className="grid grid-cols-3 gap-4 w-3/4  container max-w-screen-md mx-auto mb-4 sm:px-8">
       <div>
         {step1 ? (
           <Link href="/account/login">
             <a
               className={`${
                 router.asPath === "/account/login"
-                  ? "text-yellow-500 border-b border-yellow-500"
+                  ? "text-yellow-500 border-t-4 border-yellow-500 pt-4"
                   : "opacity-60"
               }`}
             >
@@ -42,7 +42,7 @@ const CheckoutSteps: FC<ICheckout> = ({
             <a
               className={`${
                 router.asPath === "/checkout/shipping"
-                  ? "text-yellow-500 border-b border-yellow-500"
+                  ? "text-yellow-500 border-t-4 border-yellow-500 pt-4"
                   : "opacity-60"
               }`}
             >
@@ -60,7 +60,7 @@ const CheckoutSteps: FC<ICheckout> = ({
             <a
               className={`${
                 router.asPath === "/checkout/payment"
-                  ? "text-yellow-500 border-b border-yellow-500"
+                  ? "text-yellow-500 border-t-4 border-yellow-500 pt-4"
                   : "opacity-60"
               }`}
             >
@@ -78,7 +78,7 @@ const CheckoutSteps: FC<ICheckout> = ({
             <a
               className={`${
                 router.asPath === "/checkout/placeorder"
-                  ? "text-yellow-500 border-b border-yellow-500"
+                  ? "text-yellow-500 border-t-4 border-yellow-500 pt-4"
                   : "opacity-60"
               }`}
             >
