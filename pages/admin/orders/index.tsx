@@ -21,7 +21,7 @@ import { NEXT_URL } from "../../../config";
 
 const OrderListScreen = (props) => {
   // const router = useRouter();
-
+  console.log(props.orders);
   const { state } = useOrder();
 
   const [show, setShow] = useState(false);
@@ -50,10 +50,8 @@ const OrderListScreen = (props) => {
             </div>
           </div>
           <div className="w-100">
-            {state.loading ? (
+            {props.loading ? (
               <Spinner className="w-12 h-12" />
-            ) : state.error ? (
-              <ErrorMessage variant="danger">{state.error}</ErrorMessage>
             ) : (
               <Table
                 tableData={props.orders}
@@ -111,9 +109,9 @@ export async function getServerSideProps(context) {
     },
   });
   const data = await res.json();
-
+  const loading = !data ? true : false;
   return {
-    props: { orders: data }, // will be passed to the page component as props
+    props: { orders: data, loading }, // will be passed to the page component as props
   };
 }
 

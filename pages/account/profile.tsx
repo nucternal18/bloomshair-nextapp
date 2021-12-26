@@ -16,6 +16,7 @@ import { useAuth } from "../../context/auth/AuthContext";
 
 import { NEXT_URL } from "../../config";
 import { toast } from "react-toastify";
+import Button from "../../components/Button";
 
 type Inputs = {
   name: string;
@@ -89,6 +90,18 @@ function Profile({ userData, orders }) {
                 Profile
               </h1>
             </div>
+            {!userData.emailVerified && (
+              <div className="flex items-center justify-between mb-4 border border-gray-800 px-4 py-2">
+                <p>
+                  <strong>Note:</strong> <span>Your email</span> (
+                  <span className="text-blue-500">{userData.email}</span>) is
+                  unverified.
+                </p>
+                <Button type="button" color="primary">
+                  Verify
+                </Button>
+              </div>
+            )}
             {state.error && (
               <ErrorMessage variant="danger">{state.error}</ErrorMessage>
             )}

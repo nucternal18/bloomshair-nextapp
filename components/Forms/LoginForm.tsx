@@ -63,7 +63,7 @@ function LoginForm({ submitHandler, handleSubmit, errors, register }) {
         ></input>
       </div>
       <div className="mb-4">
-        <Link href={"/account/requestResetPassword"}>
+        <Link href={"/account/forgot-password"}>
           <a className="text-left text-gray-600 text-sm">Forgot Password?</a>
         </Link>
       </div>

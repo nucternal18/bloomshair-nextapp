@@ -29,6 +29,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,
+        emailVerified: user.emailVerified,
         shippingAddress: user.shippingAddress,
       });
     } else {

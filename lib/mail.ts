@@ -1,31 +1,18 @@
-import nodemailer from "nodemailer";
+import { NEXT_URL } from "../config";
 
 export async function sendMail({ from, to, subject, html }) {
   try {
-    // create reusable transporter object using the default SMTP transport
-    const transporter = nodemailer.createTransport({
-      host: "outlook.office365.com",
-      port: 587,
-      secure: false, // true for 465, false for other ports
-      requireTLS: true,
-      auth: {
-        user: process.env.USER_EMAIL, // generated user
-        pass: process.env.USER_PASS, // generated password
+    const response = await fetch(`${NEXT_URL}/api/send-mail`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-      tls: {
-        rejectUnauthorized: false,
-        ciphers: "SSLv3",
-      },
-      // debug: true, // show debug output
-      // logger: true, // log information in console
+      body: JSON.stringify({ from, to, subject, html }),
     });
-
-    await transporter.sendMail({
-      from,
-      to,
-      subject,
-      html,
-    });
+    const data = await response.json();
+    if (response.ok) {
+      return data.message;
+    }
   } catch (e) {
     console.error(e);
     throw new Error(`Could not send email: ${e.message}`);

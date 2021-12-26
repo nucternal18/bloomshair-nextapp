@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -6,15 +6,15 @@ import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { GetServerSideProps } from "next";
 import { toast } from "react-toastify";
-import Token from "../../models/tokenModel";
+import Token from "../../../models/tokenModel";
 
 // Components
-import Spinner from "../../components/Spinner";
-import Layout from "../../components/Layout/Layout";
+import Spinner from "../../../components/Spinner";
+import Layout from "../../../components/Layout/Layout";
 
-import { useAuth } from "../../context/auth/AuthContext";
-import ChangePasswordForm from "../../components/Forms/ChangePasswordForm";
-import db from "../../lib/db";
+import { useAuth } from "../../../context/auth/AuthContext";
+import ChangePasswordForm from "../../../components/Forms/ChangePasswordForm";
+import db from "../../../lib/db";
 
 const url =
   "https://res.cloudinary.com/dtkjg8f0n/image/upload/ar_16:9,c_fill,e_sharpen,g_auto,w_1000/v1625089267/blooms_hair_products/shari-sirotnak-oM5YoMhTf8E-unsplash_rcpxsj.webp";
@@ -40,15 +40,16 @@ export default function ResetPassword({ valid, token }) {
     }
   }, [state.success]);
 
-  const submitHandler: SubmitHandler<Inputs> = async ({
-    password,
-    confirmPassword,
-  }) => {
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match. please check your password");
-    }
-    resetPassword(password, token);
-  };
+  const submitHandler: SubmitHandler<Inputs> = useCallback(
+    async ({ password, confirmPassword }) => {
+      if (password !== confirmPassword) {
+        toast.error("Passwords do not match. please check your password");
+      }
+      resetPassword(password, token);
+      router.replace("/account/login");
+    },
+    []
+  );
 
   if (!valid) {
     return (
@@ -134,6 +135,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     type: "passwordReset",
   });
   await db.disconnect();
+  if (!tokenDoc) return { props: { valid: false } };
 
-  return { props: { token: context.params?.token, valid: !!tokenDoc } };
+  return { props: { token: context.params?.token, valid: true } };
 };

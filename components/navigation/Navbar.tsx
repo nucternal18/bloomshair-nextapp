@@ -29,7 +29,6 @@ const Navbar = () => {
   const [cartIsOpen, setCartIsOpen] = useState(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const [pos, setPos] = useState("top");
-
   const { state } = useCart();
   const { isLoading, data: cartItems } = useQuery("cart", getCartItems, {
     initialData: state.cart.cartItems,
@@ -223,8 +222,8 @@ const Navbar = () => {
                         className={`${
                           router.asPath === "/account/login"
                             ? "text-yellow-500"
-                            : "text-gray-200"
-                        } block text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
+                            : "text-gray-800"
+                        } block text-lg font-medium space-x-2  list-none cursor-pointer hover:text-yellow-400`}
                       >
                         Profile
                       </a>
@@ -238,10 +237,10 @@ const Navbar = () => {
                           className={`${
                             router.asPath === "/account/login"
                               ? "text-yellow-500"
-                              : "text-gray-200"
-                          } block text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
+                              : "text-gray-800"
+                          } block text-lg font-medium   list-none cursor-pointer hover:text-yellow-400`}
                         >
-                          admin
+                          Admin
                         </a>
                       </Link>
                     </button>
@@ -250,8 +249,8 @@ const Navbar = () => {
                     className="flex items-center px-4 py-2 space-x-2 text-lg text-gray-500 hover:text-yellow-500"
                     onClick={logoutHandler}
                   >
-                    <FiLogOut className="text-gray-200 " />
-                    <p>Logout </p>
+                    <FiLogOut className="text-gray-800 " />
+                    <p className="font-medium">Logout </p>
                   </button>
                 </div>
               </div>

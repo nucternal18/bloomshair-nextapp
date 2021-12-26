@@ -6,6 +6,7 @@ import Token from "../../../models/tokenModel";
 import db from "../../../lib/db";
 import { NEXT_URL } from "../../../config";
 import { sendMail } from "../../../lib/mail";
+import { resetPasswordRequestEmail } from "../../../lib/emailServices";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
@@ -29,16 +30,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       createdAt: Date.now(),
     }).save();
 
+    const url = `${NEXT_URL}/account/forgot-password/${securedTokenId}`;
+    const name = user.name;
+    const subject = "Password reset";
+
     await sendMail({
       to: user.email,
       from: "no-reply@bloomshair.co.uk",
-      subject: " Reset your password.",
-      html: `
-                <div>
-                    <p>Hello, ${user.name}</p>
-                    <p>Please follow <a href="${NEXT_URL}/passwordReset?token=${securedTokenId}&id=${user._id}">this link</a> to reset your password.</p>
-                </div>
-                `,
+      subject: "Reset your password.",
+      html: resetPasswordRequestEmail(subject, name, url),
     });
     res.status(204).end();
   } else {

@@ -24,6 +24,10 @@ const usersSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
     shippingAddress: {
       address: { type: String },
       city: { type: String },

@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import User from "../../../models/userModel";
 
 import db from "../../../lib/db";
+import { verifyEmail } from "../../../lib/verifyEmail";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
@@ -17,11 +18,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       !email ||
       !email.includes("@")
     ) {
-      res
-        .status(422)
-        .send({
-          message: "Invalid inputs - password should be at least 7 characters",
-        });
+      res.status(422).send({
+        message: "Invalid inputs - password should be at least 7 characters",
+      });
       return;
     }
     await db.connectDB();
@@ -46,6 +45,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     });
     await db.disconnect();
     if (user) {
+      await verifyEmail(user);
       res
         .status(201)
         .json({ success: true, message: "Created user successfully" });

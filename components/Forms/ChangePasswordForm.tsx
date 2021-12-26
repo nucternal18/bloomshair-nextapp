@@ -82,7 +82,7 @@ function ChangePasswordForm({ submitHandler, errors, handleSubmit, register }) {
         )}
       </div>
       <Button type="submit" color="dark" className="w-full">
-        Register
+        Reset Password
       </Button>
     </form>
   );

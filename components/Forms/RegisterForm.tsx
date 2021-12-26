@@ -28,7 +28,7 @@ function RegisterForm({ submitHandler, errors, handleSubmit, register }) {
               message: "Please enter a name with at least 2 characters",
             },
             pattern: {
-              value: /^[a-z]([-']?[a-z]+)*( [a-z]([-']?[a-z]+)*)+$/,
+              value: /^[A-Za-z -]+$/,
               message: "Please enter a valid name",
             },
           })}

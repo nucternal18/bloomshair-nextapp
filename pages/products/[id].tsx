@@ -214,7 +214,7 @@ function ProductDetails({ product, productId, userInfo }) {
                         as a customer to write a review
                       </p>
                     </div>
-                  ) : userInfo ? (
+                  ) : userInfo && userInfo.emailVerified ? (
                     <div>
                       <form
                         onSubmit={submitHandler}

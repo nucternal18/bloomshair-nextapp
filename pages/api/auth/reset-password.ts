@@ -1,11 +1,10 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
-import { nanoid } from "nanoid";
 import User from "../../../models/userModel";
 import Token from "../../../models/tokenModel";
 import db from "../../../lib/db";
-import { NEXT_URL } from "../../../config";
 import { sendMail } from "../../../lib/mail";
+import { resetPasswordVerificationEmail } from "../../../lib/emailServices";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "PUT") {
@@ -15,7 +14,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const deletedToken = await Token.findOne({ token: token });
 
     if (!deletedToken) {
-      res.status(403).json({ message: "Invalid or Expired token" });
+      res.status(403).end();
       return;
     }
 
@@ -27,16 +26,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       await user.save();
 
+      const name = user.name;
+      const subject = "Password reset";
+
       await sendMail({
         to: user.email,
         from: "no-reply@bloomshair.co.uk",
-        subject: "Password reset successfully.",
-        html: `
-                <div>
-                    <p>Hello, ${user.name}</p>
-                    <p>Password reset successfully.</p>
-                </div>
-                `,
+        subject: "Password reset successful.",
+        html: resetPasswordVerificationEmail(subject, name),
       });
 
       res.status(204).json({ message: "Password reset successfully " });

@@ -118,9 +118,10 @@ export async function getServerSideProps(context) {
     },
   });
   const data = await res.json();
+  const loading = !data ? true : false;
 
   return {
-    props: { users: data, loading: !!data }, // will be passed to the page component as props
+    props: { users: data, loading: loading }, // will be passed to the page component as props
   };
 }
 

@@ -179,6 +179,7 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
           },
         }),
       });
+
       const data = await res.json();
       if (res.ok) {
         dispatch({

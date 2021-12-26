@@ -1,9 +1,11 @@
+import { useCallback } from "react";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Layout from "../../components/Layout/Layout";
-import { NEXT_URL } from "../../config";
-import RequestPasswordResetForm from "../../components/Forms/RequestPasswordResetForm";
+import Layout from "../../../components/Layout/Layout";
+import { NEXT_URL } from "../../../config";
+import RequestPasswordResetForm from "../../../components/Forms/RequestPasswordResetForm";
 
 type Inputs = {
   email: string;
@@ -15,20 +17,22 @@ function RequestResetPassword() {
     register,
     formState: { errors },
   } = useForm<Inputs>();
+  const router = useRouter();
 
-  const submitHandler: SubmitHandler<Inputs> = async ({ email }) => {
+  const submitHandler: SubmitHandler<Inputs> = useCallback(async (data) => {
     try {
       await fetch(`${NEXT_URL}/api/auth/request-reset`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: email,
+          email: data.email,
         }),
       });
+      router.replace("/account/login");
     } catch (e) {
       toast.error(e.message);
     }
-  };
+  }, []);
   return (
     <Layout title="Reset Password">
       <main className="py-10">
