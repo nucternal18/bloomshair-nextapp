@@ -16,7 +16,7 @@ function Products({ products, keyword, pages, page }): JSX.Element {
   return (
     <Layout title="Products" description="list of hair care products">
       <main className="relative w-full mx-auto overflow-auto bg-gray-100 ">
-        <div className="flex mt-1 justify-center py-4 bg-gray-200">
+        <div className="flex mt-1 justify-center py-4 ">
           <SearchBox />
         </div>
         <section className="container max-w-screen-lg px-2 pt-2 pb-8 mx-auto mb-4">

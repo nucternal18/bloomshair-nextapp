@@ -54,7 +54,7 @@ const SearchBox = () => {
   };
   return (
     <form onSubmit={handleSubmit} className="flex w-full max-w-screen-lg">
-      <div className="flex flex-col w-full ">
+      <div className="flex flex-col w-full">
         <input
           type="text"
           name="q"
@@ -62,7 +62,7 @@ const SearchBox = () => {
           onChange={handleSearch}
           autoComplete="off"
           placeholder="Search Products..."
-          className="w-full p-2 border-2 border-collapse border-gray-900 border-opacity-50 focus:ring-transparent focus:outline-none focus:border-gray-900"
+          className="w-full p-2 border-2 border-collapse border-gray-800 border-opacity-70 rounded-l-md focus:ring-transparent focus:outline-none focus:border-gray-900"
         />
         <div ref={documentRef}>
           {isVisible && (
@@ -74,9 +74,12 @@ const SearchBox = () => {
           )}
         </div>
       </div>
-      <Button type="submit" color="dark">
+      <button
+        type="submit"
+        className="border-gray-800 border rounded-r-md  bg-gray-800  hover:bg-gray-900 text-gray-200 hover:text-gray-100  focus:outline-none shadow  px-4 py-2 font-medium transition flex items-center justify-center ease-in duration-200"
+      >
         Search
-      </Button>
+      </button>
     </form>
   );
 };
