@@ -44,6 +44,12 @@ jobs:
           echo SENTRY_DSN=${{ secrets.SENTRY_DSN }} >> .env.local
           echo NEXT_PUBLIC_SENTRY_DSN=${{ secrets.NEXT_PUBLIC_SENTRY_DSN }} >> .env.local
           cat .env.local
+      - name: Create .sentryclirc file
+        run: |
+          touch .sentryclirc
+          echo [auth] >> .sentryclirc
+          echo token=${{ secrets.SENTRY_AUTH_API }} >> .sentryclirc
+          cat .sentryclirc
       - name: Cache multiple paths
         uses: actions/cache@v2
         with:
