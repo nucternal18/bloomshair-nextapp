@@ -1,8 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
+import { withSentry } from "@sentry/nextjs";
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getSession({ req });
   if (req.method === "GET") {
     /**
@@ -22,3 +23,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(405).json({ message: `Method ${req.method} not allowed` });
   }
 };
+
+export default withSentry(handler);

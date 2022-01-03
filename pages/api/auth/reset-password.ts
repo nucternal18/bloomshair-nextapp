@@ -1,12 +1,13 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
+import { withSentry } from "@sentry/nextjs";
 import User from "../../../models/userModel";
 import Token from "../../../models/tokenModel";
 import db from "../../../lib/db";
 import { sendMail } from "../../../lib/mail";
 import { resetPasswordVerificationEmail } from "../../../lib/emailServices";
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "PUT") {
     const { token, password } = req.body;
     await db.connectDB();
@@ -31,7 +32,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       await sendMail({
         to: user.email,
-        from: "no-reply@bloomshair.co.uk",
+        from: '"Blooms Hair" <no-reply@bloomshair.co.uk>',
         subject: "Password reset successful.",
         html: resetPasswordVerificationEmail(subject, name),
       });
@@ -45,3 +46,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(405).json({ message: `Method ${req.method} not allowed` });
   }
 };
+
+export default withSentry(handler);

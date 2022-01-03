@@ -1,10 +1,11 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
+import { withSentry } from "@sentry/nextjs";
 import { getSession } from "next-auth/react";
 import { getUser } from "../../lib/getUser";
 import cloudinary from "../../lib/cloudinary";
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getSession({ req });
   if (req.method == "POST") {
     /**
@@ -50,3 +51,5 @@ export const config = {
     },
   },
 };
+
+export default withSentry(handler);

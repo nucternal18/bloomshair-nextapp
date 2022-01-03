@@ -1,11 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
+import { withSentry } from "@sentry/nextjs";
 import { getSession } from "next-auth/react";
 import db from "../../../lib/db";
 import { getUser } from "../../../lib/getUser";
 import Picture from "../../../models/galleryModel";
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
    * @desc Upload a picture to the database.
    * @route POST /api/gallery
@@ -61,3 +62,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(405).json({ message: `Method ${req.method} not allowed` });
   }
 };
+
+export default withSentry(handler);

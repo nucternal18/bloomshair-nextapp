@@ -1,13 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
+import { withSentry } from "@sentry/nextjs";
 import Product from "../../../models/productModel";
 import db from "../../../lib/db";
 import { getUser } from "../../../lib/getUser";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });
   if (req.method === "GET") {
     /**
@@ -71,3 +69,5 @@ export default async function handler(
     res.status(405).json({ message: `Method ${req.method} not allowed` });
   }
 }
+
+export default withSentry(handler);

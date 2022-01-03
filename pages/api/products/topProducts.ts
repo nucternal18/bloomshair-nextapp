@@ -1,11 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { withSentry } from "@sentry/nextjs";
 import Product from "../../../models/productModel";
 import db from "../../../lib/db";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
     /**
      * @desc Get top rated products
@@ -18,3 +16,5 @@ export default async function handler(
     res.status(200).json(products);
   }
 }
+
+export default withSentry(handler);

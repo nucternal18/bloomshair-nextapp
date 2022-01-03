@@ -1,4 +1,6 @@
+/* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
+import { withSentry } from "@sentry/nextjs";
 import nodemailer from "nodemailer";
 
 interface IFormData {
@@ -8,7 +10,7 @@ interface IFormData {
   html: string;
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "POST") {
     const { from, to, subject, html }: IFormData = req.body;
 
@@ -78,3 +80,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     });
   }
 };
+
+export default withSentry(handler);
