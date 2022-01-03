@@ -64,20 +64,26 @@ function CartContainer({ cartIsOpen, toggleCartDrawer }) {
           </div>
           <button
             aria-label="Close"
-            className="flex items-center text-gray-700 cursor-pointer focus:outline-none"
+            className="flex items-center text-gray-700 cursor-pointer mb-2 focus:outline-none"
             onClick={toggleCartDrawer}
           >
             <p className="ml-2 text-3xl ">&times;</p>
           </button>
         </div>
-        <div className="mb-2 ">
-          <h4 className="mb-2 text-3xl text-center">
+        <div className="mb-4 ">
+          <h4 className="mb-2 text-2xl text-center">
             Basket is currently empty
           </h4>
         </div>
         <div>
           <Button type="button" color="dark" className="w-full">
-            Continue Shopping
+            <Link href="/products">
+              <a
+                className={`block text-xl text-center font-normal list-none cursor-pointer hover:text-yellow-400`}
+              >
+                Continue Shopping
+              </a>
+            </Link>
           </Button>
         </div>
       </aside>

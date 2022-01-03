@@ -36,7 +36,6 @@ export default function ResetPassword({ valid, token }) {
   useEffect(() => {
     if (state.success) {
       toast.success(state.message);
-      router.replace("/account/login");
     }
   }, [state.success]);
 

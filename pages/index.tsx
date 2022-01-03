@@ -8,8 +8,8 @@ import Button from "../components/Button";
 import BottomPageContainer from "../components/BottomPageContainer";
 
 const url =
-  "https://res.cloudinary.com/dtkjg8f0n/image/upload/e_sharpen:100/v1640267272/3162_twuojq.webp";
-// "https://res.cloudinary.com/dtkjg8f0n/image/upload/e_sharpen:100,q_auto:good/v1621805800/blooms_hair_products/AdobeStock_53052353_xwep1d.webp";
+  "https://res.cloudinary.com/dtkjg8f0n/image/upload/e_sharpen:100,q_auto:good/v1621805800/blooms_hair_products/AdobeStock_53052353_xwep1d.webp";
+// "https://res.cloudinary.com/dtkjg8f0n/image/upload/e_sharpen:100/v1640267272/3162_twuojq.webp";
 
 const variants = {
   hidden: { opacity: 0 },
@@ -63,8 +63,9 @@ export default function Home(): JSX.Element {
               <motion.div
                 className="flex flex-col items-center opacity-75"
                 initial="hidden"
-                animate={{ opacity: 0 }}
-                transition={{ duration: 7.0, ease: [0.17, 0.67, 0.83, 0.67] }}
+                animate="visible"
+                variants={variants}
+                transition={{ delay: 5.0, duration: 5.0 }}
               >
                 <p className="mb-4 text-3xl font-thin text-gray-300 md:text-5xl lg:text-7xl">
                   Welcome to Blooms Hair
@@ -75,7 +76,7 @@ export default function Home(): JSX.Element {
                   </Link>
                 </Button>
               </motion.div>
-              <motion.div
+              {/* <motion.div
                 className="flex flex-col items-center opacity-75"
                 initial="hidden"
                 animate="visible"
@@ -85,7 +86,7 @@ export default function Home(): JSX.Element {
                 <p className="mb-4 text-3xl text-center font-thin font-mono text-yellow-400 md:text-3xl mt-28 lg:text-5xl uppercase">
                   Wishing our customers a
                 </p>
-              </motion.div>
+              </motion.div> */}
             </div>
           </div>
         </section>
@@ -99,17 +100,17 @@ export default function Home(): JSX.Element {
                 variants={variants}
                 transition={{ duration: 2.0 }}
               >
-                <p className="mb-4 text-3xl font-thin text-center text-yellow-500">
+                {/* <p className="mb-4 text-3xl font-thin text-center text-yellow-500">
                   We will be closed from 24th December until 3rd January 2022
-                </p>
-                {/* <p className="mb-4 text-3xl font-thin text-center text-white">
+                </p> */}
+                <p className="mb-4 text-3xl font-thin text-center text-white">
                   KEEPING YOU & OUR TEAM SAFE
                 </p>
                 <Button type="button" color="yellow">
                   <Link href="/book-online">
                     <a>Book Now!</a>
                   </Link>
-                </Button> */}
+                </Button>
               </motion.div>
             </div>
             <div

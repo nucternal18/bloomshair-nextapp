@@ -1,5 +1,5 @@
-import { createContext, useReducer, useContext } from "react";
-
+import { createContext, useReducer, useContext, useEffect } from "react";
+import { getSession } from "next-auth/react";
 import { NEXT_URL } from "../../config";
 // utils
 import { uploadImage } from "../../lib/upload";
@@ -11,6 +11,7 @@ type UserInfoProps = {
   token?: string;
   isAdmin?: boolean;
   email: string;
+  emailVerified?: boolean;
   shippingAddress?: {
     address: string;
     city: string;
@@ -27,6 +28,7 @@ interface InitialAuthState {
   error?: any;
   image?: string;
   message?: string;
+  user: UserInfoProps | undefined;
 }
 
 const initialState = {
@@ -35,12 +37,14 @@ const initialState = {
   error: null,
   image: "",
   message: "",
+  user: undefined,
 };
 
 export enum ActionType {
   USER_ACTION_REQUEST = "USER_ACTION_REQUEST",
   USER_ACTION_FAIL = "USER_ACTION_FAIL",
   USER_REGISTER_SUCCESS = "USER_REGISTER_SUCCESS",
+  USER_PROFILE_LOAD_SUCCESS = "USER_PROFILE_LOAD_SUCCESS",
   USER_UPDATE_PROFILE_SUCCESS = "USER_UPDATE_PROFILE_SUCCESS",
   USER_DELETE_SUCCESS = "USER_DELETE_SUCCESS",
   USER_EDIT_SUCCESS = "USER_EDIT_SUCCESS",
@@ -96,6 +100,13 @@ const authReducer = (state: InitialAuthState, action) => {
         success: true,
         message: action.payload,
       };
+    case ActionType.USER_PROFILE_LOAD_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        user: action.payload,
+      };
     case ActionType.USER_UPDATE_PROFILE_SUCCESS:
       return {
         ...state,
@@ -143,6 +154,17 @@ const authReducer = (state: InitialAuthState, action) => {
 const AuthProvider = ({ children }: { children: JSX.Element }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        dispatch({
+          type: ActionType.USER_PROFILE_LOAD_SUCCESS,
+          payload: session.user,
+        });
+      }
+    });
+  }, []);
+
   /**
    * @desc Register a User or admin
    *
@@ -171,6 +193,7 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
           email,
           password,
           isAdmin: isAdmin ? isAdmin : false,
+          emailVerified: false,
           shippingAddress: {
             address: "",
             city: "",

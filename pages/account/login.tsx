@@ -9,6 +9,9 @@ import { toast } from "react-toastify";
 // Components
 import Layout from "../../components/Layout/Layout";
 
+// Context
+import { useAuth, ActionType } from "../../context/auth/AuthContext";
+
 import LoginForm from "../../components/Forms/LoginForm";
 const url =
   "https://res.cloudinary.com/dtkjg8f0n/image/upload/ar_16:9,c_fill,e_sharpen,g_auto,w_1000/v1625089267/blooms_hair_products/shari-sirotnak-oM5YoMhTf8E-unsplash_rcpxsj.webp";
@@ -26,6 +29,7 @@ export default function Login() {
     register,
     formState: { errors },
   } = useForm<Inputs>();
+  const { dispatch } = useAuth();
 
   const submitHandler: SubmitHandler<Inputs> = async (data) => {
     const result = await signIn("credentials", {
@@ -36,10 +40,15 @@ export default function Login() {
     if (result.error) {
       toast.error("Invalid email or password");
     }
-    if (!result.error && redirect === "/checkout/shipping") {
+    if (result.ok && redirect === "/checkout/shipping") {
       router.push("/checkout/shipping");
     }
-    if (!result.error) {
+    if (result.ok) {
+      const session = await getSession();
+      dispatch({
+        type: ActionType.USER_PROFILE_LOAD_SUCCESS,
+        payload: session.user,
+      });
       router.push("/");
     }
   };

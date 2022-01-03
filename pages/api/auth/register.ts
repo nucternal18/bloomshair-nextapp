@@ -8,8 +8,15 @@ import { verifyEmail } from "../../../lib/verifyEmail";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
-    const { displayName, password, email, isAdmin, image, shippingAddress } =
-      req.body;
+    const {
+      displayName,
+      password,
+      email,
+      isAdmin,
+      image,
+      shippingAddress,
+      emailVerified,
+    } = req.body;
 
     if (
       !displayName ||
@@ -42,6 +49,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         : "https://res.cloudinary.com/dtkjg8f0n/image/upload/e_sharpen:100,q_auto/v1621633003/sample.webp",
       isAdmin,
       shippingAddress: shippingAddress,
+      emailVerified: emailVerified,
     });
     await db.disconnect();
     if (user) {

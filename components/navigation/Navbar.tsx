@@ -12,6 +12,7 @@ import { useQuery } from "react-query";
 
 // context
 import { useCart } from "../../context/cart/cartContext";
+import { useAuth } from "../../context/auth/AuthContext";
 
 // components
 import CartContainer from "../CartContainer";
@@ -23,13 +24,12 @@ import { getCartItems } from "../../context/cart/cartActions";
 
 const Navbar = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [loadedSession, setLoadedSession] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [cartIsOpen, setCartIsOpen] = useState(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const [pos, setPos] = useState("top");
   const { state } = useCart();
+  const { state: authState } = useAuth();
   const { isLoading, data: cartItems } = useQuery("cart", getCartItems, {
     initialData: state.cart.cartItems,
   });
@@ -38,15 +38,6 @@ const Navbar = () => {
   const mobileNavRef = useRef<HTMLElement>();
   // user drop down ref
   const ref = useRef<HTMLDivElement>();
-
-  useEffect(() => {
-    getSession().then((session) => {
-      setLoading(false);
-      if (session) {
-        setLoadedSession(session);
-      }
-    });
-  }, []);
 
   // Close user drop down list when user clicks outside event window
   useEffect(() => {
@@ -138,14 +129,14 @@ const Navbar = () => {
             &#8801;
           </button>
           <div className="flex items-center lg:hidden ">
-            {loadedSession && (
+            {authState.user && (
               <button
                 className="flex items-center  bg-gray-200 border-2 border-yellow-500 rounded-full"
                 disabled
               >
                 <Image
-                  src={loadedSession.user.image}
-                  alt={loadedSession.user.name}
+                  src={authState.user.image}
+                  alt={authState.user.name}
                   width={30}
                   height={30}
                   className="rounded-full"
@@ -191,15 +182,15 @@ const Navbar = () => {
               </Link>
             </li>
           ))}
-          {loadedSession && (
+          {authState.user ? (
             <li className="px-1 m-0 text-base list-none">
               <button
                 className="flex items-center bg-white border-2 border-yellow-500 rounded-full"
                 onClick={toggleUserDropdown}
               >
                 <Image
-                  src={loadedSession.user.image}
-                  alt={loadedSession.user.name}
+                  src={authState.user.image}
+                  alt={authState.user.name}
                   width={30}
                   height={30}
                   className="rounded-full"
@@ -229,7 +220,7 @@ const Navbar = () => {
                       </a>
                     </Link>
                   </button>
-                  {loadedSession.user.isAdmin && (
+                  {authState.user.isAdmin && (
                     <button className="flex items-center px-4 py-2 space-x-2">
                       <RiAdminFill className="text-gray-500 " />
                       <Link href={"/admin"}>
@@ -255,8 +246,7 @@ const Navbar = () => {
                 </div>
               </div>
             </li>
-          )}
-          {!loadedSession && !loading && (
+          ) : (
             <li className="px-1 m-0 list-none ">
               <button
                 className={`${
@@ -338,7 +328,7 @@ const Navbar = () => {
                   </Link>
                 </li>
               ))}
-              {loadedSession ? (
+              {authState.user ? (
                 <>
                   <li className="px-1 m-0 text-base list-none text-md">
                     <button className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2">
@@ -356,7 +346,7 @@ const Navbar = () => {
                       </Link>
                     </button>
                   </li>
-                  {loadedSession.user.isAdmin && (
+                  {authState.user.isAdmin && (
                     <li className="px-1 m-0 text-base list-none text-md">
                       <button className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2">
                         <RiAdminFill className="text-gray-200 " />

@@ -48,6 +48,8 @@ export default NextAuth({
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
+            emailVerified: user.emailVerified,
+            shippingAddress: user.shippingAddress,
           };
         } else {
           return null;
