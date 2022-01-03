@@ -15,6 +15,13 @@ import { OrderContextProvider } from "../context/order/OrderContext";
 import { ProductContextProvider } from "../context/product/productContext";
 import { CartProvider } from "../context/cart/cartContext";
 
+declare global {
+  interface Window {
+    paypal?: any;
+    Square?: any;
+  }
+}
+
 function MyApp({ Component, pageProps }) {
   const [queryClient] = useState(() => new QueryClient());
 

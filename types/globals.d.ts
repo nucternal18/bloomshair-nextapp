@@ -1,6 +1,6 @@
 declare global {
-  interface window {
-    paypal: any;
-    Square: any;
+  interface Window {
+    paypal?: any;
+    Square?: any;
   }
 }

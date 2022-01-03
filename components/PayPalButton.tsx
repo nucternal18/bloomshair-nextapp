@@ -2,7 +2,9 @@ import React, { useRef } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
-const PayPalButtons = window.paypal.Buttons.driver("react", {
+const { paypal } = typeof window !== "undefined" && window;
+
+const PayPalButtons = paypal.Buttons.driver("react", {
   React,
   ReactDOM,
 });
