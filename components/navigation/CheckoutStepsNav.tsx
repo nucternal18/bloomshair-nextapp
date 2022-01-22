@@ -17,8 +17,8 @@ const CheckoutSteps: FC<ICheckout> = ({
 }): JSX.Element => {
   const router = useRouter();
   return (
-    <nav className="grid grid-cols-3 gap-4 w-3/4  container max-w-screen-md mx-auto mb-4 sm:px-8">
-      <div>
+    <nav className="grid grid-cols-4 gap-1 w-full sm:w-3/4  container max-w-screen-md mx-auto mt-6 mb-4 sm:px-8">
+      <div className="col-span-1">
         {step1 ? (
           <Link href="/account/login">
             <a
@@ -35,8 +35,8 @@ const CheckoutSteps: FC<ICheckout> = ({
           <button disabled>Sign In</button>
         )}
       </div>
-      <div className="line-through"></div>
-      <div>
+
+      <div className="col-span-1">
         {step2 ? (
           <Link href="/checkout/shipping">
             <a
@@ -53,8 +53,8 @@ const CheckoutSteps: FC<ICheckout> = ({
           <button disabled>Shipping</button>
         )}
       </div>
-      <div className="line-through "></div>
-      <div>
+
+      <div className="col-span-1">
         {step3 ? (
           <Link href="/checkout/payment">
             <a
@@ -71,8 +71,8 @@ const CheckoutSteps: FC<ICheckout> = ({
           <button disabled>Payment</button>
         )}
       </div>
-      <div className="line-through "></div>
-      <div>
+
+      <div className="col-span-1">
         {step4 ? (
           <Link href="/checkout/placeorder">
             <a

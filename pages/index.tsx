@@ -39,7 +39,7 @@ export default function Home(): JSX.Element {
   return (
     <Layout title="Home page" description="blooms hair home page">
       <main>
-        <section className="relative flex items-center content-center justify-center h-screen pt-16 pb-32">
+        <section className="relative flex items-center content-center justify-center h-[700px] pt-16 pb-32">
           <div className="absolute top-0 w-full h-full bg-center bg-cover">
             <Image
               src={url}
@@ -65,7 +65,7 @@ export default function Home(): JSX.Element {
                 initial="hidden"
                 animate="visible"
                 variants={variants}
-                transition={{ delay: 5.0, duration: 5.0 }}
+                transition={{ delay: 3.0, duration: 5.0 }}
               >
                 <p className="mb-4 text-3xl font-thin text-gray-300 md:text-5xl lg:text-7xl">
                   Welcome to Blooms Hair

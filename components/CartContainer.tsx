@@ -164,8 +164,8 @@ function CartContainer({ cartIsOpen, toggleCartDrawer }) {
   );
 }
 const classNames = {
-  default: `hidden md:block flex flex-col h-screen fixed inset-y-0 right-0 transition-all ease duration-200 `,
-  enabled: ` md:w-2/5 lg:w-1/4 bg-gray-100 z-50  text-gray-700 overflow-x-hidden p-4 `,
+  default: `hidden md:block flex flex-col h-screen fixed inset-y-0 right-0 transition-all ease-in-out duration-200 `,
+  enabled: ` md:w-2/5 lg:w-1/4 bg-gray-100 z-50  text-gray-700 overflow-x-hidden p-4 transition-all duration-200 ease-in-out `,
   disabled: `w-0  bg-gray-800 text-white overflow-x-hidden`,
 };
 

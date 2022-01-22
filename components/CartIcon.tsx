@@ -11,7 +11,9 @@ function CartIcon({ itemCount }) {
           height={26}
         />
       </div>
-      <div className="absolute text-xs font-bold bottom-4">{itemCount}</div>
+      <div className="absolute text-xs font-bold bottom-4">
+        {Number(itemCount)}
+      </div>
     </div>
   );
 }

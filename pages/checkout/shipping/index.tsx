@@ -33,11 +33,11 @@ function Shipping({ userData }) {
     register,
     formState: { errors },
   } = useForm<Inputs>();
-  const [show, setShow] = useState(false);
-  const [deliveryMethod, setDeliveryMethod] = useState("");
-  const [isAddress, setIsAddress] = useState(false);
-  const [checkedOne, setCheckedOne] = useState(false);
-  const [checkedTwo, setCheckedTwo] = useState(false);
+  const [show, setShow] = useState<boolean>(false);
+  const [deliveryMethod, setDeliveryMethod] = useState<string>("");
+  const [isAddress, setIsAddress] = useState<boolean>(false);
+  const [checkedOne, setCheckedOne] = useState<boolean>(false);
+  const [checkedTwo, setCheckedTwo] = useState<boolean>(false);
 
   useEffect(() => {
     if (userData.shippingAddress.address !== "") {
@@ -104,7 +104,7 @@ function Shipping({ userData }) {
             </h1>
             <Button
               type="button"
-              color="yellow"
+              color="dark"
               onClick={() => router.replace("/checkout/cart")}
             >
               return to cart
@@ -144,7 +144,7 @@ function Shipping({ userData }) {
               <div>
                 <Button
                   type="submit"
-                  color="yellow"
+                  color="dark"
                   className="w-full mb-2"
                   onClick={handleOpen}
                 >
@@ -152,7 +152,7 @@ function Shipping({ userData }) {
                 </Button>
                 <Button
                   type="submit"
-                  color="yellow"
+                  color="dark"
                   className="w-full "
                   onClick={() => setIsAddress(true)}
                 >
@@ -231,7 +231,7 @@ function Shipping({ userData }) {
 
               <Button
                 type="button"
-                color="yellow"
+                color="dark"
                 className="w-full"
                 disabled={!isAddress}
                 onClick={proceedToPayment}
@@ -257,7 +257,7 @@ function Shipping({ userData }) {
                 </div>
                 {state.cart.cartItems.map((item) => (
                   <div key={item.product} className="border-b border-gray-300">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-2">
                       <p className="font-thin">{item.name}</p>
                       <p className="font-medium">
                         £

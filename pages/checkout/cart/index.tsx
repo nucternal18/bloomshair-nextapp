@@ -184,7 +184,7 @@ function Cart({ session }) {
                         </div>
                         <Button
                           type="button"
-                          color="yellow"
+                          color="dark"
                           className="w-full"
                           disabled={state.cart.cartItems?.length === 0}
                           onClick={checkoutHandler}

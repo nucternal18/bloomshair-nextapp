@@ -1,11 +1,7 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
 import { NEXT_URL } from "../../config";
 import { ActionType, Actions, IAddToCart } from "./cartActions";
-import {
-  CartItemsProps,
-  paymentMethodProps,
-  ShippingAddressProps,
-} from "./cartState";
+import { CartItemsProps, ShippingAddressProps } from "./cartState";
 import {
   cartItemsFromStorage,
   paymentMethodFromStorage,
@@ -26,7 +22,7 @@ const initialState = {
     cartItems: cartItemsFromStorage,
     shippingAddress: shippingAddressFromStorage,
     paymentMethod: paymentMethodFromStorage,
-    qty: 0,
+    qty: 1,
   },
 };
 

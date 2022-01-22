@@ -27,8 +27,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const locationResponse = await locationsApi.retrieveLocation(
       process.env.SQUARE_LOCATION_ID
     );
+    console.log(locationResponse);
     const currency = locationResponse.result.location.currency;
-
+    console.log(currency);
     /**
      * @desc Charge the customer's card
      */

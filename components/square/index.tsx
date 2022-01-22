@@ -1,31 +1,11 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { NEXT_URL } from "../../config/index";
-import { locationsApi, idempotencyKey } from "../../lib/square-client";
+import { locationsApi, idempotencyKey, client } from "../../lib/square-client";
 
-function Square({ paymentAmount }) {
-  const [errorMessages, setErrorMessages] = useState([]);
-  const [initCard, setInitCard] = useState();
-  const squareRef = useRef();
-  const squareApplicationId = process.env.SQUARE_APPLICATION_ID;
-  const squareLocationId = process.env.SQUARE_LOCATION_ID;
-
-  const location = async () => {
-    const locationResponse = await locationsApi.retrieveLocation(
-      process.env.SQUARE_LOCATION_ID
-    );
-    const currency = locationResponse.result.location.currency;
-    const country = locationResponse.result.location.country;
-
-    return { currency, country };
-  };
-
-  async function initializeCard(payments: { card: () => any }) {
-    const card = await payments.card();
-    await card.attach("#card-container");
-
-    return card;
-  }
+function Square({ paymentAmount, squarePayments, squareLocationId }) {
+  const [squareCard, setSquareCard] = useState(undefined);
+  const [isSubmitting, setSubmitting] = useState(false);
 
   /**
    * @desc Call this function to send a payment token, buyer name, and other details
@@ -36,31 +16,38 @@ function Square({ paymentAmount }) {
    * @returns
    */
   async function createPayment(token: any) {
-    const bodyParameters = {
-      squareLocationId,
-      paymentToken: token,
-      paymentAmount,
-    };
+    try {
+      setSubmitting(true);
+      const bodyParameters = {
+        squareLocationId,
+        paymentToken: token,
+        paymentAmount,
+      };
 
-    const body = JSON.stringify(bodyParameters);
+      const body = JSON.stringify(bodyParameters);
 
-    const paymentResponse = await fetch(
-      `${NEXT_URL}/api/process-payment/square`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body,
+      const paymentResponse = await fetch(
+        `${NEXT_URL}/api/process-payment/square`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body,
+        }
+      );
+
+      if (paymentResponse.ok) {
+        setSubmitting(false);
+        return paymentResponse.json();
+      } else {
+        setSubmitting(false);
+        const errorBody = await paymentResponse.text();
+        toast.error(errorBody);
       }
-    );
-
-    if (paymentResponse.ok) {
-      return paymentResponse.json();
+    } catch (error) {
+      toast.error(error.message);
     }
-
-    const errorBody = await paymentResponse.text();
-    toast.error(errorBody);
   }
 
   /**
@@ -86,37 +73,42 @@ function Square({ paymentAmount }) {
     }
   }
 
+  async function initializeCard() {
+    const card = await squarePayments.card();
+    card.attach("#card-container");
+    setSquareCard(card);
+  }
+
+  // Handle Square payment methods initialization and re-attachment
   useEffect(() => {
-    const createCard = async () => {
-      if (typeof window !== "undefined") {
-        if (!window.Square) {
-          toast.error("Square.js failed to load properly");
-        }
-        const payments = window.Square.payments(
-          squareApplicationId,
-          squareLocationId
-        );
-        let card: any;
-        try {
-          card = await initializeCard(payments);
-        } catch (e) {
-          toast.error("Initializing Card failed " + e, {
-            position: toast.POSITION.TOP_CENTER,
-          });
-          return;
-        }
+    if (squarePayments) {
+      if (!squareCard) initializeCard();
+    }
+    // Otherwise, we destroy the objects and reset state
+    else {
+      if (squareCard) {
+        squareCard.destroy();
+        setSquareCard(undefined);
       }
-    };
-    createCard();
-  }, []);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [squarePayments]);
 
   return (
-    <div ref={squareRef}>
+    <div>
       <form id="payment-form">
-        <div id="card-container"></div>
-        <button id="card-button" type="button">
-          Pay with Card
-        </button>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <div id="card-container"></div>
+          <button id="card-button" type="button" disabled={isSubmitting}>
+            Pay with Card
+          </button>
+        </div>
       </form>
       <div id="payment-status-container"></div>
     </div>

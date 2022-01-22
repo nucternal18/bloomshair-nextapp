@@ -13,9 +13,9 @@ import ErrorMessage from "../../../components/ErrorMessage";
 import Layout from "../../../components/Layout/Layout";
 import CheckoutSteps from "../../../components/navigation/CheckoutStepsNav";
 import Spinner from "../../../components/Spinner";
-// const Square = dynamic(() => import('../../../components/square'), {
-//   ssr: false,
-// });
+const Square = dynamic(() => import("../../../components/square"), {
+  ssr: false,
+});
 const PaypalButton = dynamic(() => import("../../../components/PayPalButton"), {
   ssr: false,
 });
@@ -28,8 +28,8 @@ import { NEXT_URL } from "../../../config";
 
 const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
   const router = useRouter();
-  const [scriptLoaded, setScriptLoaded] = useState(false);
-
+  const [scriptLoaded, setScriptLoaded] = useState<boolean>(false);
+  const [squarePayments, setSquarePayments] = useState(null);
   const { state: cartState, dispatch } = useCart();
   const {
     cart: { shippingAddress, cartItems, paymentMethod },
@@ -38,6 +38,21 @@ const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
   const { state: orderState, createOrder } = useOrder();
   const { success, error, order } = orderState;
   const wrapper = useRef<HTMLDivElement>();
+
+  const squareApplicationId = process.env.SQUARE_APPLICATION_ID;
+  const squareLocationId = process.env.SQUARE_LOCATION_ID;
+
+  useEffect(() => {
+    if (scriptLoaded && !squarePayments) {
+      if (typeof window !== "undefined" && !window?.Square) {
+        toast.error("Payment failed to load - please refresh the page");
+        return;
+      }
+      setSquarePayments(
+        window.Square.payments(squareApplicationId, squareLocationId)
+      );
+    }
+  }, [scriptLoaded, squarePayments]);
 
   /**
    * @desc Calculate total item price
@@ -72,6 +87,12 @@ const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
   function addDecimals(num) {
     return (Math.round(num * 100) / 100).toFixed(2);
   }
+
+  // Check if square script exists
+  // useEffect(() => {
+  //   const existingScript = document.getElementById("webPayment");
+  //   if (existingScript) setScriptLoaded(true);
+  // },[]);
 
   useEffect(() => {
     if (!paymentMethod) {
@@ -152,21 +173,27 @@ const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
 
   return (
     <Layout title="Checkout">
-      <Script
-        src={`https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=GBP`}
-        id="PayPal"
-        strategy="afterInteractive"
-        onLoad={() => {
-          setScriptLoaded(true);
-        }}
-      />
-      <Script
-        src="https://sandbox.web.squarecdn.com/v1/square.js"
-        id="Square"
-        onLoad={() => {
-          setScriptLoaded(true);
-        }}
-      />
+      {/* Add paypal script to page */}
+      {paymentMethod === "Paypal" && (
+        <Script
+          id="PayPal"
+          src={`https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=GBP`}
+          strategy="afterInteractive"
+          onLoad={() => {
+            setScriptLoaded(true);
+          }}
+        />
+      )}
+      {/* Add square script to page */}
+      {paymentMethod === "Square" && (
+        <Script
+          id="webPayment"
+          src="https://sandbox.web.squarecdn.com/v1/square.js"
+          onLoad={() => {
+            setScriptLoaded(true);
+          }}
+        />
+      )}
       <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
         <CheckoutSteps step1 step2 step3 step4 />
         <section className="container grid grid-cols-1 gap-2 mx-auto mb-4 bg-white rounded shadow-2xl max-w-screen-lg md:grid-cols-2 lg:grid-cols-4 md:py-8 md:px-6">
@@ -221,7 +248,11 @@ const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
                   </div>
                 ) : (
                   <div className="w-full">
-                    {/* <Square paymentAmount={totalPrice}/> */}
+                    <Square
+                      paymentAmount={Number(totalPrice).toFixed(2)}
+                      squarePayments={squarePayments}
+                      squareLocationId={squareLocationId}
+                    />
                   </div>
                 )}
               </div>

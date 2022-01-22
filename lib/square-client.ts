@@ -4,9 +4,11 @@ import { ApiError, Client, Environment } from "square";
 // Here we use the npm package uuid
 import { v4 as uuidv4 } from "uuid";
 
+const dev = process.env.NODE_ENV !== "production";
+
 const client = new Client({
   timeout: 3000,
-  environment: Environment.Sandbox,
+  environment: dev ? Environment.Sandbox : Environment.Production,
   accessToken: process.env.SQUARE_ACCESS_TOKEN,
 });
 

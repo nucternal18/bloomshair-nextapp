@@ -155,10 +155,9 @@ const Navbar = () => {
                 >
                   {!isLoading && (
                     <CartIcon
-                      itemCount={cartItems?.reduce(
-                        (acc, item) => acc + +item.qty,
-                        0
-                      )}
+                      itemCount={state.cart?.cartItems
+                        ?.reduce((acc, item) => acc + item.qty, 0)
+                        .toString()}
                     />
                   )}
                 </a>
@@ -272,11 +271,11 @@ const Navbar = () => {
               router.asPath === "/checkout/cart"
                 ? "text-yellow-500"
                 : "text-gray-200"
-            } block text-2xl font-medium  uppercase list-none cursor-pointer hover:text-yellow-400flex items-center ml-1`}
+            }  text-2xl font-medium  uppercase list-none cursor-pointer hover:text-yellow-400 flex items-center ml-1`}
             onClick={toggleCartDrawer}
           >
             <CartIcon
-              itemCount={state.cart.cartItems?.reduce(
+              itemCount={state.cart?.cartItems?.reduce(
                 (acc, item) => acc + item.qty,
                 0
               )}

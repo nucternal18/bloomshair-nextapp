@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
-import Button from "./Button";
+import { FaSearch } from "react-icons/fa";
 import useOutsideClick from "../hooks/useOutsideClick";
 import _ from "lodash";
 import AutoComplete from "./AuoComplete";
@@ -54,32 +54,31 @@ const SearchBox = () => {
   };
   return (
     <form onSubmit={handleSubmit} className="flex w-full max-w-screen-lg">
-      <div className="flex flex-col w-full">
-        <input
-          type="text"
-          name="q"
-          value={keyword}
-          onChange={handleSearch}
-          autoComplete="off"
-          placeholder="Search Products..."
-          className="w-full p-2 border-2 border-collapse border-gray-800 border-opacity-70 rounded-l-md focus:ring-transparent focus:outline-none focus:border-gray-900"
-        />
-        <div ref={documentRef}>
-          {isVisible && (
-            <AutoComplete
-              isVisible={isVisible}
-              suggestions={suggestions}
-              handleSuggestionClick={handleSuggestionClick}
-            />
-          )}
+      <div className="flex justify-start items-center w-full px-2 py-1 rounded-2xl bg-white border-none  focus:outline-none focus-within:shadow-sm">
+        <div className="flex flex-col w-full">
+          <input
+            type="text"
+            name="q"
+            value={keyword}
+            onChange={handleSearch}
+            autoComplete="off"
+            placeholder="Search Products..."
+            className="w-full p-2  bg-white focus:outline-none border-none focus:shadow-none focus:ring-0"
+          />
+          <div ref={documentRef}>
+            {isVisible && (
+              <AutoComplete
+                isVisible={isVisible}
+                suggestions={suggestions}
+                handleSuggestionClick={handleSuggestionClick}
+              />
+            )}
+          </div>
         </div>
+        <button type="submit">
+          <FaSearch fontSize={21} className="ml-2" />
+        </button>
       </div>
-      <button
-        type="submit"
-        className="border-gray-800 border rounded-r-md  bg-gray-800  hover:bg-gray-900 text-gray-200 hover:text-gray-100  focus:outline-none shadow  px-4 py-2 font-medium transition flex items-center justify-center ease-in duration-200"
-      >
-        Search
-      </button>
     </form>
   );
 };
