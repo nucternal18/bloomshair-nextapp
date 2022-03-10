@@ -1,18 +1,30 @@
 const { withSentryConfig } = require("@sentry/nextjs");
+const withTm = require("next-transpile-modules")([
+  "@square/web-sdk",
+  "react-square-web-payments-sdk",
+]);
 const withPWA = require("next-pwa");
+const runtimeCaching = require("next-pwa/cache");
 
-const moduleExports = withPWA({
-  reactStrictMode: true,
-  images: {
-    domains: ["firebasestorage.googleapis.com", "res.cloudinary.com"],
-  },
-  pwa: {
-    dest: "public",
-    register: true,
-    skipWaiting: true,
-    disable: process.env.NODE_ENV === "development",
-  },
-});
+const moduleExports = withTm(
+  withPWA({
+    reactStrictMode: true,
+    experimental: {
+      esmExternals: "loose",
+    },
+    images: {
+      domains: ["firebasestorage.googleapis.com", "res.cloudinary.com"],
+    },
+    pwa: {
+      dest: "public",
+      register: true,
+      skipWaiting: true,
+      disable: process.env.NODE_ENV === "development",
+      runtimeCaching,
+      buildExcludes: [/middleware-manifest\.json$/, /_middleware\.js$/],
+    },
+  })
+);
 
 const sentryWebpackPluginOptions = {
   // Additional config options for the Sentry Webpack plugin. Keep in mind that

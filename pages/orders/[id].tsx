@@ -17,7 +17,6 @@ import { Card } from "../../components/Card";
 
 const OrderDetails = ({ order }) => {
   const router = useRouter();
-  const { state, payOrder } = useOrder();
 
   return (
     <Layout title={`Order Details: ${order._id}`}>
@@ -28,7 +27,9 @@ const OrderDetails = ({ order }) => {
               <Button
                 type="button"
                 color="dark"
-                onClick={() => router.push("/products")}
+                onClick={() => {
+                  router.push("/products");
+                }}
               >
                 continue shopping
               </Button>
@@ -215,7 +216,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const [userRes, orderRes, payPalRes] = await Promise.all([
+  const [userRes, orderRes] = await Promise.all([
     fetch(`${NEXT_URL}/api/users/user`, {
       method: "GET",
       headers: {
@@ -230,19 +231,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         cookie: context.req.headers.cookie,
       },
     }),
-    fetch(`${NEXT_URL}/api/paypal`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        cookie: context.req.headers.cookie,
-      },
-    }),
   ]);
 
-  const [userData, orderData, paypalData] = await Promise.all([
+  const [userData, orderData] = await Promise.all([
     userRes.json(),
     orderRes.json(),
-    payPalRes.json(),
   ]);
 
   if (!userData) {

@@ -1,12 +1,16 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import { withSentry } from "@sentry/nextjs";
-import {
-  locationsApi,
-  idempotencyKey,
-  paymentsApi,
-} from "../../../lib/square-client";
+import { randomUUID } from "crypto";
+
+import { Client, Environment } from "square";
+
+const dev = process.env.NODE_ENV !== "production";
+
+const { paymentsApi } = new Client({
+  environment: dev ? Environment.Sandbox : Environment.Production,
+  accessToken: process.env.SQUARE_ACCESS_TOKEN,
+});
 
 /**
  * @param
@@ -19,54 +23,31 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    const { paymentToken, paymentAmount } = req.body;
+    const { sourceId, paymentAmount } = req.body;
 
-    /**
-     * @desc get the currency for the location
-     */
-    const locationResponse = await locationsApi.retrieveLocation(
-      process.env.SQUARE_LOCATION_ID
-    );
-    console.log(locationResponse);
-    const currency = locationResponse.result.location.currency;
-    console.log(currency);
-    /**
-     * @desc Charge the customer's card
-     */
-    const requestBody = {
-      idempotencyKey,
-      sourceId: paymentToken,
+    const {
+      result: { payment },
+    } = await paymentsApi.createPayment({
+      idempotencyKey: randomUUID(),
+      sourceId: sourceId,
       amountMoney: {
-        amount: paymentAmount, // $1.00 charge
-        currency,
+        amount: BigInt(paymentAmount * 100), // $1.00 charge
+        currency: "GBP",
       },
-    };
+    });
 
-    try {
-      const {
-        result: { payment },
-      } = await paymentsApi.createPayment(requestBody);
-
-      const result = JSON.stringify(
-        payment,
-        (key, value) => {
-          return typeof value === "bigint"
-            ? parseInt(value.toLocaleString())
-            : value;
-        },
-        4
-      );
-
-      res.json({
-        result,
-      });
-    } catch (error) {
-      res.json(error.result);
-    }
+    const result = JSON.stringify(
+      payment,
+      (key, value) => {
+        return typeof value === "bigint" ? value.toLocaleString() : value;
+      },
+      4
+    );
+    res.status(200).json(result);
   } else {
     res.setHeader("Allow", ["POST"]);
     res.status(405).json({ message: `Method ${req.method} not allowed` });
   }
 };
 
-export default withSentry(handler);
+export default handler;

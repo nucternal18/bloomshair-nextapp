@@ -1,11 +1,5 @@
-import {
-  useState,
-  createContext,
-  useEffect,
-  useReducer,
-  useContext,
-} from "react";
-import { useRouter } from "next/router";
+/* eslint-disable @typescript-eslint/no-misused-promises */
+import { createContext, useReducer, useContext } from "react";
 
 import { NEXT_URL } from "../../config";
 import {
@@ -59,14 +53,12 @@ export const OrderContext = createContext<{
   state: IOrderState;
   dispatch: React.Dispatch<any>;
   createOrder: (newOrder: OrderProps, paymentResult: PaymentResProps) => void;
-  payOrder: (orderId: string, paymentResult: PaymentResProps) => void;
   orderDelivery: (order: OrderProps) => void;
   getTotal: (data: number) => void;
 }>({
   state: initialState,
   dispatch: () => null,
   createOrder: () => {},
-  payOrder: () => {},
   orderDelivery: () => {},
   getTotal: () => {},
 });
@@ -99,7 +91,10 @@ const OrderContextProvider = ({ children }) => {
    * @desc create order
    * @param newOrder
    */
-  const createOrder = async (newOrder, paymentResult) => {
+  const createOrder = async (
+    newOrder: OrderProps,
+    paymentResult: PaymentResProps
+  ) => {
     try {
       dispatch({
         type: ActionType.ORDER_ACTION_REQUEST,
@@ -133,50 +128,50 @@ const OrderContextProvider = ({ children }) => {
     }
   };
 
-  /**
-   * @desc Send payment result to server
-   * @param orderId
-   * @param paymentResult
-   */
-  const payOrder = async (orderId, paymentResult) => {
-    try {
-      dispatch({
-        type: ActionType.ORDER_ACTION_REQUEST,
-      });
+  // /**
+  //  * @desc Send payment result to server
+  //  * @param orderId
+  //  * @param paymentResult
+  //  */
+  // const payOrder = async (orderId: string, paymentResult: PaymentResProps) => {
+  //   try {
+  //     dispatch({
+  //       type: ActionType.ORDER_ACTION_REQUEST,
+  //     });
 
-      const res = await fetch(
-        `${NEXT_URL}/api/orders/myOrders/${orderId}/pay`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ paymentResult }),
-        }
-      );
+  //     const res = await fetch(
+  //       `${NEXT_URL}/api/orders/myOrders/${orderId}/pay`,
+  //       {
+  //         method: "PUT",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ paymentResult }),
+  //       }
+  //     );
 
-      if (res.ok) {
-        dispatch({
-          type: ActionType.ORDER_PAY_SUCCESS,
-        });
-      }
-    } catch (error) {
-      const err =
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : "Unable to complete payment";
-      dispatch({
-        type: ActionType.ORDER_ACTION_FAIL,
-        payload: err,
-      });
-    }
-  };
+  //     if (res.ok) {
+  //       dispatch({
+  //         type: ActionType.ORDER_PAY_SUCCESS,
+  //       });
+  //     }
+  //   } catch (error) {
+  //     const err =
+  //       error.response && error.response.data.message
+  //         ? error.response.data.message
+  //         : "Unable to complete payment";
+  //     dispatch({
+  //       type: ActionType.ORDER_ACTION_FAIL,
+  //       payload: err,
+  //     });
+  //   }
+  // };
 
   /**
    * @desc Set order delivery status to true
    * @param order
    */
-  const orderDelivery = async (order) => {
+  const orderDelivery = async (order: OrderProps) => {
     try {
       dispatch({
         type: ActionType.ORDER_ACTION_REQUEST,
@@ -216,7 +211,6 @@ const OrderContextProvider = ({ children }) => {
         state,
         dispatch,
         createOrder,
-        payOrder,
         orderDelivery,
         getTotal,
       }}

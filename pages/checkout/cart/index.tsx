@@ -33,6 +33,8 @@ function Cart({ session }) {
     router.reload();
   };
 
+  console.log("session", session);
+
   const checkoutHandler = () => {
     if (!session) {
       router.push("/account/login?redirect=/checkout/shipping");
@@ -70,7 +72,9 @@ function Cart({ session }) {
                 type="button"
                 color="dark"
                 className="hidden md:block"
-                onClick={() => router.push("/products")}
+                onClick={() => {
+                  router.push("/products");
+                }}
               >
                 Continue Shopping
               </Button>
@@ -125,7 +129,9 @@ function Cart({ session }) {
                         type="button"
                         color="dark"
                         className="w-full mb-2 md:w-48 md:ml-1"
-                        onClick={() => router.push("/products")}
+                        onClick={() => {
+                          router.push("/products");
+                        }}
                       >
                         Continue Shopping
                       </Button>

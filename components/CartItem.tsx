@@ -34,7 +34,7 @@ function CartItem({
           </Link>
         </div>
         <div className={`${textSize} mr-2 font-thin `}>£{price}</div>
-        <div className="mr-2">
+        <div className="mr-2 w-[5vw]">
           <select
             className="w-full px-3 py-2 my-2 bg-white border rounded outline-none"
             value={qty}

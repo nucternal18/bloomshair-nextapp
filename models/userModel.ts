@@ -1,7 +1,22 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
-const usersSchema = new mongoose.Schema(
+export interface IUser extends mongoose.Document {
+  name: string;
+  image: string;
+  email: string;
+  password: string;
+  isAdmin: boolean;
+  emailVerified?: boolean;
+  shippingAddress: {
+    address: string;
+    city: string;
+    postalCode: string;
+    country: string;
+  };
+}
+
+const usersSchema = new mongoose.Schema<IUser>(
   {
     name: {
       type: String,
@@ -44,7 +59,7 @@ usersSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-usersSchema.pre("save", async function (next) {
+usersSchema.pre<IUser>("save", async function (next) {
   if (!this.isModified("password")) {
     next();
   }

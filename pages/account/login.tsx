@@ -23,7 +23,9 @@ type Inputs = {
 
 export default function Login() {
   const router = useRouter();
+  console.log(router);
   const { redirect } = router.query; // login?redirect=/checkout/shipping
+  console.log("redirect", redirect);
   const {
     handleSubmit,
     register,

@@ -1,6 +1,7 @@
 export type PaymentResProps = {
   id: string;
   status: string;
+  orderId: string;
   update_time: string;
   email_address: string;
 };

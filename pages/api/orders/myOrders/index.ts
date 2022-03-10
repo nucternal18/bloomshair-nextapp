@@ -60,9 +60,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         paidAt: Date.now(),
         paymentResult: {
           id: paymentResult.id,
-          status: paymentResult.status,
-          update_time: paymentResult.update_time,
-          email_address: paymentResult.payer.email_address,
+          status: paymentResult?.status,
+          orderId: paymentResult?.orderId,
+          update_time: paymentResult?.update_time,
+          email_address:
+            paymentResult?.payer?.email_address || paymentResult?.email_address,
         },
       });
 

@@ -25,11 +25,12 @@ import { useCart } from "../../../context/cart/cartContext";
 import { clearCart } from "../../../context/cart/cartActions";
 import { useOrder } from "../../../context/order/OrderContext";
 import { NEXT_URL } from "../../../config";
+import { TokenResult } from "@square/web-sdk";
 
 const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
   const router = useRouter();
   const [scriptLoaded, setScriptLoaded] = useState<boolean>(false);
-  const [squarePayments, setSquarePayments] = useState(null);
+
   const { state: cartState, dispatch } = useCart();
   const {
     cart: { shippingAddress, cartItems, paymentMethod },
@@ -39,26 +40,11 @@ const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
   const { success, error, order } = orderState;
   const wrapper = useRef<HTMLDivElement>();
 
-  const squareApplicationId = process.env.SQUARE_APPLICATION_ID;
-  const squareLocationId = process.env.SQUARE_LOCATION_ID;
-
-  useEffect(() => {
-    if (scriptLoaded && !squarePayments) {
-      if (typeof window !== "undefined" && !window?.Square) {
-        toast.error("Payment failed to load - please refresh the page");
-        return;
-      }
-      setSquarePayments(
-        window.Square.payments(squareApplicationId, squareLocationId)
-      );
-    }
-  }, [scriptLoaded, squarePayments]);
-
   /**
    * @desc Calculate total item price
    */
   const itemsPrice = addDecimals(
-    cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
+    cartItems.reduce((acc, item) => acc + Number(item.price) * item.qty, 0)
   );
   /**
    * @desc Calculate shipping price
@@ -87,12 +73,6 @@ const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
   function addDecimals(num) {
     return (Math.round(num * 100) / 100).toFixed(2);
   }
-
-  // Check if square script exists
-  // useEffect(() => {
-  //   const existingScript = document.getElementById("webPayment");
-  //   if (existingScript) setScriptLoaded(true);
-  // },[]);
 
   useEffect(() => {
     if (!paymentMethod) {
@@ -171,6 +151,29 @@ const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
       .catch((err) => toast.error("Something went wrong." + err));
   };
 
+  const onSquarePayment = (data) => {
+    const paymentResult = {
+      id: data.id,
+      status: data.status,
+      update_time: data.updatedAt,
+      orderId: data.orderId,
+      email_address: userInfo.email,
+    };
+
+    createOrder(
+      {
+        orderItems: cartItems,
+        shippingAddress: shippingAddress,
+        paymentMethod,
+        itemsPrice: +itemsPrice,
+        shippingPrice: +shippingPrice,
+        taxPrice: +taxPrice,
+        totalPrice: +totalPrice,
+      },
+      paymentResult
+    );
+  };
+
   return (
     <Layout title="Checkout">
       {/* Add paypal script to page */}
@@ -184,16 +187,7 @@ const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
           }}
         />
       )}
-      {/* Add square script to page */}
-      {paymentMethod === "Square" && (
-        <Script
-          id="webPayment"
-          src="https://sandbox.web.squarecdn.com/v1/square.js"
-          onLoad={() => {
-            setScriptLoaded(true);
-          }}
-        />
-      )}
+
       <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
         <CheckoutSteps step1 step2 step3 step4 />
         <section className="container grid grid-cols-1 gap-2 mx-auto mb-4 bg-white rounded shadow-2xl max-w-screen-lg md:grid-cols-2 lg:grid-cols-4 md:py-8 md:px-6">
@@ -232,7 +226,7 @@ const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
                 {paymentMethod.includes("PayPal") ? (
                   <div>
                     {!scriptLoaded ? (
-                      <Spinner className="w-12 h12" />
+                      <Spinner />
                     ) : (
                       <div ref={wrapper}>
                         <PaypalButton
@@ -250,8 +244,7 @@ const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
                   <div className="w-full">
                     <Square
                       paymentAmount={Number(totalPrice).toFixed(2)}
-                      squarePayments={squarePayments}
-                      squareLocationId={squareLocationId}
+                      onSquarePayment={onSquarePayment}
                     />
                   </div>
                 )}

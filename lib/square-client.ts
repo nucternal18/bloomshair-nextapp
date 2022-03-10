@@ -6,14 +6,10 @@ import { v4 as uuidv4 } from "uuid";
 
 const dev = process.env.NODE_ENV !== "production";
 
-const client = new Client({
-  timeout: 3000,
+const { locationsApi, customersApi, paymentsApi } = new Client({
   environment: dev ? Environment.Sandbox : Environment.Production,
   accessToken: process.env.SQUARE_ACCESS_TOKEN,
 });
-
-// Get an instance of the Square API you want call
-const { locationsApi, customersApi, paymentsApi } = client;
 
 const idempotencyKey = uuidv4();
 
@@ -39,7 +35,6 @@ const createCustomer = async (firstName: string, lastName: string) => {
 };
 
 export {
-  client,
   locationsApi,
   customersApi,
   idempotencyKey,
