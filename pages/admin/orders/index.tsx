@@ -31,8 +31,8 @@ const OrderListScreen = (props) => {
 
   return (
     <AdminLayout>
-      <main className="w-full h-screen p-2 mx-auto bg-gray-100">
-        <section className="container px-2 pt-6 pb-8 mx-2 mt-6 mb-4 bg-white shadow-2xl md:mx-auto ">
+      <main className="w-full h-screen p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+        <section className="container px-2 pt-6 pb-8 mx-2 mt-6 mb-4  shadow-2xl md:mx-auto ">
           <div className="flex items-center justify-between mb-6 border-b-4 border-current border-gray-200">
             <div>
               <h1 className="p-3 text-4xl font-bold md:p-5 md:text-5xl">
@@ -51,7 +51,7 @@ const OrderListScreen = (props) => {
           </div>
           <div className="w-100">
             {props.loading ? (
-              <Spinner className="w-12 h-12" />
+              <Spinner message="loading..." />
             ) : (
               <Table
                 tableData={props.orders}

@@ -46,8 +46,8 @@ const UserListScreen = ({ users, loading }) => {
   };
   return (
     <AdminLayout>
-      <main className="w-full h-screen p-2 mx-auto overflow-auto bg-gray-100">
-        <section className="container px-2 pt-6 pb-8 mt-6 mb-4 bg-white rounded shadow-2xl md:mx-auto ">
+      <main className="w-full h-screen p-2 mx-auto overflow-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+        <section className="container px-2 pt-6 pb-8 mt-6 mb-4 rounded shadow-2xl md:mx-auto ">
           <div className="flex items-center justify-between mb-4 border-b-4 border-current border-gray-200">
             <div>
               <h1 className="p-5 mt-6 text-5xl font-bold">Users</h1>
@@ -63,7 +63,7 @@ const UserListScreen = ({ users, loading }) => {
             </div>
           </div>
           {loading ? (
-            <Spinner className="w-12 h-12" />
+            <Spinner message="loading..." />
           ) : (
             <div className="overflow-hidden">
               <Table

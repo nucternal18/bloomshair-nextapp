@@ -3,7 +3,13 @@ import React from "react";
 import Button from "../Button";
 import ErrorMessage from "../ErrorMessage";
 
-function RegisterForm({ submitHandler, errors, handleSubmit, register }) {
+function RegisterForm({
+  submitHandler,
+  errors,
+  handleSubmit,
+  register,
+  buttonName,
+}) {
   return (
     <form
       onSubmit={handleSubmit(submitHandler)}
@@ -134,7 +140,7 @@ function RegisterForm({ submitHandler, errors, handleSubmit, register }) {
         )}
       </div>
       <Button type="submit" color="dark" className="w-full">
-        Register
+        {buttonName}
       </Button>
     </form>
   );

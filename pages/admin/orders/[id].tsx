@@ -27,8 +27,8 @@ function OrderScreen(props): JSX.Element {
 
   return (
     <AdminLayout>
-      <main className="w-full p-4 mx-auto">
-        <section className="container px-2 pt-6 pb-8 mx-2 my-4 bg-white rounded max-w-screen-lg shadow-2xl md:mx-auto ">
+      <main className="w-full p-4 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+        <section className="container px-2 pt-6 pb-8 mx-2 my-4  rounded max-w-screen-lg shadow-2xl md:mx-auto ">
           <div className="flex flex-col sm:flex-row items-center justify-between px-4 mb-4 border-b-2 border-current border-gray-200">
             <div className="mt-6">
               <Button color="dark" type="button">
@@ -148,7 +148,7 @@ function OrderScreen(props): JSX.Element {
                     <div className="py-4 overflow-y-auto">
                       <table className="w-full whitespace-nowrap">
                         <thead>
-                          <tr className="h-16 w-full text-base leading-none text-gray-800">
+                          <tr className="h-16 w-full text-base leading-none ">
                             <th className="font-medium text-left pl-4">
                               Product
                             </th>
@@ -165,7 +165,7 @@ function OrderScreen(props): JSX.Element {
                           {order.orderItems.map((item, index) => (
                             <tr
                               key={index}
-                              className="h-20 text-base leading-none text-gray-800 bg-white hover:bg-gray-100 border-b border-t border-gray-100"
+                              className="h-20 text-base leading-none text-gray-800  hover:bg-gray-100 border-b border-t border-gray-100"
                             >
                               <td className="pl-4 text-left ">
                                 <Image
@@ -194,7 +194,7 @@ function OrderScreen(props): JSX.Element {
                     </div>
                   </div>
                   <div className="p-3 w-full">
-                    {state.loading && <Spinner className="w-12 h-12" />}
+                    {state.loading && <Spinner message="loading..." />}
                     {state.error && (
                       <ErrorMessage variant="danger">
                         {state.error}

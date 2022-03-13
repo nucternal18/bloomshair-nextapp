@@ -41,8 +41,8 @@ const UserEditScreen = (props) => {
   };
   return (
     <AdminLayout>
-      <main className="w-full h-screen p-2 mx-auto overflow-auto bg-gray-200">
-        <section className="container px-2 pt-6 pb-8 mx-2 mt-6 mb-4 bg-white rounded shadow-xl md:mx-auto ">
+      <main className="w-full h-screen p-2 mx-auto overflow-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+        <section className="container px-2 pt-6 pb-8 mx-2 mt-6 mb-4  rounded shadow-xl md:mx-auto ">
           <div className="mt-6">
             <div className="flex items-center justify-between px-2 border-b-4 border-current border-gray-200">
               <div>
@@ -54,13 +54,13 @@ const UserEditScreen = (props) => {
                 </Link>
               </Button>
             </div>
-            {state.loading && <Spinner className="w-12 h-12" />}
+            {state.loading && <Spinner message="loading..." />}
             {state.error && (
               <ErrorMessage variant="danger">{state.error}</ErrorMessage>
             )}
             <form
               onSubmit={submitHandler}
-              className="px-12 pt-6 pb-8 mx-2 mb-4 bg-white rounded sm:mx-auto "
+              className="px-12 pt-6 pb-8 mx-2 mb-4  rounded sm:mx-auto "
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="flex flex-col items-center rounded-full mb-4">
@@ -82,7 +82,7 @@ const UserEditScreen = (props) => {
                 </div>
                 <div className="w-full">
                   <div className="mb-4">
-                    <label className="block mb-2 text-base font-bold text-gray-700">
+                    <label className="block mb-2 text-base font-bold ">
                       Name
                     </label>
                     <input
@@ -94,7 +94,7 @@ const UserEditScreen = (props) => {
                     />
                   </div>
                   <div className="mb-4">
-                    <label className="block mb-2 text-base font-bold text-gray-700">
+                    <label className="block mb-2 text-base font-bold ">
                       Email Address
                     </label>
                     <input

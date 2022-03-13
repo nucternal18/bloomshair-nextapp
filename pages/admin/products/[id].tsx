@@ -57,7 +57,7 @@ const ProductEditScreen = (props): JSX.Element => {
     router.push("/admin/products");
   };
 
-  const uploadFileHandler = async (e) => {
+  const uploadFileHandler = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
     if (ALLOWED_FORMATS.includes(file.type)) reader.readAsDataURL(file);
@@ -72,8 +72,8 @@ const ProductEditScreen = (props): JSX.Element => {
   return (
     mounted && (
       <AdminLayout>
-        <main className="w-full h-screen p-4 mx-auto overflow-auto bg-gray-200">
-          <section className="container px-2 pt-6 pb-8 mx-2 mt-6 mb-4 bg-white rounded shadow-2xl md:mx-auto ">
+        <main className="w-full h-screen p-4 mx-auto overflow-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+          <section className="container px-2 pt-6 pb-8 mx-2 mt-6 mb-4 rounded shadow-2xl md:mx-auto ">
             <div className="flex items-center justify-between px-4 mb-4 border-b-4 border-current border-gray-200">
               <div className="mt-6">
                 <Button
@@ -93,7 +93,7 @@ const ProductEditScreen = (props): JSX.Element => {
             <FormContainer>
               <form
                 onSubmit={submitHandler}
-                className="w-full px-12 pt-6 pb-8 mx-2 mb-4 bg-white sm:mx-auto"
+                className="w-full px-12 pt-6 pb-8 mx-2 mb-4  sm:mx-auto"
               >
                 <div className="flex flex-col items-center justify-around md:flex-row">
                   <div className="flex flex-col items-center w-full mb-4">
@@ -108,9 +108,9 @@ const ProductEditScreen = (props): JSX.Element => {
                       />
                     )}
                     {loading ? (
-                      <Spinner className="w-12 h-12" />
+                      <Spinner message="loading..." />
                     ) : (
-                      <label className="block py-2 my-2 mr-2 text-base font-bold text-gray-700">
+                      <label className="block py-2 my-2 mr-2 text-base font-bold ">
                         <FaPlusCircle className="text-4xl" />
                         <input
                           type="file"
@@ -123,7 +123,7 @@ const ProductEditScreen = (props): JSX.Element => {
                   {error && <div className="justify-center">{error}</div>}
                   <div className="w-full">
                     <div className="flex flex-col w-full mb-4">
-                      <label className="block mb-1 mr-2 text-base font-bold text-gray-700">
+                      <label className="block mb-1 mr-2 text-base font-bold ">
                         Name
                       </label>
                       <input
@@ -135,7 +135,7 @@ const ProductEditScreen = (props): JSX.Element => {
                       ></input>
                     </div>
                     <div className="flex flex-col mb-4">
-                      <label className="block mb-1 mr-2 text-base font-bold text-gray-700">
+                      <label className="block mb-1 mr-2 text-base font-bold ">
                         Price
                       </label>
                       <input
@@ -148,7 +148,7 @@ const ProductEditScreen = (props): JSX.Element => {
                     </div>
 
                     <div className="flex flex-col mb-4">
-                      <label className="block mb-1 mr-2 text-base font-bold text-gray-700">
+                      <label className="block mb-1 mr-2 text-base font-bold ">
                         Brand
                       </label>
                       <input
@@ -160,7 +160,7 @@ const ProductEditScreen = (props): JSX.Element => {
                       ></input>
                     </div>
                     <div className="flex flex-col mb-4">
-                      <label className="block mb-1 mr-2 text-base font-bold text-gray-700">
+                      <label className="block mb-1 mr-2 text-base font-bold ">
                         Category
                       </label>
                       <input
@@ -172,7 +172,7 @@ const ProductEditScreen = (props): JSX.Element => {
                       ></input>
                     </div>
                     <div className="flex flex-col mb-4">
-                      <label className="block mb-1 mr-2 text-base font-bold text-gray-700">
+                      <label className="block mb-1 mr-2 text-base font-bold ">
                         Count In Stock
                       </label>
                       <input

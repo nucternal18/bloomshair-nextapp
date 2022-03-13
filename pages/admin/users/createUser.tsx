@@ -4,7 +4,7 @@ import { getSession } from "next-auth/react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
-
+import { useForm, SubmitHandler } from "react-hook-form";
 //components
 import Button from "../../../components/Button";
 import AdminLayout from "../../../components/Layout/AdminLayout";
@@ -15,6 +15,13 @@ import { useAuth } from "../../../context/auth/AuthContext";
 // Get user to confirm if admin
 import { getUser } from "../../../lib/getUser";
 
+type Inputs = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
 function CreateUser() {
   const router = useRouter();
   const [name, setName] = useState("");
@@ -22,6 +29,12 @@ function CreateUser() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<Inputs>();
 
   const { state, registerUser } = useAuth();
 
@@ -49,11 +62,11 @@ function CreateUser() {
 
   return (
     <AdminLayout>
-      <main className="w-full h-screen p-2 mx-auto overflow-auto">
+      <main className="w-full h-screen p-2 mx-auto overflow-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
         <motion.section
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="container px-2 pt-6 pb-8 mt-6 mb-4 bg-white rounded shadow-xl md:mx-auto "
+          className="container px-2 pt-6 pb-8 mt-6 mb-4  rounded shadow-xl md:mx-auto "
         >
           <div className="flex items-center justify-between px-4 mb-4 border-b-4 border-current border-gray-200">
             <div>
@@ -72,10 +85,7 @@ function CreateUser() {
             className="px-2 pt-6 pb-8 mx-2 mb-4 bg-transparent "
           >
             <div className="mb-4">
-              <label
-                htmlFor="name"
-                className="block mb-2 text-base font-bold text-gray-700"
-              >
+              <label htmlFor="name" className="block mb-2 text-base font-bold ">
                 Name
               </label>
               <input
@@ -90,7 +100,7 @@ function CreateUser() {
             <div className="mb-4">
               <label
                 htmlFor="email"
-                className="block mb-2 text-base font-bold text-gray-700"
+                className="block mb-2 text-base font-bold "
               >
                 Email Address
               </label>
@@ -106,7 +116,7 @@ function CreateUser() {
             <div className="mb-4">
               <label
                 htmlFor="password"
-                className="block mb-2 text-base font-bold text-gray-700"
+                className="block mb-2 text-base font-bold "
               >
                 Password
               </label>
@@ -122,7 +132,7 @@ function CreateUser() {
             <div className="mb-4">
               <label
                 htmlFor="confirmPassword"
-                className="block mb-2 text-base font-bold text-gray-700"
+                className="block mb-2 text-base font-bold "
               >
                 Confirm Password
               </label>
@@ -153,7 +163,7 @@ function CreateUser() {
             </div>
 
             <Button type="submit" color="dark">
-              Register
+              Create User
             </Button>
           </form>
         </motion.section>

@@ -9,7 +9,7 @@ import { getUser } from "../../lib/getUser";
 export default function Dashboard() {
   return (
     <AdminLayout title="Admin">
-      <section className="flex items-center justify-center flex-grow w-full h-screen px-4 mx-auto bg-gray-100 md:px-10">
+      <section className="flex items-center justify-center flex-grow w-full h-screen px-4 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 md:px-10">
         <h1 className="text-2xl">Welcome to Blooms hair</h1>
       </section>
     </AdminLayout>

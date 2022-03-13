@@ -40,7 +40,7 @@ const GalleryListScreen = (props) => {
     setIsRefreshing(false);
   }, [pictures]);
 
-  const uploadFileHandler = async (e) => {
+  const uploadFileHandler = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -79,9 +79,9 @@ const GalleryListScreen = (props) => {
   }
   return (
     <AdminLayout>
-      <main className="w-full h-screen p-2 mx-auto bg-gray-200">
+      <main className="w-full h-screen p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
         <section className="flex flex-col ">
-          <div className="container px-2 pt-6 pb-8 mt-6 mb-4 bg-white shadow-2xl md:mx-auto">
+          <div className="container px-2 pt-6 pb-8 mt-6 mb-4 shadow-2xl md:mx-auto">
             <div className="my-6 ">
               <h1 className="p-5 mt-6 mb-4 text-5xl font-bold text-center">
                 Pictures
@@ -101,7 +101,7 @@ const GalleryListScreen = (props) => {
                       onChange={uploadFileHandler}
                       className="hidden"
                     />
-                    {uploading && <Spinner className="w-12 h-12" />}
+                    {uploading && <Spinner message="Uploading..." />}
                     {error && <div className="justify-center">{error}</div>}
                   </label>
                 </div>
@@ -118,7 +118,7 @@ const GalleryListScreen = (props) => {
               </form>
             </div>
           </div>
-          <div className="container px-2 pt-6 pb-8 mt-6 mb-4 bg-white shadow-2xl md:mx-auto">
+          <div className="container px-2 pt-6 pb-8 mt-6 mb-4  shadow-2xl md:mx-auto">
             <div className="flex items-center justify-between px-4 mb-4 border-b-4 border-current border-gray-200">
               <div>
                 <h1 className="p-5 mt-6 text-5xl font-bold">Pictures</h1>
@@ -126,7 +126,7 @@ const GalleryListScreen = (props) => {
             </div>
             <div>
               {isRefreshing ? (
-                <Spinner className="w-12 h-12" />
+                <Spinner message="refreshing..." />
               ) : error ? (
                 <ErrorMessage variant="danger">{error}</ErrorMessage>
               ) : (
