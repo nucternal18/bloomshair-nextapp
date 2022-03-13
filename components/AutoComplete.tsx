@@ -15,18 +15,18 @@ function AutoComplete({
     <div
       className={`${
         isVisible
-          ? "block absolute border-b bg-white border-gray-900 border-opacity-50 sm:w-full max-w-screen-lg z-50"
+          ? "block absolute bg-white rounded-md mt-1 sm:w-full max-w-screen-lg z-50"
           : "hidden"
       }`}
     >
       <ul>
-        {suggestions.map((country, index) => (
+        {suggestions.map((product, index) => (
           <li
-            className="border border-gray-900 border-opacity-50 hover:bg-black hover:text-white cursor-pointer p-1"
+            className="border border-none hover:bg-black hover:text-white cursor-pointer p-2"
             key={index}
-            onClick={() => handleSuggestionClick(country)}
+            onClick={() => handleSuggestionClick(product)}
           >
-            {country}
+            {product}
           </li>
         ))}
       </ul>

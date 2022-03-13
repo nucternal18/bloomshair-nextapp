@@ -12,7 +12,7 @@ function Gallery(props): JSX.Element {
   const [selectedImg, setSelectedImg] = useState(null);
   return (
     <Layout title="Gallery" description="Pictures of hair color and cut">
-      <section className="flex w-full h-screen overflow-scroll bg-white md:px-0">
+      <section className="flex w-full h-screen text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-scroll md:px-0">
         <div className="container max-w-screen-lg px-2 mx-auto">
           <div className="flex items-center justify-between mb-4 border-b-2 border-current border-gray-200">
             <h1 className="px-1 py-5 mt-6 text-5xl font-thin uppercase">

@@ -12,7 +12,7 @@ function ServiceMenu(): JSX.Element {
       title="Service Menu"
       description="Blooms Hair Salon services prices"
     >
-      <main className="flex-grow">
+      <main className="flex-grow text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-hidden">
         <section className="relative flex items-center content-center justify-center">
           <div
             className="relative top-0 w-full h-full bg-center bg-cover "
@@ -50,7 +50,7 @@ function ServiceMenu(): JSX.Element {
             </div>
           </div>
         </section>
-        <div className="w-full max-w-screen-lg mx-auto bg-white">
+        <div className="w-full max-w-screen-lg mx-auto ">
           <div className="container px-4 py-6 mx-auto">
             <h1 className="mb-4 text-3xl text-center sm:text-5xl">
               Our Hair Services
@@ -76,91 +76,81 @@ function ServiceMenu(): JSX.Element {
               </p>
             </div>
             <div className="flex justify-center w-full my-4">
-              <div className="grid w-full grid-cols-3 text-center border">
-                <div className="col-span-3 px-4 py-2 font-bold text-center bg-gray-300">
+              <div className="grid w-full grid-cols-3 text-center border border-gray-300 dark:border-gray-700">
+                <div className="col-span-3 px-4 py-2 font-bold text-center bg-gray-300 dark:bg-gray-700">
                   Gents Hair
                 </div>
                 <div className="col-span-2 px-4 py-2">
                   Gents Restyle & Finish
                 </div>
                 <div className="col-span-1 px-4 py-2">£35.00</div>
-                <div className="col-span-2 px-4 py-2 bg-gray-100">
+                <div className="col-span-2 px-4 py-2 ">
                   Gents Wash, Cut & Finish
                 </div>
-                <div className="col-span-1 px-4 py-2 bg-gray-100">£30.00</div>
-                <div className="col-span-3 px-4 py-2 font-bold text-center bg-gray-300">
+                <div className="col-span-1 px-4 py-2 ">£30.00</div>
+                <div className="col-span-3 px-4 py-2 font-bold text-center bg-gray-300 dark:bg-gray-700">
                   Ladies Hair
                 </div>
                 <div className="col-span-2 px-4 py-2">Fringe Trim</div>
                 <div className="col-span-1 px-4 py-2">£6.00</div>
-                <div className="col-span-2 px-4 py-2 bg-gray-100">Hair Up</div>
-                <div className="col-span-1 px-4 py-2 bg-gray-100">P.O.T.</div>
+                <div className="col-span-2 px-4 py-2 ">Hair Up</div>
+                <div className="col-span-1 px-4 py-2 ">P.O.T.</div>
                 <div className="col-span-2 px-4 py-2">
                   Wash, Restyle & Finish
                 </div>
                 <div className="col-span-1 px-4 py-2">£65.00</div>
-                <div className="col-span-2 px-4 py-2 bg-gray-100">
+                <div className="col-span-2 px-4 py-2 ">
                   Wash & Blow-Dry from
                 </div>
-                <div className="col-span-1 px-4 py-2 bg-gray-100">£30.00</div>
+                <div className="col-span-1 px-4 py-2 ">£30.00</div>
                 <div className="col-span-2 px-4 py-2">Wash & Cut</div>
                 <div className="col-span-1 px-4 py-2">£49.00</div>
-                <div className="col-span-2 px-4 py-2 bg-gray-100">
-                  Wash, Cut & Finish
-                </div>
-                <div className="col-span-1 px-4 py-2 bg-gray-100">£55.00</div>
+                <div className="col-span-2 px-4 py-2 ">Wash, Cut & Finish</div>
+                <div className="col-span-1 px-4 py-2 ">£55.00</div>
                 <div className="col-span-2 px-4 py-2">
                   Wedding Hair + Trial run (Bride)
                 </div>
                 <div className="col-span-1 px-4 py-2">£195.00</div>
-                <div className="col-span-3 px-4 py-2 font-bold text-center bg-gray-300">
+                <div className="col-span-3 px-4 py-2 font-bold text-center bg-gray-300 dark:bg-gray-700">
                   Technical
                 </div>
                 <div className="col-span-2 px-4 py-2">Bleaching</div>
                 <div className="col-span-1 px-4 py-2">P.O.T.</div>
-                <div className="col-span-2 px-4 py-2 bg-gray-100">
-                  Bleaching + Toner
-                </div>
-                <div className="col-span-1 px-4 py-2 bg-gray-100">£79.00</div>
+                <div className="col-span-2 px-4 py-2 ">Bleaching + Toner</div>
+                <div className="col-span-1 px-4 py-2 ">£79.00</div>
                 <div className="col-span-2 px-4 py-2">Colour Correction</div>
                 <div className="col-span-1 px-4 py-2">£110.00</div>
-                <div className="col-span-2 px-4 py-2 bg-gray-100">
+                <div className="col-span-2 px-4 py-2 ">
                   Dip-Dye/Ombre/Bayalage
                 </div>
-                <div className="col-span-1 px-4 py-2 bg-gray-100">£110.00</div>
+                <div className="col-span-1 px-4 py-2 ">£110.00</div>
                 <div className="col-span-2 px-4 py-2">Full Head HiLites</div>
                 <div className="col-span-1 px-4 py-2">£110.00</div>
-                <div className="col-span-2 px-4 py-2 bg-gray-100">
-                  Full Head Tint
-                </div>
-                <div className="col-span-1 px-4 py-2 bg-gray-100">£80.00</div>
+                <div className="col-span-2 px-4 py-2 ">Full Head Tint</div>
+                <div className="col-span-1 px-4 py-2 ">£80.00</div>
                 <div className="col-span-2 px-4 py-2">Hair Mask Treatment</div>
                 <div className="col-span-1 px-4 py-2">£25.00</div>
-                <div className="col-span-2 px-4 py-2 bg-gray-100">
-                  Half Head HiLites
-                </div>
-                <div className="col-span-1 px-4 py-2 bg-gray-100">£75.00</div>
+                <div className="col-span-2 px-4 py-2 ">Half Head HiLites</div>
+                <div className="col-span-1 px-4 py-2 ">£75.00</div>
                 <div className="col-span-2 px-4 py-2">
                   Semi Permanent Colours
                 </div>
                 <div className="col-span-1 px-4 py-2">£80.00</div>
-                <div className="col-span-2 px-4 py-2 bg-gray-100">
+                <div className="col-span-2 px-4 py-2 ">
                   Tint Regrowth (roots)
                 </div>
-                <div className="col-span-1 px-4 py-2 bg-gray-100">£45.00</div>
+                <div className="col-span-1 px-4 py-2 ">£45.00</div>
                 <div className="col-span-2 px-4 py-2">Toner</div>
                 <div className="col-span-1 px-4 py-2">£15.00</div>
-                <div className="col-span-2 px-4 py-2 bg-gray-100">
-                  Toner (Half Head)
-                </div>
-                <div className="col-span-1 px-4 py-2 bg-gray-100">£20.00</div>
+                <div className="col-span-2 px-4 py-2 ">Toner (Half Head)</div>
+                <div className="col-span-1 px-4 py-2 ">£20.00</div>
                 <div className="col-span-2 px-4 py-2">Toner (Full Head)</div>
                 <div className="col-span-1 px-4 py-2">£25.00</div>
-                <div className="col-span-2 px-4 py-2 bg-gray-100">
+                <div className="col-span-2 px-4 py-2 ">
                   T-Section Highlights
                 </div>
-                <div className="col-span-1 px-4 py-2 bg-gray-100">£55.00</div>
-                <div className="col-span-3 px-4 py-2 font-bold text-center bg-gray-300">
+                <div className="col-span-1 px-4 py-2 ">£55.00</div>
+                <div className="col-span-3 px-4 py-2 font-bold text-center bg-gray-300 dark:bg-gray-700">
                   Hair Treatments
                 </div>
                 <div className="col-span-2 px-4 py-2">
@@ -169,8 +159,8 @@ function ServiceMenu(): JSX.Element {
                 <div className="col-span-1 py-2 break-words sm:px-4">
                   £200.00/£150.00/£120.00
                 </div>
-                <div className="col-span-2 px-4 py-2 bg-gray-100">Olaplex™</div>
-                <div className="col-span-1 px-4 py-2 bg-gray-100">£30.00</div>
+                <div className="col-span-2 px-4 py-2 ">Olaplex™</div>
+                <div className="col-span-1 px-4 py-2 ">£30.00</div>
                 <div className="col-span-2 px-4 py-2">Perms and Waves</div>
                 <div className="col-span-1 px-4 py-2">P.O.T.</div>
               </div>

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { FaSearch } from "react-icons/fa";
 import useOutsideClick from "../hooks/useOutsideClick";
 import _ from "lodash";
-import AutoComplete from "./AuoComplete";
+import AutoComplete from "./AutoComplete";
 import { NEXT_URL } from "../config";
 
 const SearchBox = () => {
@@ -53,33 +53,37 @@ const SearchBox = () => {
     setKeyword("");
   };
   return (
-    <form onSubmit={handleSubmit} className="flex w-full max-w-screen-lg">
-      <div className="flex justify-start items-center w-full px-2 py-1 rounded-2xl bg-white border-none  focus:outline-none focus-within:shadow-sm">
-        <div className="flex flex-col w-full">
-          <input
-            type="text"
-            name="q"
-            value={keyword}
-            onChange={handleSearch}
-            autoComplete="off"
-            placeholder="Search Products..."
-            className="w-full p-2  bg-white focus:outline-none border-none focus:shadow-none focus:ring-0"
-          />
-          <div ref={documentRef}>
-            {isVisible && (
-              <AutoComplete
-                isVisible={isVisible}
-                suggestions={suggestions}
-                handleSuggestionClick={handleSuggestionClick}
+    <div className="flex w-full max-w-screen-lg flex-col gap-1 shadow-2xl rounded-2xl">
+      <form onSubmit={handleSubmit} className="flex w-full max-w-screen-lg">
+        <div className="flex justify-start items-center w-full px-2 py-1 rounded-2xl bg-white border-none  focus:outline-none">
+          <div className="flex flex-col w-full">
+            <div>
+              <input
+                type="text"
+                name="q"
+                value={keyword}
+                onChange={handleSearch}
+                autoComplete="off"
+                placeholder="Search Products..."
+                className="w-full p-2  bg-white focus:outline-none border-none focus:shadow-none focus:ring-0"
               />
-            )}
+            </div>
           </div>
+          <button type="submit">
+            <FaSearch fontSize={21} className="ml-2 text-gray-900" />
+          </button>
         </div>
-        <button type="submit">
-          <FaSearch fontSize={21} className="ml-2" />
-        </button>
+      </form>
+      <div ref={documentRef}>
+        {isVisible && (
+          <AutoComplete
+            isVisible={isVisible}
+            suggestions={suggestions}
+            handleSuggestionClick={handleSuggestionClick}
+          />
+        )}
       </div>
-    </form>
+    </div>
   );
 };
 

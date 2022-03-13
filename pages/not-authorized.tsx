@@ -13,7 +13,7 @@ function NotAuthorized() {
   }, []);
   return (
     <Layout title="Not Authorized">
-      <section className="h-screen bg-white">
+      <section className="h-screen text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-hidden">
         <div className="flex flex-col items-center mt-20">
           <Image
             src={"/bloomslogo512x512.png"}

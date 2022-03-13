@@ -11,7 +11,7 @@ function about(): JSX.Element {
   return (
     <Layout title="About Page" description="Blooms Hair About us page">
       <main>
-        <section className="relative flex items-center content-center justify-center">
+        <section className="relative flex items-center content-center justify-center text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-hidden">
           <div
             className="relative top-0 w-full h-full bg-center bg-cover "
             style={{ height: "500px" }}
@@ -49,17 +49,17 @@ function about(): JSX.Element {
           </div>
         </section>
 
-        <section className="relative w-full bg-white ">
+        <section className="relative w-full bg-white dark:bg-gray-900 ">
           <div className="container mx-auto ">
             <div className="grid grid-cols-1 lg:grid-cols-2">
               <div className="flex items-center justify-center col-span-1 px-4 py-6 my-6">
                 <div className="flex flex-col">
-                  <h2 className="mb-4 text-4xl font-bold text-gray-700">
+                  <h2 className="mb-4 text-4xl font-bold ">
                     Here At Blooms Hair, We Are Passionate About Making You Feel
                     Special, Every Day.
                   </h2>
-                  <p className="text-2xl font-light leading-relaxed text-gray-700">
-                    ThatU+2019s why we offer a wide selection of quality
+                  <p className="text-2xl font-light leading-relaxed dark:text-gray-400">
+                    That&apos;s why we offer a wide selection of quality
                     services in our salon in Islington London. We have Wella
                     Colour Master experts on hand that can deliver full hair
                     colours to balayage’s and highlights, achieving your perfect

@@ -4,7 +4,7 @@ interface ICard {
 }
 const Card: React.FC<ICard> = ({ children, className }): JSX.Element => (
   <div
-    className={`${className} relative flex flex-col bg-white rounded`}
+    className={`${className} relative flex flex-col bg-white rounded-lg shadow-lg`}
     style={style}
   >
     {children}
@@ -19,7 +19,7 @@ const CardTitle: React.FC<ICard> = ({ children, className }) => (
   </div>
 );
 const CardText: React.FC<ICard> = ({ children }) => (
-  <div className="text-gray-500">{children}</div>
+  <div className="text-gray-900 font-mono">{children}</div>
 );
 const style = {
   boxShadow: "0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%)",

@@ -39,7 +39,7 @@ export default function Home(): JSX.Element {
   return (
     <Layout title="Home page" description="blooms hair home page">
       <main>
-        <section className="relative flex items-center content-center justify-center h-[700px] pt-16 pb-32">
+        <section className="relative flex items-center content-center justify-center h-[700px] pt-16 pb-32 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
           <div className="absolute top-0 w-full h-full bg-center bg-cover">
             <Image
               src={url}

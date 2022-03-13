@@ -1,7 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import { withSentry } from "@sentry/nextjs";
 import Order from "../../../../models/orderModel";
 import db from "../../../../lib/db";
 import { getUser } from "../../../../lib/getUser";
@@ -45,7 +44,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (orderItems && orderItems.length === 0) {
       await db.disconnect();
       res.status(400).json({ message: "No order items" });
-      throw new Error("No order items");
     } else {
       const order = new Order({
         orderItems,
@@ -74,19 +72,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   } else if (req.method === "GET") {
     /**
-     * @desc Get all orders
+     * @desc Get all user orders
      * @route GET /api/orders/myOrders
      * @access Private/
      */
 
-    const orders = await Order.find({ user: userData._id });
-    await db.disconnect();
-    if (orders) {
-      res.status(200).json(orders);
-    } else {
+    try {
+      const orders = await Order.find({ user: userData._id });
       await db.disconnect();
-      res.status(404).json({ message: "No orders found" });
-      throw new Error("No Orders found");
+      if (orders) {
+        res.status(200).json(orders);
+      }
+    } catch (error) {
+      await db.disconnect();
+      res.status(500).json({ message: error.message });
     }
   } else {
     res.setHeader("Allow", ["PUT"]);
@@ -94,4 +93,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default withSentry(handler);
+export default handler;

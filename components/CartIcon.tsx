@@ -1,17 +1,16 @@
 import Image from "next/image";
+import { AiOutlineShopping } from "react-icons/ai";
 
-function CartIcon({ itemCount }) {
+function CartIcon({ itemCount, ...props }) {
   return (
-    <div className="relative flex items-center justify-center w-12 h-12 cursor-pointer">
+    <div
+      className="relative flex items-center justify-center w-12 h-12 cursor-pointer"
+      {...props}
+    >
       <div className="">
-        <Image
-          src={"/shopping-bag.svg"}
-          alt={"shopping bag"}
-          width={26}
-          height={26}
-        />
+        <AiOutlineShopping fontSize={30} />
       </div>
-      <div className="absolute text-xs font-bold bottom-4">
+      <div className="absolute text-xs font-bold bottom-3">
         {Number(itemCount)}
       </div>
     </div>

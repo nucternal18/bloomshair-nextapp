@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const Paginate = ({ pages, page, isAdmin = false, keyword = "" }) => {
   return (
-    <div className="flex my-4 text-gray-700 uppercase">
+    <div className="flex my-4 text-gray-900 dark:text-gray-200  uppercase">
       {page > 1 && (
         <Link href={`/products?pageNumber=${page - 1}`}>
           <a className="px-4 ">Prev</a>

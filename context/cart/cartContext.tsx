@@ -1,6 +1,5 @@
-import { createContext, useContext, useReducer, useEffect } from "react";
-import { NEXT_URL } from "../../config";
-import { ActionType, Actions, IAddToCart } from "./cartActions";
+import { createContext, useContext, useReducer } from "react";
+import { ActionType, Actions } from "./cartActions";
 import { CartItemsProps, ShippingAddressProps } from "./cartState";
 import {
   cartItemsFromStorage,

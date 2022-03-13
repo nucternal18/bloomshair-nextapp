@@ -15,7 +15,7 @@ function Products({ products, keyword, pages, page }): JSX.Element {
 
   return (
     <Layout title="Products" description="list of hair care products">
-      <main className="relative w-full mx-auto overflow-auto bg-gray-100 ">
+      <main className="relative w-full mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-hidden">
         <div className="flex mt-1 justify-center py-4 ">
           <SearchBox />
         </div>
@@ -23,7 +23,7 @@ function Products({ products, keyword, pages, page }): JSX.Element {
           <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
             <div>
               <h1 className="p-3 text-2xl font-thin md:p-5 md:text-5xl">
-                Products Available in Store
+                Products
               </h1>
             </div>
             {keyword && (

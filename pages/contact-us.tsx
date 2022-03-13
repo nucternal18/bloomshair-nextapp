@@ -14,7 +14,7 @@ function ContactUs(): JSX.Element {
       description="Contact page with the salon contact information"
     >
       <main>
-        <section className="relative flex items-center content-center justify-center">
+        <section className="relative flex items-center content-center justify-center text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-hidden">
           <div
             className="relative top-0 w-full h-full bg-center bg-cover "
             style={{ height: "500px" }}
@@ -51,8 +51,8 @@ function ContactUs(): JSX.Element {
             </div>
           </div>
         </section>
-        <section className="flex-grow w-full bg-white">
-          <div className="container grid max-w-screen-lg grid-cols-1 mx-auto my-8 lg:grid-cols-2">
+        <section className="flex-grow w-full bg-white dark:bg-gray-900">
+          <div className="container grid max-w-screen-lg grid-cols-1 mx-auto py-8 lg:grid-cols-2">
             <div className="flex justify-center col-span-1 px-4 py-6 my-6 item-center">
               <div className="flex-col text-justify">
                 <h1 className="mb-4 text-3xl sm:text-5xl">Get In Touch</h1>

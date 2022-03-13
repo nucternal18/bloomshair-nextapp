@@ -4,11 +4,13 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { FaUser } from "react-icons/fa";
-import { FiLogIn, FiLogOut } from "react-icons/fi";
+import { FaTimes, FaUser } from "react-icons/fa";
+import { FiLogIn, FiLogOut, FiMoon, FiSun } from "react-icons/fi";
+import { GiHamburgerMenu } from "react-icons/gi";
 import { RiAdminFill } from "react-icons/ri";
-import { getSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useQuery } from "react-query";
+import { useTheme } from "next-themes";
 
 // context
 import { useCart } from "../../context/cart/cartContext";
@@ -21,9 +23,11 @@ const CartIcon = dynamic(() => import("../CartIcon"), { ssr: false });
 // navlinks
 import { navLink } from "../../data";
 import { getCartItems } from "../../context/cart/cartActions";
+import BloomsLogo from "../SVG/BloomsLogo";
 
 const Navbar = () => {
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [cartIsOpen, setCartIsOpen] = useState(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
@@ -95,40 +99,43 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`top-0 z-50 flex flex-wrap items-center justify-between w-full px-2 py-2 ${
+      className={`top-0 z-50 flex flex-wrap items-center justify-between w-full px-2 py-2 text-gray-900 dark:text-gray-200 ${
         router.asPath === "/" && pos === "top"
           ? "bg-transparent absolute"
           : pos === "top"
-          ? "absolute bg-gray-900 "
-          : "fixed shadow-b-2xl bg-gray-900"
+          ? "absolute bg-white dark:bg-gray-900 "
+          : "fixed shadow-b-2xl bg-white dark:bg-gray-900"
       }  navbar-expand-lg`}
     >
-      <div className="container flex items-center justify-between px-2 mx-auto font-light text-gray-500 md:relative sm:px-1 md:px-0 md:flex-row">
+      <div className="container flex items-center justify-between px-2 mx-auto font-light  md:relative sm:px-1 md:px-0 md:flex-row">
         <Link href={"/"}>
           <a className="inline-block p-0 m-0 text-2xl font-bold cursor-pointer md:mr-4 ">
-            <Image
-              src={"/logo.svg"}
-              alt="blooms hair logo"
-              height={80}
-              width={250}
-              layout="intrinsic"
-              objectFit="contain"
+            <BloomsLogo
+              className="w-[250px] h-[80px]"
+              fill={`${
+                router.asPath === "/" && pos === "top"
+                  ? "#fff"
+                  : theme === "dark"
+                  ? "#fff"
+                  : "#000"
+              }`}
             />
           </a>
         </Link>
-        <div>
+
+        <div className="flex items-center flex-row-reverse">
           <button
             type="button"
             aria-expanded="false"
             aria-disabled={isOpen}
             disabled={isOpen}
             aria-label="Toggle navigation"
-            className="block float-right text-4xl text-gray-200 lg:hidden focus:outline-none focus:shadow-none"
+            className="block float-right text-4xl  lg:hidden focus:outline-none focus:shadow-none"
             onClick={toggle}
           >
-            &#8801;
+            <GiHamburgerMenu fontSize={21} />
           </button>
-          <div className="flex items-center lg:hidden ">
+          <div className="flex items-center lg:hidden">
             {authState.user && (
               <button
                 className="flex items-center  bg-gray-200 border-2 border-yellow-500 rounded-full"
@@ -148,9 +155,7 @@ const Navbar = () => {
               <Link href={"/checkout/cart"}>
                 <a
                   className={`${
-                    router.asPath === "/checkout/cart"
-                      ? "text-yellow-500"
-                      : "text-gray-200"
+                    router.asPath === "/checkout/cart" ? "text-yellow-500" : ""
                   }text-2xl  list-none cursor-pointer hover:text-yellow-400`}
                 >
                   {!isLoading && (
@@ -165,15 +170,18 @@ const Navbar = () => {
             </button>
           </div>
         </div>
+        {/* Main Nav Links */}
         <ul className={position.right}>
           {navLink.map((link) => (
             <li key={link.id} className="flex px-1 m-0 list-none ">
               <Link href={link.link}>
                 <a
                   className={`${
-                    router.asPath === link.link
+                    router.asPath === "/" && pos === "top"
+                      ? "text-gray-200"
+                      : router.asPath === link.link
                       ? "text-yellow-500"
-                      : "text-gray-200"
+                      : ""
                   } flex items-center lg:block ml-0 mb-0 cursor-pointer py-1   hover:text-yellow-400 text-xs md:text-sm font-normal list-none uppercase`}
                 >
                   {link.title}
@@ -181,6 +189,33 @@ const Navbar = () => {
               </Link>
             </li>
           ))}
+          <li className="flex px-1 m-0 list-none ">
+            <button
+              type="button"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className={`flex p-1 ml-4 font-medium list-none  cursor-pointer md:block lg:ml-0 lg:mb-0 lg:p-1 lg:px-1 focus:outline-none focus:ring-none focus:border-transparent`}
+            >
+              {theme === "light" ? (
+                <FiSun
+                  fontSize={21}
+                  className={`${
+                    router.asPath === "/" && pos === "top"
+                      ? "text-gray-200"
+                      : "text-gray-900 dark:text-gray-200"
+                  } font-bold `}
+                />
+              ) : (
+                <FiMoon
+                  fontSize={21}
+                  className={`${
+                    router.asPath === "/" && pos === "top"
+                      ? "text-gray-200"
+                      : "text-gray-900 dark:text-gray-200"
+                  } font-bold `}
+                />
+              )}
+            </button>
+          </li>
           {authState.user ? (
             <li className="px-1 m-0 text-base list-none">
               <button
@@ -199,20 +234,20 @@ const Navbar = () => {
               <div
                 className={
                   isDropDownOpen
-                    ? "absolute right-0 z-20 w-32 mt-2 overflow-hidden bg-gray-100 rounded-md shadow-xl"
+                    ? "absolute right-0 z-20 w-32 mt-2 overflow-hidden bg-white dark:bg-gray-900  rounded-md shadow-2xl"
                     : "hidden"
                 }
                 ref={ref}
               >
                 <div>
                   <button className="flex items-center px-4 py-2 space-x-2">
-                    <FaUser className="text-gray-500 " />
+                    <FaUser fontSize={18} />
                     <Link href={"/account/profile"}>
                       <a
                         className={`${
                           router.asPath === "/account/login"
                             ? "text-yellow-500"
-                            : "text-gray-800"
+                            : ""
                         } block text-lg font-medium space-x-2  list-none cursor-pointer hover:text-yellow-400`}
                       >
                         Profile
@@ -221,7 +256,7 @@ const Navbar = () => {
                   </button>
                   {authState.user.isAdmin && (
                     <button className="flex items-center px-4 py-2 space-x-2">
-                      <RiAdminFill className="text-gray-500 " />
+                      <RiAdminFill fontSize={18} />
                       <Link href={"/admin"}>
                         <a
                           className={`${
@@ -236,10 +271,10 @@ const Navbar = () => {
                     </button>
                   )}
                   <button
-                    className="flex items-center px-4 py-2 space-x-2 text-lg text-gray-500 hover:text-yellow-500"
+                    className="flex items-center px-4 py-2 space-x-2 text-lg hover:text-yellow-500"
                     onClick={logoutHandler}
                   >
-                    <FiLogOut className="text-gray-800 " />
+                    <FiLogOut fontSize={18} />
                     <p className="font-medium">Logout </p>
                   </button>
                 </div>
@@ -249,9 +284,7 @@ const Navbar = () => {
             <li className="px-1 m-0 list-none ">
               <button
                 className={`${
-                  router.asPath === "/account/login"
-                    ? "text-yellow-500"
-                    : "text-gray-200"
+                  router.asPath === "/account/login" ? "text-yellow-500" : ""
                 } flex items-center px-1`}
                 style={{
                   color: router.asPath === "/account/login" ? "orange" : "",
@@ -268,9 +301,7 @@ const Navbar = () => {
           )}
           <button
             className={`${
-              router.asPath === "/checkout/cart"
-                ? "text-yellow-500"
-                : "text-gray-200"
+              router.asPath === "/checkout/cart" ? "text-yellow-500" : ""
             }  text-2xl font-medium  uppercase list-none cursor-pointer hover:text-yellow-400 flex items-center ml-1`}
             onClick={toggleCartDrawer}
           >
@@ -279,6 +310,11 @@ const Navbar = () => {
                 (acc, item) => acc + item.qty,
                 0
               )}
+              className={`${
+                router.asPath === "/" && pos === "top"
+                  ? "text-gray-200"
+                  : "text-gray-900 dark:text-gray-200"
+              } font-bold relative flex items-center justify-center w-12 h-12 cursor-pointer `}
             />
           </button>
         </ul>
@@ -287,6 +323,7 @@ const Navbar = () => {
         cartIsOpen={cartIsOpen}
         toggleCartDrawer={toggleCartDrawer}
       />
+      {/* Mobile Nav links */}
       <aside
         className={
           isOpen
@@ -296,17 +333,28 @@ const Navbar = () => {
         ref={mobileNavRef}
       >
         <div className="flex flex-col">
-          <div className="flex items-center px-3 py-2 ml-4">
-            <div className="mr-12">
-              <button
-                aria-label="Close"
-                className=" py-1  text-4xl text-gray-200 cursor-pointer focus:outline-none"
-                onClick={toggle}
-              >
-                &times;
-              </button>
-            </div>
+          <div className="flex flex-row items-center gap-32 w-full px-3 py-2 my-2 ml-2">
+            <button
+              aria-label="Close"
+              className=" py-1  text-4xl  cursor-pointer focus:outline-none"
+              onClick={toggle}
+            >
+              <FaTimes fontSize={21} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="flex p-1  font-medium list-none cursor-pointer md:block lg:ml-0 lg:mb-0 lg:p-1 lg:px-1 focus:outline-none focus:ring-none focus:border-transparent"
+            >
+              {theme === "light" ? (
+                <FiSun fontSize={21} className="font-bold " />
+              ) : (
+                <FiMoon fontSize={21} className="font-bold " />
+              )}
+            </button>
           </div>
+
           <div className="mt-2">
             <ul className="overscroll-y-auto">
               {navLink.map((link) => (
@@ -331,13 +379,13 @@ const Navbar = () => {
                 <>
                   <li className="px-1 m-0 text-base list-none text-md">
                     <button className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2">
-                      <FaUser className="text-gray-200 " />
+                      <FaUser fontSize={18} />
                       <Link href={"/account/profile"}>
                         <a
                           className={`${
                             router.asPath === "/account/login"
                               ? "text-yellow-500"
-                              : "text-gray-200"
+                              : ""
                           }flex items-center text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
                         >
                           Profile
@@ -365,10 +413,10 @@ const Navbar = () => {
                   )}
                   <li className="px-1 m-0 text-base list-none text-md">
                     <button
-                      className="flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2  space-x-2 text-gray-200 hover:text-gray-400 text-lg font-medium list-none uppercase"
+                      className="flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2  space-x-2  text-lg font-medium list-none uppercase"
                       onClick={logoutHandler}
                     >
-                      <FiLogOut className="text-gray-200 " />
+                      <FiLogOut fontSize={18} />
                       <p>Logout </p>
                     </button>
                   </li>
@@ -408,9 +456,9 @@ const position = {
 };
 
 const classNames = {
-  default: `lg:hidden flex h-screen fixed top-0 right-0 transition-all ease duration-200`,
-  enabled: `w-7/12 md:w-1/3 bg-gray-900 z-50  text-white overflow-y-hidden `,
-  disabled: `w-0  bg-gray-800 text-white overflow-x-hidden`,
+  default: `lg:hidden flex h-screen  fixed top-0 right-0 transition-all ease duration-200`,
+  enabled: `w-7/12 md:w-1/3  z-50  text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-y-hidden `,
+  disabled: `w-0 text-white overflow-x-hidden`,
 };
 
 export default Navbar;

@@ -5,51 +5,198 @@ import styles from "../../styles/Table.module.css";
 
 import Button from "../Button";
 
-const Table = ({ tableData, headingColumns }) => {
+const Table = ({ tableData }) => {
   return (
-    <div className={styles.tableContainer}>
-      <table className={styles.tableContainerTable}>
-        <thead>
-          <tr>
-            {headingColumns.map((col, index) => (
-              <th key={index}>{col}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {tableData.map((row) => {
-            return (
-              <tr key={row._id}>
-                <td data-heading={"id"}>{row._id}</td>
-                <td data-heading={"date"}>{row.createdAt.substring(0, 10)}</td>
-                <td data-heading={"totalPrice"}>{row.totalPrice}</td>
-                <td data-heading={"countInStock"}>
-                  {row.isPaid ? (
-                    row.paidAt.substring(0, 10)
+    <table className="w-full sm:rounded-2xl  md:table">
+      <thead className="bg-gray-50 dark:bg-teal-500  hidden md:table-header-group">
+        <tr className="md:table-row absolute  -top-full font-mono md:top-auto gap-2 -left-full md:left-auto  md:relative">
+          <th
+            scope="col"
+            className="
+                  px-3
+                  py-3
+                  text-left 
+                  font-medium
+                  text-gray-800
+                  dark:text-gray-100
+                  uppercase
+                  tracking-wider
+                  md:table-cell
+                "
+          >
+            ID
+          </th>
+
+          <th
+            scope="col"
+            className="
+                  px-3
+                  py-3
+                  text-left 
+                  font-medium
+                  text-gray-800
+                  dark:text-gray-100
+                  uppercase
+                  tracking-wider
+                  md:table-cell
+                "
+          >
+            DATE
+          </th>
+          <th
+            scope="col"
+            className="
+                  px-3
+                  py-3
+                  text-left 
+                  font-medium
+                  text-gray-800
+                  dark:text-gray-100
+                  uppercase
+                  tracking-wider
+                  md:table-cell
+                "
+          >
+            TOTAL
+          </th>
+          <th
+            scope="col"
+            className="
+                  px-3
+                  py-3
+                  text-left 
+                  font-medium
+                  text-gray-800
+                  dark:text-gray-100
+                  uppercase
+                  tracking-wider
+                  md:table-cell
+                "
+          >
+            PAID
+          </th>
+          <th
+            scope="col"
+            className="
+                  px-3
+                  py-3
+                  text-left 
+                  font-medium
+                  text-gray-800
+                  dark:text-gray-100
+                  uppercase
+                  tracking-wider
+                  md:table-cell
+                "
+          >
+            DELIVERED
+          </th>
+          <th
+            scope="col"
+            className="
+                  px-3
+                  py-3
+                  text-left 
+                  font-medium
+                  text-gray-800
+                  dark:text-gray-100
+                  uppercase
+                  tracking-wider
+                  md:table-cell
+                "
+          >
+            DETAILS
+          </th>
+        </tr>
+      </thead>
+      <tbody className=" block px-1 md:px-0  md:table-row-group">
+        {tableData?.map((item) => (
+          <tr
+            key={item._id}
+            className="bg-white text-gray-900 dark:text-gray-100 shadow-2xl md:shadow-none dark:bg-gray-700 rounded md:rounded-none overflow-hidden  mb-2 md:mb-0 md:border-none block md:table-row"
+          >
+            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
+              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
+                ID
+              </span>
+              <div className="flex items-center">
+                <div className="text-sm font-medium text-ellipsis overflow-hidden">
+                  {item._id}
+                </div>
+              </div>
+            </td>
+            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
+              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
+                DATE
+              </span>
+              <div className="flex items-center">
+                <div className="text-sm font-medium text-ellipsis overflow-hidden">
+                  {new Date(item.createdAt).toLocaleDateString()}
+                </div>
+              </div>
+            </td>
+            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
+              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
+                TOTAL PRICE
+              </span>
+              <div className="flex items-center">
+                <div className="text-sm font-medium text-ellipsis overflow-hidden">
+                  £{item.totalPrice}
+                </div>
+              </div>
+            </td>
+            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
+              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
+                PAID
+              </span>
+              <div className="flex items-center">
+                <div className="text-sm font-medium text-ellipsis overflow-hidden">
+                  {item.isPaid ? (
+                    item.paidAt.substring(0, 10)
                   ) : (
                     <FaTimes className="text-red-500" />
                   )}
-                </td>
-                <td data-heading={"countInStock"}>
-                  {row.isDelivered ? (
-                    row.deliveredAt.substring(0, 10)
+                </div>
+              </div>
+            </td>
+            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
+              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
+                DELIVERED
+              </span>
+              <div className="flex items-center">
+                <div className="text-sm font-medium text-ellipsis overflow-hidden">
+                  {item.isDelivered ? (
+                    item.deliveredAt.substring(0, 10)
                   ) : (
                     <FaTimes className="text-red-500 " />
                   )}
-                </td>
-                <td data-heading={"category"}>
-                  <Button type="button" color="dark">
-                    <Link href={`/orders/${row._id}`}>
-                      <a>Details</a>
-                    </Link>
-                  </Button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+                </div>
+              </div>
+            </td>
+
+            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
+              <span className="inline-block w-1/3 md:hidden uppercase font-bold text-teal-500 font-mono">
+                DETAILS
+              </span>
+              <span
+                className="
+                    px-2
+                    inline-flex
+                    text-xs
+                    leading-5
+                  "
+              >
+                <Button type="button" color="dark">
+                  <Link href={`/orders/${item._id}`}>
+                    <a>Details</a>
+                  </Link>
+                </Button>
+              </span>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 };
 

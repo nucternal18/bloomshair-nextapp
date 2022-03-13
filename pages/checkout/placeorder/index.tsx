@@ -25,7 +25,6 @@ import { useCart } from "../../../context/cart/cartContext";
 import { clearCart } from "../../../context/cart/cartActions";
 import { useOrder } from "../../../context/order/OrderContext";
 import { NEXT_URL } from "../../../config";
-import { TokenResult } from "@square/web-sdk";
 
 const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
   const router = useRouter();
@@ -81,7 +80,7 @@ const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
     if (cartItems.length === 0) {
       router.push("/checkout/cart");
     }
-  }, []);
+  }, [paymentMethod, cartItems]);
 
   useEffect(() => {
     if (success) {
@@ -188,9 +187,9 @@ const PlaceOrderScreen = ({ userInfo, PAYPAL_CLIENT_ID }) => {
         />
       )}
 
-      <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
+      <main className="w-full p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 md:p-4">
         <CheckoutSteps step1 step2 step3 step4 />
-        <section className="container grid grid-cols-1 gap-2 mx-auto mb-4 bg-white rounded shadow-2xl max-w-screen-lg md:grid-cols-2 lg:grid-cols-4 md:py-8 md:px-6">
+        <section className="container grid grid-cols-1 gap-2 mx-auto mb-4  rounded shadow-2xl max-w-screen-lg md:grid-cols-2 lg:grid-cols-4 md:py-8 md:px-6">
           <div className=" md:col-span-2">
             <div className="mb-4  p-4 ">
               <div className="flex items-center justify-between mb-6 ">

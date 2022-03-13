@@ -2,21 +2,21 @@ import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { toast } from "react-toastify";
 
 // Components
 import Layout from "../../components/Layout/Layout";
 import ErrorMessage from "../../components/ErrorMessage";
 import Spinner from "../../components/Spinner";
 import Table from "../../components/OrdersTable";
-
+import Button from "../../components/Button";
 import UpdateProfileForm from "../../components/Forms/UpdateProfileForm";
 
 // context
 import { useAuth } from "../../context/auth/AuthContext";
 
+// utils
 import { NEXT_URL } from "../../config";
-import { toast } from "react-toastify";
-import Button from "../../components/Button";
 
 type Inputs = {
   name: string;
@@ -37,12 +37,6 @@ function Profile({ userData, orders }) {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  useEffect(() => {
-    if (state.success) {
-      toast.success(state.message);
-    }
-  }, [state.success]);
 
   const submitHandler: SubmitHandler<Inputs> = ({
     name,
@@ -83,12 +77,10 @@ function Profile({ userData, orders }) {
   return (
     mounted && (
       <Layout title="Profile">
-        <main className="w-full p-4 bg-gray-200 md:mx-auto">
-          <section className="container px-2 pt-6 pb-8 mb-4 bg-white rounded shadow-xl md:px-12 md:mx-auto ">
-            <div className="mb-6 border-b-4 border-current border-gray-200">
-              <h1 className="my-2 text-3xl font-semibold md:text-4xl ">
-                Profile
-              </h1>
+        <main className="w-full p-4 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900  md:mx-auto">
+          <section className="container px-2 pt-6 pb-8 mb-4  rounded shadow-xl md:px-12 md:mx-auto ">
+            <div className="mb-6 border-b-2 border-current border-gray-200">
+              <h1 className="my-2 text-3xl font-thin md:text-4xl ">Profile</h1>
             </div>
             {!userData.emailVerified && (
               <div className="flex items-center justify-between mb-4 border border-gray-800 px-4 py-2">
@@ -106,7 +98,7 @@ function Profile({ userData, orders }) {
               <ErrorMessage variant="danger">{state.error}</ErrorMessage>
             )}
             {state.loading ? (
-              <Spinner className="w-12 h-12" />
+              <Spinner message="Loading Profile..." />
             ) : (
               <div className="flex flex-col items-center justify-around md:flex-row">
                 {/* Update user details form */}
@@ -125,23 +117,13 @@ function Profile({ userData, orders }) {
             )}
           </section>
           {/* Users orders list table */}
-          <section className="container px-2 pt-6 pb-8 mb-4 bg-white rounded shadow-xl md:px-12 md:mx-auto ">
-            <div className="mb-6 border-b-4 border-current border-gray-200">
-              <h1 className="my-2 text-3xl font-semibold md:text-4xl ">
+          <section className="container px-2 pt-6 pb-8 mb-4  rounded shadow-xl md:px-12 md:mx-auto ">
+            <div className="mb-6 border-b-2 border-current border-gray-200">
+              <h1 className="my-2 text-3xl font-thin md:text-4xl ">
                 My Orders
               </h1>
             </div>
-            <Table
-              tableData={orders}
-              headingColumns={[
-                "ID",
-                "DATE",
-                "TOTAL",
-                "PAID",
-                "DELIVERED",
-                "DETAILS",
-              ]}
-            />
+            {orders && <Table tableData={orders} />}
           </section>
         </main>
       </Layout>
@@ -186,6 +168,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     userRes.json(),
     orderRes.json(),
   ]);
+
+  // if (!ordersData || !userData) {
+  //   return {
+  //     notFound: true,
+  //   };
+  // }
 
   return {
     props: { userData: userData, orders: ordersData }, // if  will be passed to the page component as props

@@ -20,9 +20,9 @@ const OrderDetails = ({ order }) => {
 
   return (
     <Layout title={`Order Details: ${order._id}`}>
-      <main className="w-full p-2  bg-gray-200 md:p-4">
-        <section className="container max-w-screen-lg   md:mx-auto ">
-          <Card className="flex flex-col items-center justify-between mb-4   sm:p-4 sm:flex-row">
+      <main className="w-full p-2 text-gray-900 dark:text-gray-200  bg-white dark:bg-gray-900 md:p-4">
+        <section className="container max-w-screen-lg  md:mx-auto ">
+          <Card className="flex flex-col items-center justify-between mb-4 bg-white dark:bg-gray-900  sm:p-4 sm:flex-row">
             <div className="">
               <Button
                 type="button"
@@ -41,7 +41,7 @@ const OrderDetails = ({ order }) => {
 
           <div className="grid grid-cols-1 gap-2  mb-4  max-w-screen-lg md:grid-cols-2 lg:grid-cols-4 ">
             <div className="md:col-span-3">
-              <Card className="mb-4  p-4">
+              <Card className="mb-4 bg-white dark:bg-gray-900  p-4">
                 <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
                   <h2 className="p-2 text-2xl font-thin md:p-3 md:text-3xl">
                     Shipping
@@ -73,7 +73,7 @@ const OrderDetails = ({ order }) => {
                 </div>
               </Card>
 
-              <Card className="mb-4   p-4">
+              <Card className="mb-4 bg-white dark:bg-gray-900   p-4">
                 <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
                   <h2 className="p-2 text-2xl font-thin md:text-3xl">
                     Payment Method
@@ -94,7 +94,7 @@ const OrderDetails = ({ order }) => {
                   )}
                 </div>
               </Card>
-              <Card className="mb-4 p-4">
+              <Card className="mb-4 bg-white dark:bg-gray-900  p-4">
                 <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
                   <h2 className="p-2 text-2xl font-thin md:p-3 md:text-3xl">
                     Order Items
@@ -107,10 +107,10 @@ const OrderDetails = ({ order }) => {
                     You currently have no orders
                   </ErrorMessage>
                 ) : (
-                  <div className="bg-white  px-4 md:px-10 pt-4 md:pt-7 pb-5 overflow-y-auto">
+                  <div className="px-4 md:px-10 pt-4 md:pt-7 pb-5 overflow-y-auto">
                     <table className="w-full whitespace-nowrap">
                       <thead>
-                        <tr className="h-16 w-full text-base leading-none text-gray-800">
+                        <tr className="h-16 w-full text-base leading-none ">
                           <th className="font-medium text-left pl-4">
                             Product
                           </th>
@@ -123,7 +123,7 @@ const OrderDetails = ({ order }) => {
                         {order.orderItems.map((item, index) => (
                           <tr
                             key={index}
-                            className="h-20 text-base leading-none text-gray-800 bg-white hover:bg-gray-100 border-b border-t border-gray-100"
+                            className="h-20 text-base leading-none  hover:bg-gray-100 border-b border-t border-gray-100"
                           >
                             <td className="pl-4 text-left ">
                               <Image
@@ -154,7 +154,7 @@ const OrderDetails = ({ order }) => {
               </Card>
             </div>
             <div className="md:col-span-1">
-              <Card className="p-1 md:w-64">
+              <Card className="p-1 bg-white dark:bg-gray-900  md:w-64">
                 <div>
                   <div className="p-3 border-b">
                     <h2 className="text-2xl font-thin ">Order Summary</h2>

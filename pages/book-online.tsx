@@ -27,9 +27,9 @@ function BookOnline(): JSX.Element {
   }, []);
   return (
     <Layout title="Online Bookings" description="book online with us now">
-      <div className="flex flex-col justify-between w-full h-full py-6 bg-white">
+      <div className="flex flex-col justify-between w-full h-full py-6 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-hidden">
         {loading ? (
-          <Spinner className="w-12 h-12" />
+          <Spinner />
         ) : (
           <>
             <div

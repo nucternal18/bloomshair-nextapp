@@ -24,10 +24,10 @@ function UpdateProfileForm({
     <>
       <form
         onSubmit={handleSubmit(submitHandler)}
-        className="w-full px-2 pt-6 pb-8 mb-4 bg-white rounded md:px-12 sm:mx-auto"
+        className="w-full px-2 pt-6 pb-8 mb-4 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 rounded md:px-12 sm:mx-auto"
       >
-        <div className="flex flex-col items-center justify-around mb-4 md:flex-row">
-          <div className="flex flex-col items-center w-full ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 justify-around mb-4 md:flex-row">
+          <div className="flex flex-col items-center w-full rounded-md">
             {image ? (
               <Image
                 src={image}
@@ -36,6 +36,7 @@ function UpdateProfileForm({
                 height={350}
                 layout="responsive"
                 objectFit="cover"
+                className="rounded-md"
               />
             ) : (
               <Image
@@ -44,10 +45,11 @@ function UpdateProfileForm({
                 width={450}
                 height={350}
                 objectFit="cover"
+                className="rounded-md"
               />
             )}
             {uploading ? (
-              <Spinner className="w-12 h-12" />
+              <Spinner message="Uploading image" />
             ) : (
               <label className="block py-2 my-2 mr-2 text-base font-bold text-gray-700">
                 <FaPlusCircle className="text-4xl" />
@@ -64,10 +66,7 @@ function UpdateProfileForm({
           </div>
           <div className="w-full">
             <div className="mb-4">
-              <label
-                htmlFor="name"
-                className="block mb-2 text-base font-bold text-gray-700"
-              >
+              <label htmlFor="name" className="block mb-2 text-base font-bold ">
                 Name
               </label>
               <input
@@ -97,7 +96,7 @@ function UpdateProfileForm({
             <div className="mb-4">
               <label
                 htmlFor="email"
-                className="block mb-2 text-base font-bold text-gray-700"
+                className="block mb-2 text-base font-bold "
               >
                 Email Address
               </label>
@@ -124,7 +123,7 @@ function UpdateProfileForm({
             <div className="mb-4">
               <label
                 htmlFor="password"
-                className="block mb-2 text-base font-bold text-gray-700"
+                className="block mb-2 text-base font-bold "
               >
                 Password
               </label>
@@ -162,7 +161,7 @@ function UpdateProfileForm({
             <div className="mb-4">
               <label
                 htmlFor="confirmPassword"
-                className="block mb-2 text-base font-bold text-gray-700"
+                className="block mb-2 text-base font-bold "
               >
                 Confirm Password
               </label>

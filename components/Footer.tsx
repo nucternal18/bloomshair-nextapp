@@ -6,9 +6,10 @@ const containerStyle = {
 };
 
 const Footer = () => {
+  const year = new Date().getFullYear();
   return (
     <>
-      <footer className="bottom-0 left-0 w-full py-4 mb-0 text-white bg-gray-900 ">
+      <footer className="bottom-0 left-0 w-full py-4 mb-0 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 ">
         <div className="grid grid-cols-1 gap-2 px-4 py-2 mx-auto my-0 container-lg sm:mx-8 sm:py-6 sm:px-6 lg:grid-cols-4">
           <div className="w-full mb-4 sm:mb-0">
             <h2 className="mb-4 text-xl font-bold">ABOUT BLOOMS HAIR</h2>
@@ -56,7 +57,7 @@ const Footer = () => {
               <li className="flex flex-row justify-between mb-4">
                 Saturday:
                 <p>
-                  <strong>Closed</strong>
+                  <strong>10.00am - 18.00pm</strong>
                 </p>
               </li>
               <li className="flex flex-row justify-between mb-4">
@@ -113,7 +114,7 @@ const Footer = () => {
         <div className="flex flex-col justify-center py-2 sm:flex-row">
           <div>
             <p className="text-xs text-center text-gray-500">
-              &copy;2020 Blooms Hair. All rights reserved. |
+              &copy;Copyright {year} Blooms Hair. All rights reserved. |
             </p>
           </div>
           <div>

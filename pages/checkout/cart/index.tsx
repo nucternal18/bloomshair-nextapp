@@ -62,9 +62,9 @@ function Cart({ session }) {
   return (
     mounted && (
       <Layout title="Shopping Cart">
-        <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
-          <section className="container max-w-screen-lg p-2 mb-4 bg-white rounded shadow-xl md:p-12 md:mx-auto">
-            <div className="flex items-center justify-between px-3 py-2 mb-6 border-b-2 border-current border-gray-200 md:px-5">
+        <main className="w-full p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-hidden md:p-4">
+          <section className="container max-w-screen-lg p-2 mb-4  rounded shadow-xl md:p-12 md:mx-auto">
+            <div className="flex items-center justify-between px-3 py-2 mb-6 border-b-2 border-gray-200 md:px-5">
               <h1 className="text-3xl font-thin md:text-5xl">
                 Shopping Basket
               </h1>
@@ -88,7 +88,7 @@ function Cart({ session }) {
                     </ErrorMessage>
                   ) : (
                     <div className="w-full p-2 mb-2 border">
-                      <div className="flex justify-between p-2 border-b-2">
+                      <div className="flex justify-between p-2 border-b">
                         <h1 className="text-2xl font-normal">Cart Items</h1>
                       </div>
                       {state.cart.cartItems?.map((item) => (

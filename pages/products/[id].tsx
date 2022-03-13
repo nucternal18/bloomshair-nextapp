@@ -32,17 +32,13 @@ function ProductDetails({ product, productId, userInfo }) {
   const [comment, setComment] = useState<string>("");
   const { createProductReview } = useProduct();
 
-  const addToCartHandler = async () => {
-    const res = await fetch(`${NEXT_URL}/api/products/${productId}`, {
-      method: "GET",
-    });
-    const data = await res.json();
+  const addToCartHandler = () => {
     const items: CartItemsProps = {
-      product: data.product._id,
-      name: data.product.name,
-      image: data.product.image,
-      price: data.product.price,
-      countInStock: data.product.countInStock,
+      product: product._id,
+      name: product.name,
+      image: product.image,
+      price: product.price,
+      countInStock: product.countInStock,
       qty: state.cart.qty,
     };
 
@@ -57,8 +53,8 @@ function ProductDetails({ product, productId, userInfo }) {
   return (
     <Layout title={product.name}>
       {" "}
-      <main className="flex-grow w-full p-2 mx-auto bg-gray-200 md:p-4">
-        <section className="container max-w-screen-lg px-2 pt-6 pb-8 mb-4 bg-white rounded shadow-xl md:px-12 md:mx-auto ">
+      <main className="flex-grow w-full p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 md:p-4">
+        <section className="container max-w-screen-lg px-2 pt-6 pb-8 mb-4 rounded shadow-xl md:px-12 md:mx-auto ">
           <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
             <div className="p-5">
               <Button type="button" color="dark" onClick={() => router.back()}>
@@ -68,7 +64,7 @@ function ProductDetails({ product, productId, userInfo }) {
           </div>
 
           <div className="grid grid-cols-1 gap-3 mt-2 md:grid-cols-2">
-            <div className="w-full ">
+            <div className="w-full rounded-md">
               <Image
                 src={product.image}
                 alt={product.name}
@@ -77,6 +73,7 @@ function ProductDetails({ product, productId, userInfo }) {
                 layout="responsive"
                 objectFit="cover"
                 quality={75}
+                className="rounded-md"
               />
             </div>
             <div className="w-full px-4">
@@ -218,10 +215,10 @@ function ProductDetails({ product, productId, userInfo }) {
                     <div>
                       <form
                         onSubmit={submitHandler}
-                        className="px-2 pt-6 pb-8 mx-2 mb-4 bg-white rounded md:w-2/4"
+                        className="px-2 pt-6 pb-8 mx-2 mb-4 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 rounded md:w-2/4"
                       >
                         <div className="flex flex-col">
-                          <label className="block my-2 text-lg font-bold text-gray-700">
+                          <label className="block my-2 text-lg font-bold ">
                             Rating
                           </label>
                           <motion.select
@@ -255,7 +252,7 @@ function ProductDetails({ product, productId, userInfo }) {
                         <div className="flex flex-col">
                           <label
                             htmlFor="comment"
-                            className="block my-2 text-lg font-bold text-gray-700"
+                            className="block my-2 text-lg font-bold "
                           >
                             Comment
                           </label>

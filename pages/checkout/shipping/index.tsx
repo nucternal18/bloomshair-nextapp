@@ -95,9 +95,9 @@ function Shipping({ userData }) {
   };
   return (
     <Layout title="Checkout">
-      <main className="w-full p-2 mx-auto bg-gray-200 md:p-4">
+      <main className="w-full p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-hidden md:p-4">
         <CheckoutSteps step1 step2 />
-        <section className="container p-2 mb-4 bg-white rounded shadow-xl md:p-8 md:mx-auto ">
+        <section className="container p-2 mb-4  rounded shadow-xl md:p-8 md:mx-auto ">
           <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
             <h1 className="p-3 text-2xl font-thin md:p-5 md:text-5xl">
               Shipping
@@ -105,7 +105,9 @@ function Shipping({ userData }) {
             <Button
               type="button"
               color="dark"
-              onClick={() => router.replace("/checkout/cart")}
+              onClick={() => {
+                router.replace("/checkout/cart");
+              }}
             >
               return to cart
             </Button>
@@ -239,11 +241,11 @@ function Shipping({ userData }) {
                 Proceed to payment
               </Button>
             </div>
-            <div className="h-full pt-6 pb-8 mx-2 mb-4 ml-2 sm:px-4 ">
+            <div className="h-full pt-6 pb-8 mx-2 mb-4 ml-2 sm:px-4">
               <label className="flex items-center mb-4">
                 <div className="text-xl">Order Summary</div>
               </label>
-              <div className="w-full p-2 bg-gray-200">
+              <div className="w-full p-2 ">
                 <div className="mb-2">
                   <p className="font-medium">
                     <span className="mr-1">
@@ -256,7 +258,7 @@ function Shipping({ userData }) {
                   </p>
                 </div>
                 {state.cart.cartItems.map((item) => (
-                  <div key={item.product} className="border-b border-gray-300">
+                  <div key={item.product}>
                     <div className="flex items-center justify-between mb-2">
                       <p className="font-thin">{item.name}</p>
                       <p className="font-medium">
@@ -266,11 +268,17 @@ function Shipping({ userData }) {
                           .toFixed(2)}
                       </p>
                     </div>
-                    <div className="mb-2">
-                      <p>Qty {item.qty}</p>
-                    </div>
                   </div>
                 ))}
+                <div className="mb-2">
+                  <p className="flex items-center">
+                    <span className="mr-2">Qty</span>
+                    {state.cart.cartItems.reduce(
+                      (acc, item) => acc + item.qty,
+                      0
+                    )}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
