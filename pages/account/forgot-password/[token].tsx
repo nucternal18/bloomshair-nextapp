@@ -90,7 +90,7 @@ export default function ResetPassword({ valid, token }) {
             <section className="right-0 z-50 flex items-center justify-center py-8 md:w-4/12">
               <div className="w-full px-4">
                 {state.loading ? (
-                  <Spinner className="w-12 h-12" />
+                  <Spinner />
                 ) : (
                   <ChangePasswordForm
                     submitHandler={submitHandler}
