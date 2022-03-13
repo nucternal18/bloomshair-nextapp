@@ -53,9 +53,9 @@ export default function ResetPassword({ valid, token }) {
   if (!valid) {
     return (
       <Layout title="Reset Password">
-        <main className="h-screen bg-gray-200">
+        <main className="h-screen text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
           <div className="flex items-center justify-center ">
-            <h1 className="my-5 text-6xl text-gray-800">Invalid Link</h1>
+            <h1 className="my-5 text-6xl ">Invalid Link</h1>
             <p className="mb-5 text-2xl text-gray-500">
               It looks like you may have clicked on an invalid link. Please
               close this window and try again.
@@ -74,7 +74,7 @@ export default function ResetPassword({ valid, token }) {
   } else {
     return (
       <Layout>
-        <main className="h-screen bg-gray-200">
+        <main className="h-screen text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
           <div className="flex flex-col w-full h-screen md:flex-row">
             <div className="relative hidden transform md:left-0 md:block md:top-0 md:bottom-0 md:overflow-y-auto md:w-8/12">
               <div style={{ width: "100%", height: "100%" }}>

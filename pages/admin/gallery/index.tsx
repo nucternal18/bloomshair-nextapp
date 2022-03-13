@@ -20,6 +20,7 @@ import { NEXT_URL } from "../../../config";
 
 // utils
 import { getUser } from "../../../lib/getUser";
+import { toast } from "react-toastify";
 
 const GalleryListScreen = (props) => {
   const { pictures } = props;
@@ -48,7 +49,7 @@ const GalleryListScreen = (props) => {
       uploadGalleryImage(reader.result);
     };
     reader.onerror = () => {
-      console.error("something went wrong!");
+      toast.error("something went wrong!");
     };
   };
   const submitHandler = (e) => {
@@ -79,7 +80,7 @@ const GalleryListScreen = (props) => {
   }
   return (
     <AdminLayout>
-      <main className="w-full h-screen p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+      <main className="w-full p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
         <section className="flex flex-col ">
           <div className="container px-2 pt-6 pb-8 mt-6 mb-4 shadow-2xl md:mx-auto">
             <div className="my-6 ">

@@ -56,7 +56,7 @@ export default function Register() {
 
   return (
     <Layout title="Register">
-      <main className="h-screen bg-white dark:bg-gray-900">
+      <main className="h-screen text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
         <div className="flex flex-col w-full h-screen md:flex-row">
           <div className="relative hidden transform md:left-0 md:block md:top-0 md:bottom-0 md:overflow-y-auto md:w-8/12">
             <div style={{ width: "100%", height: "100%" }}>
@@ -69,7 +69,7 @@ export default function Register() {
               />
             </div>
           </div>
-          <section className="right-0 z-50 flex items-center justify-center py-8 md:w-4/12">
+          <section className="right-0 flex items-center justify-center py-8 md:w-4/12">
             <div className="w-full px-4">
               {state.loading ? (
                 <Spinner />

@@ -1,11 +1,14 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { GetServerSideProps } from "next";
 
 // components
 import Layout from "../components/Layout/Layout";
 import Button from "../components/Button";
 import BottomPageContainer from "../components/BottomPageContainer";
+import ProductCarousel from "../components/ProductCarousel";
+import { NEXT_URL } from "../config";
 
 const url =
   "https://res.cloudinary.com/dtkjg8f0n/image/upload/e_sharpen:100,q_auto:good/v1621805800/blooms_hair_products/AdobeStock_53052353_xwep1d.webp";
@@ -35,28 +38,30 @@ const toBase64 = (str) =>
     ? Buffer.from(str).toString("base64")
     : window.btoa(str);
 
-export default function Home(): JSX.Element {
+export default function Home({ products }): JSX.Element {
   return (
     <Layout title="Home page" description="blooms hair home page">
       <main>
         <section className="relative flex items-center content-center justify-center h-[700px] pt-16 pb-32 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
           <div className="absolute top-0 w-full h-full bg-center bg-cover">
-            <Image
-              src={url}
-              alt="BiZkettE1 / Freepik"
-              layout="fill"
-              objectFit="cover"
-              quality={75}
-              placeholder="blur"
-              blurDataURL={`data:image/svg+xml;base64,${toBase64(
-                shimmer(700, 475)
-              )}`}
-              loading="lazy"
-            />
-            <span
-              id="blackOverlay"
-              className="absolute w-full h-full bg-black opacity-50"
-            ></span>
+            <div className="relative w-full h-full">
+              <Image
+                src={url}
+                alt="BiZkettE1 / Freepik"
+                layout="fill"
+                objectFit="cover"
+                quality={75}
+                placeholder="blur"
+                blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                  shimmer(700, 475)
+                )}`}
+                loading="lazy"
+              />
+              <span
+                id="blackOverlay"
+                className="absolute w-full h-full bg-black opacity-50"
+              ></span>
+            </div>
           </div>
           <div className="container relative mx-auto">
             <div className="flex flex-col flex-wrap items-center justify-center ">
@@ -89,6 +94,9 @@ export default function Home(): JSX.Element {
               </motion.div> */}
             </div>
           </div>
+        </section>
+        <section className="bg-white dark:bg-gray-900">
+          <ProductCarousel products={products} />
         </section>
         <section className="">
           <div className="grid grid-cols-1 sm:grid-cols-2 ">
@@ -141,3 +149,29 @@ export default function Home(): JSX.Element {
     </Layout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({
+  query: { pageNumber = 1, keyword = "" },
+}) => {
+  const res = await fetch(
+    `${NEXT_URL}/api/products?keyword=${keyword}&pageNumber=${pageNumber}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const data = await res.json();
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      products: data.products,
+    }, // will be passed to the page component as props
+  };
+};

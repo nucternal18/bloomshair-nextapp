@@ -9,10 +9,10 @@ import User from "../../../models/userModel";
 export default function EmailVerifyPage({ valid }) {
   return (
     <Layout title="Email verification">
-      <main>
+      <main className="text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
         <section className="relative flex items-center content-center justify-center h-screen pt-16 pb-32">
           <div className="flex items-center justify-center ">
-            <p className="mb-5 text-2xl text-gray-800">
+            <p className="mb-5 text-2xl ">
               {valid
                 ? "Thank you for verifying your email address. You may close this page."
                 : "It looks like you may have clicked on an invalid link. Please close this window and try again."}

@@ -23,20 +23,25 @@ const CartIcon = dynamic(() => import("../CartIcon"), { ssr: false });
 // navlinks
 import { navLink } from "../../data";
 import { getCartItems } from "../../context/cart/cartActions";
-import BloomsLogo from "../SVG/BloomsLogo";
+import { BloomsLogo } from "../../public/SVG/BloomsLogo";
 
 const Navbar = () => {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
-  const [isOpen, setIsOpen] = useState(false);
-  const [cartIsOpen, setCartIsOpen] = useState(false);
-  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
-  const [pos, setPos] = useState("top");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [cartIsOpen, setCartIsOpen] = useState<boolean>(false);
+  const [isDropDownOpen, setIsDropDownOpen] = useState<boolean>(false);
+  const [mounted, setMounted] = useState<boolean>(false);
+  const [pos, setPos] = useState<string>("top");
   const { state } = useCart();
   const { state: authState } = useAuth();
   const { isLoading, data: cartItems } = useQuery("cart", getCartItems, {
     initialData: state.cart.cartItems,
   });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // mobile nav bar ref
   const mobileNavRef = useRef<HTMLElement>();
@@ -108,20 +113,23 @@ const Navbar = () => {
       }  navbar-expand-lg`}
     >
       <div className="container flex items-center justify-between px-2 mx-auto font-light  md:relative sm:px-1 md:px-0 md:flex-row">
-        <Link href={"/"}>
-          <a className="inline-block p-0 m-0 text-2xl font-bold cursor-pointer md:mr-4 ">
-            <BloomsLogo
-              className="w-[250px] h-[80px]"
-              fill={`${
-                router.asPath === "/" && pos === "top"
-                  ? "#fff"
-                  : theme === "dark"
-                  ? "#fff"
-                  : "#000"
-              }`}
-            />
-          </a>
-        </Link>
+        {mounted && (
+          <Link href={"/"}>
+            <a className="inline-block p-0 m-0 text-2xl font-bold cursor-pointer md:mr-4 ">
+              <BloomsLogo
+                width={250}
+                height={80}
+                fill={`${
+                  router.asPath === "/" && pos === "top"
+                    ? "#fff"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000"
+                }`}
+              />
+            </a>
+          </Link>
+        )}
 
         <div className="flex items-center flex-row-reverse">
           <button
@@ -133,7 +141,14 @@ const Navbar = () => {
             className="block float-right text-4xl  lg:hidden focus:outline-none focus:shadow-none"
             onClick={toggle}
           >
-            <GiHamburgerMenu fontSize={21} />
+            <GiHamburgerMenu
+              fontSize={21}
+              className={`${
+                router.asPath === "/" && pos === "top"
+                  ? "text-gray-200"
+                  : "text-gray-900 dark:text-gray-200"
+              } font-bold `}
+            />
           </button>
           <div className="flex items-center lg:hidden">
             {authState.user && (
@@ -163,6 +178,11 @@ const Navbar = () => {
                       itemCount={state.cart?.cartItems
                         ?.reduce((acc, item) => acc + item.qty, 0)
                         .toString()}
+                      className={`${
+                        router.asPath === "/" && pos === "top"
+                          ? "text-gray-200"
+                          : "text-gray-900 dark:text-gray-200"
+                      } font-bold relative flex items-center justify-center w-12 h-12 cursor-pointer `}
                     />
                   )}
                 </a>
@@ -262,7 +282,7 @@ const Navbar = () => {
                           className={`${
                             router.asPath === "/account/login"
                               ? "text-yellow-500"
-                              : "text-gray-800"
+                              : ""
                           } block text-lg font-medium   list-none cursor-pointer hover:text-yellow-400`}
                         >
                           Admin
@@ -281,42 +301,43 @@ const Navbar = () => {
               </div>
             </li>
           ) : (
-            <li className="px-1 m-0 list-none ">
+            <li className="m-0 list-none ">
               <button
                 className={`${
-                  router.asPath === "/account/login" ? "text-yellow-500" : ""
+                  router.asPath === "/" && pos === "top"
+                    ? "text-gray-200"
+                    : router.asPath === "/account/login"
+                    ? "text-yellow-500"
+                    : ""
                 } flex items-center px-1`}
-                style={{
-                  color: router.asPath === "/account/login" ? "orange" : "",
-                }}
               >
-                <FiLogIn className="text-base" />
+                <FiLogIn fontSize={18} />
                 <Link href={"/account/login"}>
-                  <a className="flex items-center md:block ml-4 mb-4 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1  text-sm font-medium list-none uppercase">
+                  <a className="flex items-center md:block ml-2 mb-2 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1  text-sm font-medium list-none uppercase">
                     Sign In
                   </a>
                 </Link>
               </button>
             </li>
           )}
-          <button
-            className={`${
-              router.asPath === "/checkout/cart" ? "text-yellow-500" : ""
-            }  text-2xl font-medium  uppercase list-none cursor-pointer hover:text-yellow-400 flex items-center ml-1`}
-            onClick={toggleCartDrawer}
-          >
-            <CartIcon
-              itemCount={state.cart?.cartItems?.reduce(
-                (acc, item) => acc + item.qty,
-                0
-              )}
-              className={`${
-                router.asPath === "/" && pos === "top"
-                  ? "text-gray-200"
-                  : "text-gray-900 dark:text-gray-200"
-              } font-bold relative flex items-center justify-center w-12 h-12 cursor-pointer `}
-            />
-          </button>
+          <li className="m-0 list-none mb-1">
+            <button
+              className={` text-2xl font-medium  uppercase list-none cursor-pointer flex items-center`}
+              onClick={toggleCartDrawer}
+            >
+              <CartIcon
+                itemCount={state.cart?.cartItems?.reduce(
+                  (acc, item) => acc + item.qty,
+                  0
+                )}
+                className={`${
+                  router.asPath === "/" && pos === "top"
+                    ? "text-gray-200"
+                    : "text-gray-900 dark:text-gray-200"
+                } font-bold relative flex items-center justify-center w-12 h-12 cursor-pointer `}
+              />
+            </button>
+          </li>
         </ul>
       </div>
       <CartContainer
@@ -365,9 +386,7 @@ const Navbar = () => {
                   <Link href={link.link}>
                     <a
                       className={`${
-                        router.asPath === link.link
-                          ? "text-yellow-500"
-                          : "text-gray-200"
+                        router.asPath === link.link ? "text-yellow-500" : ""
                       }flex items-center  ml-4 mb-2 cursor-pointer py-1.5  px-2   hover:text-yellow-400 text-lg font-medium list-none uppercase`}
                     >
                       {link.title}
@@ -396,13 +415,13 @@ const Navbar = () => {
                   {authState.user.isAdmin && (
                     <li className="px-1 m-0 text-base list-none text-md">
                       <button className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2">
-                        <RiAdminFill className="text-gray-200 " />
+                        <RiAdminFill fontSize={18} />
                         <Link href={"/admin"}>
                           <a
                             className={`${
                               router.asPath === "/account/login"
                                 ? "text-yellow-500"
-                                : "text-gray-200"
+                                : ""
                             } block text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
                           >
                             admin
@@ -424,13 +443,13 @@ const Navbar = () => {
               ) : (
                 <li className="flex items-center px-1 m-0 text-base list-none text-md">
                   <button className="flex items-center">
-                    <FiLogIn className="ml-5 mr-1 text-gray-200 " />
+                    <FiLogIn fontSize={18} className="ml-5 mr-1 " />
                     <Link href={"/account/login"}>
                       <a
                         className={`${
                           router.asPath === "/account/login"
                             ? "text-yellow-500"
-                            : "text-gray-200"
+                            : ""
                         }py-1 text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
                       >
                         Sign In

@@ -43,7 +43,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(200).json(user);
     } else {
       res.status(404).json({ message: "User not found" });
-      throw new Error("User not found");
     }
   } else if (req.method === "PUT") {
     /**
@@ -71,7 +70,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     } else {
       res.status(404).json({ message: "User not found" });
-      throw new Error("User not found");
     }
   } else if (req.method === "DELETE") {
     /**
@@ -88,7 +86,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     } catch (error) {
       res.status(404).json({ message: "Error removing user" });
-      throw new Error("User not found");
     }
   } else {
     res.setHeader("Allow", ["GET"]);

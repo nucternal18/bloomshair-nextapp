@@ -35,12 +35,10 @@ function RequestResetPassword() {
   }, []);
   return (
     <Layout title="Reset Password">
-      <main className="py-10">
+      <main className="py-10 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
         <div className="mx-auto max-w-screen-sm my-10">
           <div className="flex flex-col items-center justify-center w-full">
-            <h1 className="my-5 text-2xl sm:text-5xl text-gray-800">
-              Forgot password
-            </h1>
+            <h1 className="my-5 text-2xl sm:text-5xl ">Forgot password</h1>
             <p className="mb-5 text-center sm:text-xl text-gray-500">
               Enter the email address associated with your account, and
               we&apos;ll send you a link to reset your password.

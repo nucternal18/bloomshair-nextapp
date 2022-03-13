@@ -22,7 +22,8 @@
     "**/*.tsx",
     "tailwind.config.js",
     "next.config.js",
-    ".eslintrc.js"
+    ".eslintrc.js",
+    "public/SVG/BloomsLogo.js"
   ],
   "exclude": ["node_modules"]
 }

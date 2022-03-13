@@ -1,15 +1,16 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { createContext, useReducer, useContext } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { NEXT_URL } from "../../config";
 import { uploadImage } from "../../lib/upload";
 
-type ReviewProps = {
+export type ReviewProps = {
   rating: number;
   comment: string;
 };
 
-type ProductProps = {
+export type ProductProps = {
   _id: string;
   name: string;
   price: number;

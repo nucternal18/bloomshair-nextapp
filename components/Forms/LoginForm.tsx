@@ -9,10 +9,7 @@ function LoginForm({ submitHandler, handleSubmit, errors, register }) {
       className="px-2 pt-6 pb-8 mx-2 mb-4 bg-transparent "
     >
       <div className="mb-4">
-        <label
-          htmlFor="email"
-          className="block mb-2 text-base font-bold text-gray-700"
-        >
+        <label htmlFor="email" className="block mb-2 text-base font-bold ">
           Email Address:
         </label>
         <input
@@ -33,10 +30,7 @@ function LoginForm({ submitHandler, handleSubmit, errors, register }) {
         <ErrorMessage variant="danger">{errors.email.message}</ErrorMessage>
       )}
       <div className="mb-4">
-        <label
-          htmlFor="password"
-          className="block mb-2 text-base font-bold text-gray-700"
-        >
+        <label htmlFor="password" className="block mb-2 text-base font-bold ">
           Password:
         </label>
         <input
@@ -64,7 +58,7 @@ function LoginForm({ submitHandler, handleSubmit, errors, register }) {
       </div>
       <div className="mb-4">
         <Link href={"/account/forgot-password"}>
-          <a className="text-left text-gray-600 text-sm">Forgot Password?</a>
+          <a className="text-left text-gray-400 text-sm">Forgot Password?</a>
         </Link>
       </div>
       {errors.password && (

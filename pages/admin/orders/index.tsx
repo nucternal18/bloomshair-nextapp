@@ -21,7 +21,6 @@ import { NEXT_URL } from "../../../config";
 
 const OrderListScreen = (props) => {
   // const router = useRouter();
-  console.log(props.orders);
   const { state } = useOrder();
 
   const [show, setShow] = useState(false);

@@ -36,8 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(200).json(order);
     } else {
       await db.disconnect();
-      res.status(404);
-      throw new Error("Order not found");
+      res.status(404).json({ message: "Order not found" });
     }
   } else {
     res.setHeader("Allow", ["PUT"]);
