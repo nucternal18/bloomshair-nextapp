@@ -1,7 +1,7 @@
 import { getSession } from "next-auth/react";
 
 // Components
-import AdminLayout from "../../components/Layout/AdminLayout";
+import AdminLayout from "../../components/Layout/AdminLayout/AdminLayout";
 
 // utils
 import { getUser } from "../../lib/getUser";

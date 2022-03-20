@@ -5,10 +5,10 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 
 // Components
-import Layout from "../../components/Layout/Layout";
+import Layout from "../../components/Layout/Layout/Layout";
 import ErrorMessage from "../../components/ErrorMessage";
 import Spinner from "../../components/Spinner";
-import Table from "../../components/OrdersTable";
+import Table from "../../components/OrdersTable/OrdersTable";
 import Button from "../../components/Button";
 import UpdateProfileForm from "../../components/Forms/UpdateProfileForm";
 

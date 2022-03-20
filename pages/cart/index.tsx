@@ -3,20 +3,20 @@ import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 
 // Component
-import Layout from "../../../components/Layout/Layout";
-import Button from "../../../components/Button";
-import ErrorMessage from "../../../components/ErrorMessage";
-import CheckoutItem from "../../../components/CheckoutItem";
+import Layout from "../../components/Layout/Layout/Layout";
+import Button from "../../components/Button";
+import ErrorMessage from "../../components/ErrorMessage";
+import CheckoutItem from "../../components/CheckoutItem";
 
 // Context
-import { useCart } from "../../../context/cart/cartContext";
+import { useCart } from "../../context/cart/cartContext";
 import {
   removeFromCart,
   clearCart,
   addToCart,
-} from "../../../context/cart/cartActions";
-import { NEXT_URL } from "../../../config";
-import { CartItemsProps } from "../../../context/cart/cartState";
+} from "../../context/cart/cartActions";
+import { NEXT_URL } from "../../config";
+import { CartItemsProps } from "../../context/cart/cartState";
 import { GetServerSideProps } from "next";
 
 function Cart({ session }) {
@@ -33,13 +33,11 @@ function Cart({ session }) {
     router.reload();
   };
 
-  console.log("session", session);
-
   const checkoutHandler = () => {
     if (!session) {
-      router.push("/account/login?redirect=/checkout/shipping");
+      router.push("/account/login?redirect=/checkout");
     } else {
-      router.push("/checkout/shipping");
+      router.push("/checkout");
     }
   };
 

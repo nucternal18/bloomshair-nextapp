@@ -4,8 +4,8 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { ToastContainer } from "react-toastify";
 
-import Navbar from "../navigation/Navbar";
-import Footer from "../Footer";
+import Navbar from "../../navigation/Navbar/Navbar";
+import Footer from "../../Footer";
 
 interface ILayout {
   title?: string;
@@ -16,7 +16,11 @@ interface ILayout {
 function Layout({ title, description, children }: ILayout): JSX.Element {
   const router = useRouter();
   return (
-    <div className="flex flex-col justify-between h-screen">
+    <div
+      className="flex flex-col justify-between h-screen"
+      aria-label="layout"
+      data-testid="layout"
+    >
       <Head>
         <title>{title} - Blooms Hair</title>
         <link rel="icon" href="/favicon.ico" />
@@ -60,7 +64,6 @@ function Layout({ title, description, children }: ILayout): JSX.Element {
       <main className={`relative ${router.asPath === "/" ? "mt-0" : "mt-24"}`}>
         {children}
       </main>
-      <ToastContainer autoClose={4000} />
       <Footer />
     </div>
   );

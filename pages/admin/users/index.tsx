@@ -1,12 +1,10 @@
-import { useEffect } from "react";
 import { getSession } from "next-auth/react";
 import { FaPlus } from "react-icons/fa";
 import { useRouter } from "next/router";
-import { toast } from "react-toastify";
 import Link from "next/link";
 
 // Components
-import AdminLayout from "../../../components/Layout/AdminLayout";
+import AdminLayout from "../../../components/Layout/AdminLayout/AdminLayout";
 import Button from "../../../components/Button";
 import Table from "../../../components/Tables/UserTable";
 import Spinner from "../../../components/Spinner";
@@ -34,15 +32,16 @@ const UserListScreen = ({ users, loading }) => {
     };
   });
 
-  useEffect(() => {
-    if (state.success) {
-      toast.success(state.message);
-      router.reload();
-    }
-  }, [state.success]);
+  // useEffect(() => {
+  //   if (state.success) {
+  //     toast.success(state.message);
+  //     router.reload();
+  //   }
+  // }, [state.success]);
 
   const deleteHandler = (id) => {
     deleteUser(id);
+    router.reload();
   };
   return (
     <AdminLayout>
@@ -118,10 +117,10 @@ export async function getServerSideProps(context) {
     },
   });
   const data = await res.json();
-  const loading = !data ? true : false;
+  const isLoading = !data ? true : false;
 
   return {
-    props: { users: data, loading: loading }, // will be passed to the page component as props
+    props: { users: data, isLoading: isLoading }, // will be passed to the page component as props
   };
 }
 

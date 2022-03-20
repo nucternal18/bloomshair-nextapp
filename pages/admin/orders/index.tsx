@@ -10,7 +10,7 @@ import { useOrder } from "../../../context/order/OrderContext";
 import Spinner from "../../../components/Spinner";
 import ErrorMessage from "../../../components/ErrorMessage";
 // import Paginate from '../../components/Paginate';
-import AdminLayout from "../../../components/Layout/AdminLayout";
+import AdminLayout from "../../../components/Layout/AdminLayout/AdminLayout";
 import Button from "../../../components/Button";
 import Table from "../../../components/Tables/OrdersTable";
 

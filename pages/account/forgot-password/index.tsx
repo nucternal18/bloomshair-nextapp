@@ -3,7 +3,7 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Layout from "../../../components/Layout/Layout";
+import Layout from "../../../components/Layout/Layout/Layout";
 import { NEXT_URL } from "../../../config";
 import RequestPasswordResetForm from "../../../components/Forms/RequestPasswordResetForm";
 

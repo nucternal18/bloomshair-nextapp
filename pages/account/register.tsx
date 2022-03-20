@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 
 // Components
 import Spinner from "../../components/Spinner";
-import Layout from "../../components/Layout/Layout";
+import Layout from "../../components/Layout/Layout/Layout";
 
 import { useAuth } from "../../context/auth/AuthContext";
 import RegisterForm from "../../components/Forms/RegisterForm";

@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
-import Layout from "../../../components/Layout/Layout";
+import Layout from "../../../components/Layout/Layout/Layout";
 import db from "../../../lib/db";
 import Token from "../../../models/tokenModel";
 import User from "../../../models/userModel";

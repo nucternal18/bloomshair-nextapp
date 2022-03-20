@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useForm, SubmitHandler } from "react-hook-form";
 //components
 import Button from "../../../components/Button";
-import AdminLayout from "../../../components/Layout/AdminLayout";
+import AdminLayout from "../../../components/Layout/AdminLayout/AdminLayout";
 
 // context
 import { useAuth } from "../../../context/auth/AuthContext";

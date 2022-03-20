@@ -6,6 +6,8 @@ import ErrorMessage from "../ErrorMessage";
 function ChangePasswordForm({ submitHandler, errors, handleSubmit, register }) {
   return (
     <form
+      aria-label="change-password-form"
+      data-testid="change-password-form"
       onSubmit={handleSubmit(submitHandler)}
       className="px-2 pt-6 pb-8 mx-2 mb-4 bg-transparent w-full"
     >

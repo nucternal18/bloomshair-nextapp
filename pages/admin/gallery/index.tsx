@@ -9,7 +9,7 @@ import Table from "../../../components/Tables/GalleryTable";
 import Notification from "../../../components/notification/notification";
 import Spinner from "../../../components/Spinner";
 import ErrorMessage from "../../../components/ErrorMessage";
-import AdminLayout from "../../../components/Layout/AdminLayout";
+import AdminLayout from "../../../components/Layout/AdminLayout/AdminLayout";
 import Button from "../../../components/Button";
 
 // Context

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import Layout from "../components/Layout/Layout";
+import Layout from "../components/Layout/Layout/Layout";
 import Button from "../components/Button";
 
 function NotAuthorized() {

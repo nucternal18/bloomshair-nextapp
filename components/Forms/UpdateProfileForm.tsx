@@ -23,6 +23,8 @@ function UpdateProfileForm({
   return (
     <>
       <form
+        aria-label="update-profile-form"
+        data-testid="update-profile-form"
         onSubmit={handleSubmit(submitHandler)}
         className="w-full px-2 pt-6 pb-8 mb-4 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 rounded md:px-12 sm:mx-auto"
       >

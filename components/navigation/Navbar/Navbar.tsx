@@ -13,17 +13,17 @@ import { useQuery } from "react-query";
 import { useTheme } from "next-themes";
 
 // context
-import { useCart } from "../../context/cart/cartContext";
-import { useAuth } from "../../context/auth/AuthContext";
+import { useCart } from "../../../context/cart/cartContext";
+import { useAuth } from "../../../context/auth/AuthContext";
 
 // components
-import CartContainer from "../CartContainer";
-const CartIcon = dynamic(() => import("../CartIcon"), { ssr: false });
+import CartContainer from "../../CartContainer";
+const CartIcon = dynamic(() => import("../../CartIcon"), { ssr: false });
 
 // navlinks
-import { navLink } from "../../data";
-import { getCartItems } from "../../context/cart/cartActions";
-import { BloomsLogo } from "../../public/SVG/BloomsLogo";
+import { navLink } from "../../../data";
+import { getCartItems } from "../../../context/cart/cartActions";
+import { BloomsLogo } from "../../SVG/BloomsLogo";
 
 const Navbar = () => {
   const router = useRouter();
@@ -104,6 +104,8 @@ const Navbar = () => {
 
   return (
     <nav
+      aria-label="main-navigation"
+      data-testid="main-navigation"
       className={`top-0 z-50 flex flex-wrap items-center justify-between w-full px-2 py-2 text-gray-900 dark:text-gray-200 ${
         router.asPath === "/" && pos === "top"
           ? "bg-transparent absolute"

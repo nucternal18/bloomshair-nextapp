@@ -8,7 +8,7 @@ import { useOrder } from "../../../context/order/OrderContext";
 
 import Spinner from "../../../components/Spinner";
 import ErrorMessage from "../../../components/ErrorMessage";
-import AdminLayout from "../../../components/Layout/AdminLayout";
+import AdminLayout from "../../../components/Layout/AdminLayout/AdminLayout";
 import { getUser } from "../../../lib/getUser";
 
 function CreateOrder() {

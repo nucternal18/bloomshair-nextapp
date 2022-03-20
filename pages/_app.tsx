@@ -26,7 +26,7 @@ declare global {
 }
 
 function MyApp({ Component, pageProps }) {
-  const [queryClient] = useState(() => new QueryClient());
+  const queryClient = new QueryClient();
 
   return (
     <>

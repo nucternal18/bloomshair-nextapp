@@ -10,7 +10,7 @@ import Token from "../../../models/tokenModel";
 
 // Components
 import Spinner from "../../../components/Spinner";
-import Layout from "../../../components/Layout/Layout";
+import Layout from "../../../components/Layout/Layout/Layout";
 
 import { useAuth } from "../../../context/auth/AuthContext";
 import ChangePasswordForm from "../../../components/Forms/ChangePasswordForm";

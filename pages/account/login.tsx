@@ -7,7 +7,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 
 // Components
-import Layout from "../../components/Layout/Layout";
+import Layout from "../../components/Layout/Layout/Layout";
 
 // Context
 import { useAuth, ActionType } from "../../context/auth/AuthContext";
@@ -41,8 +41,8 @@ export default function Login() {
     if (result.error) {
       toast.error("Invalid email or password");
     }
-    if (result.ok && redirect === "/checkout/shipping") {
-      router.push("/checkout/shipping");
+    if (result.ok && redirect === "/checkout") {
+      router.push("/checkout");
     }
     if (result.ok) {
       const session = await getSession();

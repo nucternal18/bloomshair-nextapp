@@ -5,6 +5,8 @@ import ErrorMessage from "../ErrorMessage";
 function LoginForm({ submitHandler, handleSubmit, errors, register }) {
   return (
     <form
+      aria-label="login-form"
+      data-testid="login-form"
       onSubmit={handleSubmit(submitHandler)}
       className="px-2 pt-6 pb-8 mx-2 mb-4 bg-transparent "
     >

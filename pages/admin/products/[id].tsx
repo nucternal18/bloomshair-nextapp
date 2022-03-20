@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import Spinner from "../../../components/Spinner";
 import FormContainer from "../../../components/FormContainer";
 import Button from "../../../components/Button";
-import AdminLayout from "../../../components/Layout/AdminLayout";
+import AdminLayout from "../../../components/Layout/AdminLayout/AdminLayout";
 const TextEditor = dynamic(() => import("../../../components/Editor"), {
   ssr: false,
 });

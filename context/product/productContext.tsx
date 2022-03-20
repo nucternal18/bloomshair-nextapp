@@ -54,11 +54,16 @@ const initialState = {
 export const ProductContext = createContext<{
   state: IProduct;
   dispatch: React.Dispatch<any>;
-  createProduct: () => void;
-  createProductReview: (productId: string, review: ReviewProps) => void;
-  deleteProduct: (id: string) => void;
-  updateProduct: (props: ProductProps) => void;
-  uploadProdImage: (base64EncodedImage: string | ArrayBuffer) => void;
+  createProduct: () => void | Promise<void>;
+  createProductReview: (
+    productId: string,
+    review: ReviewProps
+  ) => void | Promise<void>;
+  deleteProduct: (id: string) => void | Promise<void>;
+  updateProduct: (props: ProductProps) => void | Promise<void>;
+  uploadProdImage: (
+    base64EncodedImage: string | ArrayBuffer
+  ) => void | Promise<void>;
 }>({
   state: initialState,
   dispatch: () => null,
@@ -203,7 +208,7 @@ const ProductContextProvider = ({ children }) => {
    * @desc delete a single product from database
    * @param id
    */
-  const deleteProduct = async (id) => {
+  const deleteProduct = async (id: string) => {
     try {
       dispatch({
         type: ActionType.PRODUCT_ACTION_REQUEST,
@@ -235,7 +240,10 @@ const ProductContextProvider = ({ children }) => {
    * @param productId
    * @param review
    */
-  const createProductReview = async (productId, review): Promise<void> => {
+  const createProductReview = async (
+    productId: string,
+    review: ReviewProps
+  ) => {
     try {
       dispatch({
         type: ActionType.PRODUCT_ACTION_REQUEST,

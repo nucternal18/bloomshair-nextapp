@@ -4,7 +4,7 @@ import Link from "next/link";
 import { GetServerSideProps } from "next";
 
 // components
-import Layout from "../components/Layout/Layout";
+import Layout from "../components/Layout/Layout/Layout";
 import Button from "../components/Button";
 import BottomPageContainer from "../components/BottomPageContainer";
 import ProductCarousel from "../components/ProductCarousel";

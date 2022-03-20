@@ -11,11 +11,10 @@ const ProductCarousel = ({ products }: Products) => {
   const carousel = useRef(null);
 
   useEffect(() => {
-    console.log(carousel.current.scrollWidth, carousel.current.offsetWidth);
     setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
   }, [carousel.current]);
   return (
-    <div>
+    <div aria-label="product-carousel" data-testid="product-carousel">
       <motion.div ref={carousel} className=" overflow-hidden">
         <motion.div
           drag="x"

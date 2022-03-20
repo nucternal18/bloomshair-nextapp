@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Layout from "../components/Layout/Layout";
+import Layout from "../components/Layout/Layout/Layout";
 import { motion } from "framer-motion";
 
 import BottomPageContainer from "../components/BottomPageContainer";
@@ -7,7 +7,7 @@ import BottomPageContainer from "../components/BottomPageContainer";
 const url: string =
   "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1621805383/blooms_hair_products/AdobeStock_208497707_gpctl8.webp";
 
-function about(): JSX.Element {
+function About(): JSX.Element {
   return (
     <Layout title="About Page" description="Blooms Hair About us page">
       <main>
@@ -62,9 +62,9 @@ function about(): JSX.Element {
                     That&apos;s why we offer a wide selection of quality
                     services in our salon in Islington London. We have Wella
                     Colour Master experts on hand that can deliver full hair
-                    colours to balayage’s and highlights, achieving your perfect
+                    colours to balayage and highlights, achieving your perfect
                     shade is simple. Get healthier, fuller looking hair with our
-                    Brazillian smoothing treatments. We love to provide you with
+                    Brazilian smoothing treatments. We love to provide you with
                     the latest haircut trends and insider info too so that you
                     can leave looking, and feeling fantastic!
                   </p>
@@ -80,4 +80,4 @@ function about(): JSX.Element {
   );
 }
 
-export default about;
+export default About;

@@ -12,6 +12,8 @@ function ShippingAddressForm({
 }) {
   return (
     <motion.div
+      aria-label="shipping-address-form-container"
+      data-testid="shipping-address-form-container"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className={
@@ -21,6 +23,8 @@ function ShippingAddressForm({
       }
     >
       <form
+        aria-label="shipping-address-form"
+        data-testid="shipping-address-form"
         onSubmit={handleSubmit(submitHandler)}
         className="h-full pt-6 pb-8 mx-2 mb-4 bg-gray-100  sm:px-4  w-full sm:w-2/4"
       >

@@ -14,8 +14,8 @@ import {
 import { signOut } from "next-auth/react";
 import { FiLogOut, FiMoon, FiSun } from "react-icons/fi";
 import { useTheme } from "next-themes";
-import ActiveLink from "../ActiveLink";
-import { BloomsLogo } from "../../public/SVG/BloomsLogo";
+import ActiveLink from "../../ActiveLink";
+import { BloomsLogo } from "../../SVG/BloomsLogo";
 
 const Sidebar = () => {
   const router = useRouter();

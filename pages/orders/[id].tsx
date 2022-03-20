@@ -10,7 +10,7 @@ import { useOrder } from "../../context/order/OrderContext";
 // components
 import ErrorMessage from "../../components/ErrorMessage";
 import Button from "../../components/Button";
-import Layout from "../../components/Layout/Layout";
+import Layout from "../../components/Layout/Layout/Layout";
 
 import { NEXT_URL } from "../../config";
 import { Card } from "../../components/Card";

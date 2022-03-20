@@ -23,7 +23,7 @@
     "tailwind.config.js",
     "next.config.js",
     ".eslintrc.js",
-    "public/SVG/BloomsLogo.js"
+    "jest.config.js"
   ],
   "exclude": ["node_modules"]
 }

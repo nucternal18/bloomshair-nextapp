@@ -149,9 +149,9 @@ function CartContainer({ cartIsOpen, toggleCartDrawer }) {
               Proceed to Checkout
             </Button> */}
             <Button type="button" color="dark" className="w-full">
-              <Link href={"/checkout/cart"}>
+              <Link href={"/cart"}>
                 <a
-                  className={`block text-xl text-center font-normal list-none cursor-pointer hover:text-yellow-400`}
+                  className={`block text-xl text-center font-normal list-none cursor-pointer `}
                 >
                   View and Edit Basket
                 </a>

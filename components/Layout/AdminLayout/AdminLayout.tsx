@@ -1,10 +1,14 @@
 import Head from "next/head";
 import { ToastContainer } from "react-toastify";
-import Sidebar from "../navigation/Sidebar";
+import Sidebar from "../../navigation/Sidebar/Sidebar";
 
 const AdminLayout = ({ children, title }) => {
   return (
-    <div className="flex flex-col justify-between h-screen">
+    <div
+      aria-label="admin-layout"
+      data-testid="admin-layout"
+      className="flex flex-col justify-between h-screen"
+    >
       <Head>
         <title>{title}</title>
         <link rel="icon" href="/favicon.ico" />

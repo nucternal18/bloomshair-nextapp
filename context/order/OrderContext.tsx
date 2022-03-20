@@ -19,15 +19,16 @@ enum ActionType {
 }
 
 export type OrderProps = {
-  orderItems: CartItemsProps[];
-  shippingAddress: ShippingAddressProps;
-  paymentMethod: string;
-  itemsPrice: number;
-  shippingPrice: number;
-  taxPrice: number;
-  totalPrice: number;
+  orderItems?: CartItemsProps[];
+  shippingAddress?: ShippingAddressProps;
+  paymentMethod?: string;
+  itemsPrice?: number;
+  shippingPrice?: number;
+  taxPrice?: number;
+  totalPrice?: number;
   isPaid?: boolean;
   paidAt?: Date;
+  createdAt?: Date;
   deliveredAt?: Date;
   isDelivered?: boolean;
   _id?: string;
