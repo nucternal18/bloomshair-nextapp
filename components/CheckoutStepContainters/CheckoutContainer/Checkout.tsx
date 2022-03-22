@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 // Components
 import ErrorMessage from "../../ErrorMessage";
@@ -18,7 +19,7 @@ import {
 } from "../../../context/cart/cartActions";
 import { useOrder } from "../../../context/order/OrderContext";
 
-const CheckOutContainer = ({ userInfo, scriptLoaded, handleStepChange }) => {
+const CheckOutContainer = ({ userInfo, paypalClientID, handleStepChange }) => {
   const router = useRouter();
   const { state: cartState, dispatch } = useCart();
   const {
@@ -65,17 +66,9 @@ const CheckOutContainer = ({ userInfo, scriptLoaded, handleStepChange }) => {
 
   useEffect(() => {
     if (cartItems.length === 0) {
-      router.push("/checkout/cart");
+      router.push("/cart");
     }
   }, [cartItems]);
-
-  useEffect(() => {
-    if (success) {
-      toast.success("Order successful");
-      dispatch(clearCart());
-      router.push(`/orders/${order._id}`);
-    }
-  }, [success]);
 
   useEffect(() => {
     if (error) {
@@ -132,8 +125,9 @@ const CheckOutContainer = ({ userInfo, scriptLoaded, handleStepChange }) => {
           },
           details
         );
-        toast.success("Order is paid");
+        toast.success("Payment Successful");
         handleStepChange("next");
+        dispatch(clearCart());
       })
       .catch((err) => toast.error("Something went wrong." + err));
   };
@@ -159,7 +153,9 @@ const CheckOutContainer = ({ userInfo, scriptLoaded, handleStepChange }) => {
       },
       paymentResult
     );
+    toast.success("Payment Successful");
     handleStepChange("next");
+    dispatch(clearCart());
   };
 
   const handlePayment = (method: string) => {
@@ -198,7 +194,7 @@ const CheckOutContainer = ({ userInfo, scriptLoaded, handleStepChange }) => {
             <h2 className="p-2 text-2xl font-thin ">Payment Method</h2>
           </div>
           <div className="flex items-center px-3">
-            <div className="mb-8 px-2">
+            <div className="mb-8 px-2 w-full">
               <label className="block mb-2 font-light text-gray-600">
                 Select Payment Method
               </label>
@@ -208,10 +204,10 @@ const CheckOutContainer = ({ userInfo, scriptLoaded, handleStepChange }) => {
                   id="PayPal"
                   name="paymentMethod"
                   value="PayPal"
-                  className="form-radio p-2 mr-4 text-gray-700 border rounded-full focus:ring-transparent focus:outline-none"
+                  className="form-radio p-2 mr-4 text-gray-400 border rounded-full focus:ring-transparent focus:outline-none"
                   onChange={() => handlePayment("PayPal")}
                 />
-                <label htmlFor="PayPal" className="text-gray-600">
+                <label htmlFor="PayPal">
                   <Image
                     src={"/paypal.png"}
                     alt="Round Icons"
@@ -221,20 +217,22 @@ const CheckOutContainer = ({ userInfo, scriptLoaded, handleStepChange }) => {
                 </label>
               </div>
               {paymentMethod.includes("PayPal") && (
-                <div>
-                  {!scriptLoaded ? (
-                    <Spinner />
-                  ) : (
-                    <div ref={wrapper}>
-                      <PaypalButton
-                        createOrder={(data, actions) =>
-                          createPaypalOrder(data, actions)
-                        }
-                        onApprove={(data, actions) => onApprove(data, actions)}
-                      />
-                    </div>
-                  )}
-                </div>
+                <PayPalScriptProvider
+                  options={{
+                    "client-id": paypalClientID,
+                    components: "buttons",
+                    currency: "GBP",
+                  }}
+                >
+                  <div ref={wrapper}>
+                    <PaypalButton
+                      createOrder={(data, actions) =>
+                        createPaypalOrder(data, actions)
+                      }
+                      onApprove={(data, actions) => onApprove(data, actions)}
+                    />
+                  </div>
+                </PayPalScriptProvider>
               )}
               <div className="flex items-center mb-1">
                 <input
@@ -245,9 +243,7 @@ const CheckOutContainer = ({ userInfo, scriptLoaded, handleStepChange }) => {
                   className="form-radio p-2 mr-2 text-gray-700 border rounded-full focus:ring-transparent focus:outline-none"
                   onChange={() => handlePayment("Square")}
                 />
-                <label htmlFor="Square" className="text-gray-600">
-                  Credit or Debit Card
-                </label>
+                <label htmlFor="Square">Credit or Debit Card</label>
               </div>
               {paymentMethod.includes("Square") && (
                 <div className="w-full">
@@ -306,7 +302,7 @@ const CheckOutContainer = ({ userInfo, scriptLoaded, handleStepChange }) => {
                   <div className="  pt-2   overflow-y-auto">
                     <table className="w-full whitespace-nowrap">
                       <thead>
-                        <tr className="h-16 w-full text-base leading-none text-gray-800">
+                        <tr className="h-16 w-full text-base leading-none">
                           <th className="font-medium text-left pl-4">
                             Product
                           </th>
@@ -319,7 +315,7 @@ const CheckOutContainer = ({ userInfo, scriptLoaded, handleStepChange }) => {
                         {cartItems.map((item, index) => (
                           <tr
                             key={index}
-                            className="h-20 text-base leading-none text-gray-800 bg-white hover:bg-gray-100 border-b border-t border-gray-100"
+                            className="h-20 text-base leading-none border-b border-t border-gray-100"
                           >
                             <td className="pl-4 text-left ">
                               <Image

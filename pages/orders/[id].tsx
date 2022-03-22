@@ -10,7 +10,7 @@ import { useOrder } from "../../context/order/OrderContext";
 // components
 import ErrorMessage from "../../components/ErrorMessage";
 import Button from "../../components/Button";
-import Layout from "../../components/Layout/Layout/Layout";
+import Layout from "../../components/Layout/Layout/";
 
 import { NEXT_URL } from "../../config";
 import { Card } from "../../components/Card";
@@ -19,7 +19,7 @@ const OrderDetails = ({ order }) => {
   const router = useRouter();
 
   return (
-    <Layout title={`Order Details: ${order._id}`}>
+    <Layout title={`Order Details: ${order?._id}`}>
       <main className="w-full p-2 text-gray-900 dark:text-gray-200  bg-white dark:bg-gray-900 md:p-4">
         <section className="container max-w-screen-lg  md:mx-auto ">
           <Card className="flex flex-col items-center justify-between mb-4 bg-white dark:bg-gray-900  sm:p-4 sm:flex-row">
@@ -35,7 +35,7 @@ const OrderDetails = ({ order }) => {
               </Button>
             </div>
             <div>
-              <h1 className="font-thin md:text-3xl">Order: {order._id}</h1>
+              <h1 className="font-thin md:text-3xl">Order: {order?._id}</h1>
             </div>
           </Card>
 
@@ -48,24 +48,24 @@ const OrderDetails = ({ order }) => {
                   </h2>
                 </div>
                 <div>
-                  <p className="mb-1">{order.user.name}</p>
+                  <p className="mb-1">{order?.user?.name}</p>
                   <p className="mb-1">
-                    <a href={`mailto:${order.user.email}`}>
-                      {order.user.email}
+                    <a href={`mailto:${order?.user?.email}`}>
+                      {order?.user?.email}
                     </a>
                   </p>
                   <p className="text-xl font-thin mb-1">
-                    {order.shippingAddress?.address}{" "}
-                    {order.shippingAddress?.city}{" "}
-                    {order.hippingAddress?.postalCode}{" "}
-                    {order.shippingAddress?.country}
+                    {order?.shippingAddress?.address}{" "}
+                    {order?.shippingAddress?.city}{" "}
+                    {order?.hippingAddress?.postalCode}{" "}
+                    {order?.shippingAddress?.country}
                   </p>
                 </div>
                 <div className="flex items-center">
                   <p className="mr-2 font-thin">status:</p>
-                  {order.isDelivered ? (
+                  {order?.isDelivered ? (
                     <p className="text-green-600">
-                      Delivered on {order.deliveredAt.slice(0, 10)}
+                      Delivered on {order?.deliveredAt?.slice(0, 10)}
                     </p>
                   ) : (
                     <p className="text-red-500">Not Delivered</p>
@@ -80,14 +80,14 @@ const OrderDetails = ({ order }) => {
                   </h2>
                 </div>
                 <div className="mb-2 text-xl">
-                  <p className="font-thin">{order.paymentMethod}</p>
+                  <p className="font-thin">{order?.paymentMethod}</p>
                 </div>
 
                 <div className="flex items-center">
                   <p className="mr-2 font-thin">status:</p>
                   {order.isPaid ? (
                     <p className="text-green-600">
-                      Paid on {order.paidAt.slice(0, 10)}
+                      Paid on {order?.paidAt?.slice(0, 10)}
                     </p>
                   ) : (
                     <p className="text-red-500">Not Paid</p>
@@ -101,7 +101,7 @@ const OrderDetails = ({ order }) => {
                   </h2>
                 </div>
 
-                {order.orderItems.length === 0 ? (
+                {order?.orderItems?.length === 0 ? (
                   <ErrorMessage variant="default">
                     {" "}
                     You currently have no orders
@@ -120,7 +120,7 @@ const OrderDetails = ({ order }) => {
                         </tr>
                       </thead>
                       <tbody className="w-full">
-                        {order.orderItems.map((item, index) => (
+                        {order?.orderItems?.map((item, index) => (
                           <tr
                             key={index}
                             className="h-20 text-base leading-none  hover:bg-gray-100 border-b border-t border-gray-100"

@@ -4,7 +4,6 @@ const orderSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: "User",
     },
     orderItems: [
@@ -25,6 +24,7 @@ const orderSchema = new mongoose.Schema(
       city: { type: String, required: true },
       postalCode: { type: String, required: true },
       country: { type: String, required: true },
+      deliveryMethod: { type: String, required: true },
     },
     paymentMethod: {
       type: String,
@@ -64,6 +64,7 @@ const orderSchema = new mongoose.Schema(
     },
     paidAt: {
       type: Date,
+      default: Date.now,
     },
     isDelivered: {
       type: Boolean,
@@ -72,6 +73,7 @@ const orderSchema = new mongoose.Schema(
     },
     deliveredAt: {
       type: Date,
+      default: Date.now,
     },
   },
   {

@@ -1,6 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
-import { withSentry } from "@sentry/nextjs";
 import nodemailer from "nodemailer";
 
 interface IFormData {
@@ -81,4 +80,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default withSentry(handler);
+export default handler;

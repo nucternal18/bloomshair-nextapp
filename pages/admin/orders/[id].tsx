@@ -18,7 +18,7 @@ import { getUser } from "../../../lib/getUser";
 function OrderScreen(props): JSX.Element {
   const { order, userInfo } = props;
   const router = useRouter();
-  const { state, orderDelivery } = useOrder();
+  const { state, orderDelivery, sendOrderConfirmationEmail } = useOrder();
 
   const deliveryHandler = () => {
     orderDelivery(props.order);
@@ -35,6 +35,15 @@ function OrderScreen(props): JSX.Element {
                 <Link href="/admin/orders">
                   <a>Go Back</a>
                 </Link>
+              </Button>
+            </div>
+            <div className="mt-6">
+              <Button
+                color="dark"
+                type="button"
+                onClick={() => sendOrderConfirmationEmail(order._id)}
+              >
+                Send Order Confirmation
               </Button>
             </div>
             <div>

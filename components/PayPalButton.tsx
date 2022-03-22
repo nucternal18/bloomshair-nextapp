@@ -1,24 +1,22 @@
 import React, { useRef } from "react";
-import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-
-const { paypal } = typeof window !== "undefined" && window;
-
-const PayPalButtons = paypal.Buttons.driver("react", {
-  React,
-  ReactDOM,
-});
+import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import Spinner from "./Spinner";
 const PaypalButton = ({ createOrder, onApprove }): JSX.Element => {
-  const nodeRef = useRef<HTMLDivElement>(null);
+  const [{ isPending }] = usePayPalScriptReducer();
   return (
-    <div ref={nodeRef}>
-      <PayPalButtons
-        style={{
-          layout: "horizontal",
-        }}
-        createOrder={createOrder}
-        onApprove={onApprove}
-      />
+    <div>
+      {isPending ? (
+        <Spinner message="loading..." />
+      ) : (
+        <PayPalButtons
+          style={{
+            layout: "horizontal",
+          }}
+          createOrder={createOrder}
+          onApprove={onApprove}
+        />
+      )}
     </div>
   );
 };

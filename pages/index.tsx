@@ -153,15 +153,12 @@ export default function Home({ products }): JSX.Element {
 export const getServerSideProps: GetServerSideProps = async ({
   query: { pageNumber = 1, keyword = "" },
 }) => {
-  const res = await fetch(
-    `${NEXT_URL}/api/products?keyword=${keyword}&pageNumber=${pageNumber}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const res = await fetch(`${NEXT_URL}/api/products/topProducts`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   const data = await res.json();
   if (!data) {
     return {
@@ -171,7 +168,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   return {
     props: {
-      products: data.products,
+      products: data,
     }, // will be passed to the page component as props
   };
 };

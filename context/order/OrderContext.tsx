@@ -2,6 +2,8 @@
 import { createContext, useReducer, useContext } from "react";
 
 import { NEXT_URL } from "../../config";
+import { orderConfirmationEmail } from "../../lib/emailServices";
+import { sendMail } from "../../lib/mail";
 import {
   CartItemsProps,
   PaymentResProps,
@@ -16,10 +18,15 @@ enum ActionType {
   ORDER_PAY_SUCCESS = "ORDER_PAY_SUCCESS",
   ORDER_DELIVERY_SUCCESS = "ORDER_DELIVERY_SUCCESS",
   ORDER_TOTAL_PRICE = "ORDER_TOTAL_PRICE",
+  ORDER_CONFIRMATION_SUCCESS = "ORDER_CONFIRMATION_SUCCESS",
 }
 
 export type OrderProps = {
   orderItems?: CartItemsProps[];
+  user?: {
+    name: string;
+    email: string;
+  };
   shippingAddress?: ShippingAddressProps;
   paymentMethod?: string;
   itemsPrice?: number;
@@ -56,12 +63,14 @@ export const OrderContext = createContext<{
   createOrder: (newOrder: OrderProps, paymentResult: PaymentResProps) => void;
   orderDelivery: (order: OrderProps) => void;
   getTotal: (data: number) => void;
+  sendOrderConfirmationEmail: (id: string) => void;
 }>({
   state: initialState,
   dispatch: () => null,
   createOrder: () => {},
   orderDelivery: () => {},
   getTotal: () => {},
+  sendOrderConfirmationEmail: () => {},
 });
 
 export const orderReducer = (state, action) => {
@@ -75,8 +84,10 @@ export const orderReducer = (state, action) => {
     case ActionType.ORDER_DETAILS_SUCCESS:
       return { ...state, loading: false, success: true, order: action.payload };
     case ActionType.ORDER_PAY_SUCCESS:
-      return { ...state, loading: false, success: true };
+      return { ...state, loading: false, success: true, order: action.payload };
     case ActionType.ORDER_DELIVERY_SUCCESS:
+      return { ...state, loading: false, success: true };
+    case ActionType.ORDER_CONFIRMATION_SUCCESS:
       return { ...state, loading: false, success: true };
     case ActionType.ORDER_TOTAL_PRICE:
       return { ...state, totalPrice: action.payload };
@@ -114,8 +125,42 @@ const OrderContextProvider = ({ children }) => {
           type: ActionType.ORDER_CREATE_SUCCESS,
           payload: data,
         });
+      }
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : "Unable to create order";
+      dispatch({
+        type: ActionType.ORDER_ACTION_FAIL,
+        payload: err,
+      });
+    }
+  };
 
-        localStorage.clear();
+  const sendOrderConfirmationEmail = async (id: string) => {
+    try {
+      dispatch({
+        type: ActionType.ORDER_ACTION_REQUEST,
+      });
+
+      const res = await fetch(`${NEXT_URL}/api/orders/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        await sendMail({
+          to: data?.user?.email,
+          from: '"Blooms Hair" <no-reply@bloomshair.co.uk>',
+          subject: "Your Order Confirmation",
+          html: orderConfirmationEmail(data),
+        });
+        dispatch({
+          type: ActionType.ORDER_CONFIRMATION_SUCCESS,
+        });
       }
     } catch (error) {
       const err =
@@ -213,6 +258,7 @@ const OrderContextProvider = ({ children }) => {
         dispatch,
         createOrder,
         orderDelivery,
+        sendOrderConfirmationEmail,
         getTotal,
       }}
     >

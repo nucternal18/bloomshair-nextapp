@@ -4,6 +4,8 @@ import { getSession } from "next-auth/react";
 import Order from "../../../../models/orderModel";
 import db from "../../../../lib/db";
 import { getUser } from "../../../../lib/getUser";
+import { sendMail } from "../../../../lib/mail";
+import { orderConfirmationEmail } from "../../../../lib/emailServices";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**

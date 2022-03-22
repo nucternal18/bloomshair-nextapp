@@ -1,43 +1,35 @@
 import { useState, useEffect } from "react";
-import Script from "next/script";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
+import dynamic from "next/dynamic";
 
 // Components
 import Layout from "../../components/Layout/Layout/Layout";
 import CheckoutSteps from "../../components/navigation/CheckoutStepsNav/CheckoutStepsNav";
-import CheckoutContainer from "../../components/CheckoutStepContainters/CheckoutContainer";
+const CheckoutContainer = dynamic(
+  import("../../components/CheckoutStepContainters/CheckoutContainer"),
+  { ssr: false }
+);
+const ShippingContainer = dynamic(
+  import("../../components/CheckoutStepContainters/ShippingContainer"),
+  { ssr: false }
+);
 import OrderComplete from "../../components/CheckoutStepContainters/OrderComplete";
 
 // utils
 import { getUser } from "../../lib/getUser";
-import ShippingContainer from "../../components/CheckoutStepContainters/ShippingContainer";
 import { NEXT_URL } from "../../config";
 
-// context
-import { useCart } from "../../context/cart/cartContext";
-
 function Checkout({ userData, PAYPAL_CLIENT_ID }) {
+  const [mounted, setMounted] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const [scriptLoaded, setScriptLoaded] = useState<boolean>(false);
-  const { state: cartState } = useCart();
-  const {
-    cart: { paymentMethod },
-  } = cartState;
+
   const steps = ["Shipping", "Review & Place Order", "Order Complete"];
-  // const addPayPalScript = () => {
-  //   const script = document.createElement("script");
-  //   script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}`;
-  //   script.async = true;
-  //   script.type = "text/javascript";
-  //   script.onload = () => {
-  //     setScriptLoaded(true);
-  //   };
-  //   document.body.appendChild(script);
-  // };
-  // useEffect(() => {
-  //   addPayPalScript();
-  // }, []);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const handleStepChange = (direction: string) => {
     let newStep = currentStep;
 
@@ -45,38 +37,29 @@ function Checkout({ userData, PAYPAL_CLIENT_ID }) {
     newStep > 0 && newStep <= steps.length && setCurrentStep(newStep);
   };
   return (
-    <Layout title="Checkout">
-      {/* Add paypal script to page */}
-
-      <Script
-        id="PayPal"
-        src={`https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=GBP`}
-        strategy="afterInteractive"
-        onLoad={() => {
-          setScriptLoaded(true);
-        }}
-      />
-
-      <main className="w-full p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-hidden md:p-4">
-        <CheckoutSteps steps={steps} currentStep={currentStep} />
-        <section className="container p-2 mb-4 max-w-screen-xl rounded shadow-xl md:p-8 md:mx-auto ">
-          {currentStep === 1 && (
-            <ShippingContainer
-              userData={userData}
-              handleStepChange={handleStepChange}
-            />
-          )}
-          {currentStep === 2 && (
-            <CheckoutContainer
-              scriptLoaded={scriptLoaded}
-              userInfo={userData}
-              handleStepChange={handleStepChange}
-            />
-          )}
-          {currentStep === 3 && <OrderComplete />}
-        </section>
-      </main>
-    </Layout>
+    mounted && (
+      <Layout title="Checkout">
+        <main className="w-full p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-hidden md:p-4">
+          <CheckoutSteps steps={steps} currentStep={currentStep} />
+          <section className="container p-2 mb-4 max-w-screen-xl rounded shadow-xl md:p-8 md:mx-auto ">
+            {currentStep === 1 && (
+              <ShippingContainer
+                userData={userData}
+                handleStepChange={handleStepChange}
+              />
+            )}
+            {currentStep === 2 && (
+              <CheckoutContainer
+                paypalClientID={PAYPAL_CLIENT_ID}
+                userInfo={userData}
+                handleStepChange={handleStepChange}
+              />
+            )}
+            {currentStep === 3 && <OrderComplete />}
+          </section>
+        </main>
+      </Layout>
+    )
   );
 }
 

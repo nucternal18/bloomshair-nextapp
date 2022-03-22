@@ -17,7 +17,7 @@ function CheckoutItem({ item, removeFromCartHandler, updateCartHandler }) {
       <span className="w-1/5 md:w-1/4 mr-4 sm:mr-0">{item.name}</span>
       <div className="mr-2 w-14">
         <select
-          className="w-full px-3 py-2 my-2 bg-white border rounded outline-none"
+          className="w-full px-3 py-2 my-2 bg-white border rounded outline-none text-gray-900"
           value={item.qty}
           onChange={(e) => updateCartHandler(item.product, e.target.value)}
         >

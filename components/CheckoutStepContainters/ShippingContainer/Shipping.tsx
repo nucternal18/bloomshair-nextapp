@@ -59,12 +59,12 @@ function ShippingContainer({ userData, handleStepChange }) {
 
   const handleChangeOne = () => {
     setCheckedOne(!checkedOne);
-    setDeliveryMethod("standard");
+    setDeliveryMethod("RoyalMail standard");
   };
 
   const handleChangeTwo = () => {
     setCheckedTwo(!checkedTwo);
-    setDeliveryMethod("nextDay");
+    setDeliveryMethod("RoyalMail nextDay");
   };
 
   const proceedToPayment = () => {

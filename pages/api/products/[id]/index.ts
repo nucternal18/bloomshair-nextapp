@@ -99,4 +99,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default withSentry(handler);
+export default handler;

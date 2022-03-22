@@ -91,15 +91,15 @@ const Footer = () => {
               FOLLOW US ON SOCIAL MEDIA
             </h1>
             <div className="z-50 mb-6">
-              <ul className="flex flex-row text-white ">
+              <ul className="flex flex-row">
                 <li className="px-1 py-2 m-1 text-xl hover:text-blue-500">
                   <a href="https://www.facebook.com/bloomshair">
                     <FaFacebook />
                   </a>
                 </li>
-                <li className="px-1 py-2 m-1 text-xl hover:text-blue-500">
+                <li className="px-1 py-2 m-1 text-xl hover:text-pink-700">
                   <a href="https://www.instagram.com/blooms_hair/">
-                    <FaInstagram />
+                    <FaInstagram fontSize={21} />
                   </a>
                 </li>
                 <li className="px-1 py-2 m-1 text-xl hover:text-blue-500">
