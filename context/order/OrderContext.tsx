@@ -121,6 +121,7 @@ const OrderContextProvider = ({ children }) => {
       });
       const data = await res.json();
       if (res.ok) {
+        sendOrderConfirmationEmail(data._id);
         dispatch({
           type: ActionType.ORDER_CREATE_SUCCESS,
           payload: data,
@@ -144,7 +145,7 @@ const OrderContextProvider = ({ children }) => {
         type: ActionType.ORDER_ACTION_REQUEST,
       });
 
-      const res = await fetch(`${NEXT_URL}/api/orders/${id}`, {
+      const res = await fetch(`${NEXT_URL}/api/orders/myOrders/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
