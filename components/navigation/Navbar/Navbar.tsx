@@ -169,10 +169,10 @@ const Navbar = () => {
               </button>
             )}
             <button className="">
-              <Link href={"/checkout/cart"}>
+              <Link href={"/cart"}>
                 <a
                   className={`${
-                    router.asPath === "/checkout/cart" ? "text-yellow-500" : ""
+                    router.asPath === "/cart" ? "text-yellow-500" : ""
                   }text-2xl  list-none cursor-pointer hover:text-yellow-400`}
                 >
                   {!isLoading && (

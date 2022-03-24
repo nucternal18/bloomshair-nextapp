@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { Drawer, Group } from "@mantine/core";
 
 // Context
 import { useCart } from "../context/cart/cartContext";
@@ -49,27 +50,14 @@ function CartContainer({ cartIsOpen, toggleCartDrawer }) {
   // };
   if (state.cart.cartItems?.length === 0 && mounted) {
     return (
-      <aside
-        className={
-          cartIsOpen
-            ? `${classNames.default} ${classNames.enabled}`
-            : `${classNames.default} ${classNames.disabled}`
-        }
+      <Drawer
+        opened={cartIsOpen}
+        onClose={toggleCartDrawer}
+        position="right"
+        title="Your Cart"
+        padding="xl"
+        size="xl"
       >
-        {/* cart header */}
-        <div className="flex items-center justify-between mb-6 border-b">
-          <div></div>
-          <div>
-            <h2 className="mb-2 text-2xl text-center">your bag</h2>
-          </div>
-          <button
-            aria-label="Close"
-            className="flex items-center text-gray-700 cursor-pointer mb-2 focus:outline-none"
-            onClick={toggleCartDrawer}
-          >
-            <p className="ml-2 text-3xl ">&times;</p>
-          </button>
-        </div>
         <div className="mb-4 ">
           <h4 className="mb-2 text-2xl text-center">
             Basket is currently empty
@@ -86,34 +74,20 @@ function CartContainer({ cartIsOpen, toggleCartDrawer }) {
             </Link>
           </Button>
         </div>
-      </aside>
+      </Drawer>
     );
   }
   return (
     mounted && (
-      <aside
-        className={
-          cartIsOpen
-            ? `${classNames.default} ${classNames.enabled}`
-            : `${classNames.default} ${classNames.disabled}`
-        }
+      <Drawer
+        opened={cartIsOpen}
+        onClose={toggleCartDrawer}
+        position="right"
+        title="Your Cart"
+        padding="xl"
+        size="xl"
       >
-        <div>
-          <div className="flex items-center justify-between mb-6 border-b">
-            <div></div>
-            <div>
-              <h2 className="mb-2 text-2xl text-center">your bag</h2>
-            </div>
-            <button
-              aria-label="Close"
-              className="flex items-center text-gray-700 cursor-pointer focus:outline-none"
-              onClick={toggleCartDrawer}
-            >
-              <p className="ml-2 text-3xl ">&times;</p>
-            </button>
-          </div>
-          {/* cart header */}
-
+        <div className="pt-4">
           {/* cart items */}
           <div className="mb-4">
             {state.cart.cartItems?.map((item) => {
@@ -159,14 +133,9 @@ function CartContainer({ cartIsOpen, toggleCartDrawer }) {
             </Button>
           </footer>
         </div>
-      </aside>
+      </Drawer>
     )
   );
 }
-const classNames = {
-  default: `hidden md:block flex flex-col h-screen fixed inset-y-0 right-0 transition-all ease-in-out duration-200 `,
-  enabled: `sm:w-[40vw] md:w-[35vw] lg:w-[30vw] bg-gray-100 z-50  text-gray-700 overflow-x-hidden p-4 transition-all duration-200 ease-in-out `,
-  disabled: `w-0  bg-gray-800 text-white overflow-x-hidden`,
-};
 
 export default CartContainer;

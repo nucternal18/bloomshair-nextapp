@@ -155,7 +155,7 @@ const OrderContextProvider = ({ children }) => {
       if (res.ok) {
         await sendMail({
           to: data?.user?.email,
-          from: '"Blooms Hair" <no-reply@bloomshair.co.uk>',
+          from: "Blooms Hair <no-reply@bloomshair.co.uk>",
           subject: "Your Order Confirmation",
           html: orderConfirmationEmail(data),
         });

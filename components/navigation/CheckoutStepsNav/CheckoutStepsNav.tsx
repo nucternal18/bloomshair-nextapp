@@ -67,11 +67,11 @@ const CheckoutSteps: FC<ICheckout> = ({ steps, currentStep }): JSX.Element => {
             : " flex items-center"
         }`}
       >
-        <div className="relative flex flex-col items-center text-teal-600">
+        <div className="relative flex flex-col items-center text-yellow-600">
           <div
             className={`${
               step.selected
-                ? "bg-green-600 text-white font-bold border border-green-600"
+                ? "bg-amber-600 text-white font-bold border border-amber-600"
                 : ""
             } rounded-full transition duration-500 ease-in-out border-2 border-gray-300 h-12 w-12 flex items-center justify-center py-3`}
           >
@@ -93,7 +93,7 @@ const CheckoutSteps: FC<ICheckout> = ({ steps, currentStep }): JSX.Element => {
         </div>
         <div
           className={`${
-            step.completed ? "border-green-600" : "border-gray-300"
+            step.completed ? "border-amber-600" : "border-gray-300"
           } flex-auto border-t-2 transition duration-500 ease-in-out`}
         ></div>
       </div>
@@ -108,86 +108,3 @@ const CheckoutSteps: FC<ICheckout> = ({ steps, currentStep }): JSX.Element => {
 };
 
 export default CheckoutSteps;
-
-{
-  /* <nav
-      className="grid grid-cols-4 gap-1 w-full sm:w-3/4  container max-w-screen-md mx-auto mt-6 mb-4 sm:px-8"
-      aria-label="checkout-steps-nav"
-      data-testid="checkout-steps-nav"
-    >
-      <div className="col-span-1">
-        {step1 ? (
-          <Link href="/account/login">
-            <a
-              aria-label="checkout-nav-link1"
-              className={`${
-                router.asPath === "/account/login"
-                  ? "text-yellow-500 border-t-4 border-yellow-500 pt-4"
-                  : "opacity-60"
-              }`}
-            >
-              Sign-In
-            </a>
-          </Link>
-        ) : (
-          <button disabled>Sign In</button>
-        )}
-      </div>
-
-      <div className="col-span-1">
-        {step2 ? (
-          <Link href="/checkout/shipping">
-            <a
-              aria-label="checkout-nav-link2"
-              className={`${
-                router.asPath === "/checkout/shipping"
-                  ? "text-yellow-500 border-t-4 border-yellow-500 pt-4"
-                  : "opacity-60"
-              }`}
-            >
-              Shipping
-            </a>
-          </Link>
-        ) : (
-          <button disabled>Shipping</button>
-        )}
-      </div>
-
-      <div className="col-span-1">
-        {step3 ? (
-          <Link href="/checkout/payment">
-            <a
-              aria-label="checkout-nav-link3"
-              className={`${
-                router.asPath === "/checkout/payment"
-                  ? "text-yellow-500 border-t-4 border-yellow-500 pt-4"
-                  : "opacity-60"
-              }`}
-            >
-              Payment
-            </a>
-          </Link>
-        ) : (
-          <button disabled>Payment</button>
-        )}
-      </div>
-
-      <div className="col-span-1">
-        {step4 ? (
-          <Link href="/checkout/placeorder">
-            <a
-              className={`${
-                router.asPath === "/checkout/placeorder"
-                  ? "text-yellow-500 border-t-4 border-yellow-500 pt-4"
-                  : "opacity-60"
-              }`}
-            >
-              Place Order
-            </a>
-          </Link>
-        ) : (
-          <button disabled>Place Order</button>
-        )}
-      </div>
-    </nav> */
-}

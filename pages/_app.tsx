@@ -20,7 +20,6 @@ import { CartProvider } from "../context/cart/cartContext";
 
 declare global {
   interface Window {
-    paypal?: any;
     Square?: Square;
   }
 }
