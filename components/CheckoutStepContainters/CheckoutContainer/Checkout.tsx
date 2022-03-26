@@ -216,7 +216,7 @@ const CheckOutContainer = ({ userInfo, paypalClientID, handleStepChange }) => {
                   />
                 </label>
               </div>
-              {paymentMethod.includes("PayPal") && (
+              {paymentMethod === "PayPal" && (
                 <PayPalScriptProvider
                   options={{
                     "client-id": paypalClientID,
@@ -245,7 +245,7 @@ const CheckOutContainer = ({ userInfo, paypalClientID, handleStepChange }) => {
                 />
                 <label htmlFor="Square">Credit or Debit Card</label>
               </div>
-              {paymentMethod.includes("Square") && (
+              {paymentMethod === "Square" && (
                 <div className="w-full">
                   <Square
                     paymentAmount={Number(totalPrice).toFixed(2)}

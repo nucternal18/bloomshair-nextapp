@@ -1,8 +1,6 @@
 /* eslint-disable no-useless-escape */
-import { useState } from "react";
 import Image from "next/image";
 import { FaPlusCircle } from "react-icons/fa";
-import { toast } from "react-toastify";
 
 //components
 import Button from "../Button";

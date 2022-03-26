@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { useState } from "react";
-import { toast } from "react-toastify";
+
 import {
   SquarePaymentsForm,
   CreditCardInput,
 } from "react-square-web-payments-sdk";
 import { NEXT_URL } from "../../config/index";
-import { TokenResult } from "@square/web-sdk";
+import { TokenResult, payments } from "@square/web-sdk";
 
 function Square({ paymentAmount, onSquarePayment }) {
   const [isSubmitting, setSubmitting] = useState(false);
@@ -34,9 +34,7 @@ function Square({ paymentAmount, onSquarePayment }) {
           const data = await paymentResponse.json();
           if (paymentResponse.ok) {
             setSubmitting(false);
-            console.log(data);
             onSquarePayment(data);
-            toast("Payment Successful");
           }
         }}
       >

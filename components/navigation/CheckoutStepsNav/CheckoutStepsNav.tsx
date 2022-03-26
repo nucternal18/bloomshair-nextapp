@@ -61,6 +61,7 @@ const CheckoutSteps: FC<ICheckout> = ({ steps, currentStep }): JSX.Element => {
     return (
       <div
         key={index}
+        aria-label="checkout-steps"
         className={`${
           index !== newStep.length - 1
             ? " w-full flex items-center"
@@ -101,7 +102,10 @@ const CheckoutSteps: FC<ICheckout> = ({ steps, currentStep }): JSX.Element => {
   });
 
   return (
-    <div className="mx-4 mb-8 p-4 flex justify-between items-center  max-w-screen-xl sm:mx-auto">
+    <div
+      aria-label="checkout-steps-nav"
+      className="mx-4 mb-8 p-4 flex justify-between items-center  max-w-screen-xl sm:mx-auto"
+    >
       {displaySteps}
     </div>
   );

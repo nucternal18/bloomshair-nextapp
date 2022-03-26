@@ -142,13 +142,19 @@ const Sidebar = () => {
             <li className="flex flex-row items-center">
               <ActiveLink href="/admin/users">
                 <FaUserCircle className="mr-2 text-sm" />
-                Manage Users
+                Manage Customers
               </ActiveLink>
             </li>
             <li className="items-center">
               <ActiveLink href="/admin/products">
                 <FaShoppingBasket className="mr-2 text-sm" />
                 Manage Products
+              </ActiveLink>
+            </li>
+            <li className="items-center">
+              <ActiveLink href="/admin/hair-services">
+                <FaShoppingBasket className="mr-2 text-sm" />
+                Manage Services
               </ActiveLink>
             </li>
             <li className="items-center">

@@ -4,7 +4,9 @@ import CheckoutStepsNav from "../CheckoutStepsNav";
 
 describe("CheckoutStepsNav", () => {
   it("Should render", () => {
-    render(<CheckoutStepsNav />);
+    const steps = ["Shipping", "Payment", "Review & Place Order"];
+    const currentStep = 1;
+    render(<CheckoutStepsNav steps={steps} currentStep={currentStep} />);
     const view = screen.getByLabelText("checkout-steps-nav");
     expect(view).toBeInTheDocument();
   });

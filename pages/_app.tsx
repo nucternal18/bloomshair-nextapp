@@ -18,11 +18,11 @@ import { OrderContextProvider } from "../context/order/OrderContext";
 import { ProductContextProvider } from "../context/product/productContext";
 import { CartProvider } from "../context/cart/cartContext";
 
-declare global {
-  interface Window {
-    Square?: Square;
-  }
-}
+// declare global {
+//   interface Window {
+//     Square?: Square;
+//   }
+// }
 
 function MyApp({ Component, pageProps }) {
   const queryClient = new QueryClient();
@@ -58,7 +58,6 @@ function MyApp({ Component, pageProps }) {
         draggable
         pauseOnHover
       />
-      <Script src="https://www.paypal.com/sdk/js?client-id=AVWa8N4iHxN5XSlZoJerbtPPdJbVkCHLaJgmmYfqKdY6ncElIYgSz-0GUwc0SRiIlIyDzSIM6mcEWcyv" />
     </>
   );
 }
