@@ -1,29 +1,62 @@
-import { Button, Group, TextInput } from "@mantine/core";
+import {
+  FieldError,
+  UseFormHandleSubmit,
+  UseFormRegister,
+} from "react-hook-form";
+import { IFormData } from "../../lib/types";
+import Button from "../Button";
 
-const ServiceForm = ({ handleSubmit, submitHandler, register, errors }) => {
+import FormRowInput from "./FormComponents/FormRowInput";
+import FormRowSelect from "./FormComponents/FormRowSelect";
+
+interface IServiceForm {
+  handleSubmit: UseFormHandleSubmit<Partial<IFormData>>;
+  submitHandler: (data: Partial<IFormData>) => void;
+  list: string[];
+  register: UseFormRegister<Partial<IFormData>>;
+  errors: {
+    serviceName?: FieldError;
+    price?: FieldError;
+    category?: FieldError;
+  };
+}
+
+const ServiceForm = ({
+  handleSubmit,
+  submitHandler,
+  register,
+  errors,
+  list,
+}: IServiceForm) => {
+  console.log(errors);
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
-      <Group direction="column" spacing="xl" grow>
-        <TextInput
-          aria-label="service-name"
-          placeholder="add service name"
-          label="Service name"
-          error={errors && errors.message.serviceName}
-          {...register("serviceName", { required: true })}
+      <div className="flex flex-col gap-4">
+        <FormRowInput
+          title="Service Name"
+          type="serviceName"
+          inputType="text"
+          errors={errors && errors?.serviceName}
+          {...register("serviceName")}
         />
-        <TextInput
-          aria-label="service-price"
-          placeholder="add price"
-          label="Price"
-          error={errors && errors.message.price}
-          {...register("price", { required: true })}
+        <FormRowInput
+          title="Price"
+          type="price"
+          inputType="number"
+          errors={errors && errors?.price}
+          {...register(`price`)}
         />
-      </Group>
-      <Group direction="row" mt="md">
-        <Button type="submit" variant="filled">
+        <FormRowSelect
+          name="Category"
+          type="category"
+          errors={errors && errors?.category}
+          list={list}
+          {...register("category")}
+        />
+        <Button type="submit" color="primary">
           Add Service
         </Button>
-      </Group>
+      </div>
     </form>
   );
 };

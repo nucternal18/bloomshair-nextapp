@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { useState, createContext } from "react";
 
 import { NEXT_URL } from "../config";
