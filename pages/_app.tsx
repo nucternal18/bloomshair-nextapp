@@ -17,12 +17,13 @@ import { AuthProvider } from "../context/auth/AuthContext";
 import { OrderContextProvider } from "../context/order/OrderContext";
 import { ProductContextProvider } from "../context/product/productContext";
 import { CartProvider } from "../context/cart/cartContext";
+import { ServiceProvider } from "../context/serviceContext";
 
-// declare global {
-//   interface Window {
-//     Square?: Square;
-//   }
-// }
+declare global {
+  interface Window {
+    Square?: Square;
+  }
+}
 
 function MyApp({ Component, pageProps }) {
   const queryClient = new QueryClient();
@@ -33,15 +34,17 @@ function MyApp({ Component, pageProps }) {
         <Hydrate state={pageProps.dehydratedState}>
           <ThemeProvider attribute="class">
             <SessionProvider session={pageProps.session}>
-              <CartProvider>
-                <AuthProvider>
-                  <ProductContextProvider>
-                    <OrderContextProvider>
-                      <Component {...pageProps} />
-                    </OrderContextProvider>
-                  </ProductContextProvider>
-                </AuthProvider>
-              </CartProvider>
+              <ServiceProvider>
+                <CartProvider>
+                  <AuthProvider>
+                    <ProductContextProvider>
+                      <OrderContextProvider>
+                        <Component {...pageProps} />
+                      </OrderContextProvider>
+                    </ProductContextProvider>
+                  </AuthProvider>
+                </CartProvider>
+              </ServiceProvider>
             </SessionProvider>
           </ThemeProvider>
           <ReactQueryDevtools initialIsOpen={false} />

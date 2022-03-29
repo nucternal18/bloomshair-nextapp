@@ -19,6 +19,8 @@ interface IServiceForm {
     price?: FieldError;
     category?: FieldError;
   };
+  buttonName: string;
+  loading?: boolean;
 }
 
 const ServiceForm = ({
@@ -27,8 +29,9 @@ const ServiceForm = ({
   register,
   errors,
   list,
+  buttonName,
+  loading,
 }: IServiceForm) => {
-  console.log(errors);
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
       <div className="flex flex-col gap-4">
@@ -44,7 +47,7 @@ const ServiceForm = ({
           type="price"
           inputType="number"
           errors={errors && errors?.price}
-          {...register(`price`)}
+          {...register("price")}
         />
         <FormRowSelect
           name="Category"
@@ -53,8 +56,8 @@ const ServiceForm = ({
           list={list}
           {...register("category")}
         />
-        <Button type="submit" color="primary">
-          Add Service
+        <Button type="submit" color="primary" disabled={loading}>
+          {buttonName}
         </Button>
       </div>
     </form>

@@ -21,10 +21,7 @@ const FormRowInput: React.FunctionComponent<
 > = React.forwardRef<Ref, InputProps>(
   ({ title, errors, type, inputType, ...props }: InputProps, ref) => (
     <div className="mb-4 w-full">
-      <label
-        htmlFor="position"
-        className="block mb-2 text-base font-bold text-gray-900 dark:text-gray-200"
-      >
+      <label htmlFor="position" className="block mb-2 text-base font-bold ">
         {title}
       </label>
       <input

@@ -4,6 +4,7 @@ import RegisterForm from "./RegisterForm";
 import RequestPasswordResetForm from "./RequestPasswordResetForm";
 import ShippingAddressForm from "./ShippingAddressForm";
 import UpdateProfileForm from "./UpdateProfileForm";
+import SearchForm from "./SearchForm";
 
 export {
   ChangePasswordForm,
@@ -12,4 +13,5 @@ export {
   RequestPasswordResetForm,
   ShippingAddressForm,
   UpdateProfileForm,
+  SearchForm,
 };

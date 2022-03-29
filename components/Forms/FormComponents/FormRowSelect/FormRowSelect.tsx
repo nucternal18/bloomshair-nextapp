@@ -20,10 +20,7 @@ const FormRowSelect: React.FunctionComponent<
 > = React.forwardRef<Ref, SelectProps>(
   ({ list, errors, name, type, ...props }: SelectProps, ref) => (
     <div className="flex flex-col ">
-      <label
-        htmlFor="jobType"
-        className="block mb-2 text-base font-bold text-gray-900 dark:text-gray-200"
-      >
+      <label htmlFor="jobType" className="block mb-2 text-base font-bold ">
         {name}
       </label>
       <select

@@ -2,11 +2,13 @@ import Image from "next/image";
 import Layout from "../components/Layout/Layout/Layout";
 import { motion } from "framer-motion";
 import BottomPageContainer from "../components/BottomPageContainer";
+import { GetServerSidePropsContext } from "next";
+import { NEXT_URL } from "../config";
 
 const url =
   "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1621805398/blooms_hair_products/AdobeStock_290145313_mbpudc.webp";
 
-function ServiceMenu(): JSX.Element {
+function ServiceMenu({ services }): JSX.Element {
   return (
     <Layout
       title="Service Menu"
@@ -76,93 +78,75 @@ function ServiceMenu(): JSX.Element {
               </p>
             </div>
             <div className="flex justify-center w-full my-4">
-              <div className="grid w-full grid-cols-3 text-center border border-gray-300 dark:border-gray-700">
-                <div className="col-span-3 px-4 py-2 font-bold text-center bg-gray-300 dark:bg-gray-700">
+              <div className="flex flex-col w-full  text-center border border-gray-300 dark:border-gray-700">
+                <div className="px-4 py-2 font-bold text-center bg-gray-300 dark:bg-gray-700">
                   Gents Hair
                 </div>
-                <div className="col-span-2 px-4 py-2">
-                  Gents Restyle & Finish
-                </div>
-                <div className="col-span-1 px-4 py-2">£35.00</div>
-                <div className="col-span-2 px-4 py-2 ">
-                  Gents Wash, Cut & Finish
-                </div>
-                <div className="col-span-1 px-4 py-2 ">£30.00</div>
+                {services
+                  .filter((service) => service.category === "Gents Hair")
+                  .map((service, index) => (
+                    <div
+                      key={`${service.name}` + `${index}`}
+                      className="grid grid-cols-2 text-sm sm:text-base pl-3 w-full"
+                    >
+                      <div className="sm:px-4 py-2">{service.name}</div>
+                      <div className=" sm:px-4 py-2">
+                        £{service.price.toFixed(2)}
+                      </div>
+                    </div>
+                  ))}
                 <div className="col-span-3 px-4 py-2 font-bold text-center bg-gray-300 dark:bg-gray-700">
                   Ladies Hair
                 </div>
-                <div className="col-span-2 px-4 py-2">Fringe Trim</div>
-                <div className="col-span-1 px-4 py-2">£6.00</div>
-                <div className="col-span-2 px-4 py-2 ">Hair Up</div>
-                <div className="col-span-1 px-4 py-2 ">P.O.T.</div>
-                <div className="col-span-2 px-4 py-2">
-                  Wash, Restyle & Finish
-                </div>
-                <div className="col-span-1 px-4 py-2">£65.00</div>
-                <div className="col-span-2 px-4 py-2 ">
-                  Wash & Blow-Dry from
-                </div>
-                <div className="col-span-1 px-4 py-2 ">£30.00</div>
-                <div className="col-span-2 px-4 py-2">Wash & Cut</div>
-                <div className="col-span-1 px-4 py-2">£49.00</div>
-                <div className="col-span-2 px-4 py-2 ">Wash, Cut & Finish</div>
-                <div className="col-span-1 px-4 py-2 ">£55.00</div>
-                <div className="col-span-2 px-4 py-2">
-                  Wedding Hair + Trial run (Bride)
-                </div>
-                <div className="col-span-1 px-4 py-2">£195.00</div>
+                {services
+                  .filter((service) => service.category === "Ladies Hair")
+                  .map((service, index) => (
+                    <div
+                      key={`${service.name}` + `${index}`}
+                      className="grid grid-cols-2 text-sm sm:text-base pl-3 w-full"
+                    >
+                      <div className=" sm:px-4 py-2">{service.name}</div>
+                      <div className=" sm:px-4 py-2">
+                        £{service.price.toFixed(2)}
+                      </div>
+                    </div>
+                  ))}
+
                 <div className="col-span-3 px-4 py-2 font-bold text-center bg-gray-300 dark:bg-gray-700">
                   Technical
                 </div>
-                <div className="col-span-2 px-4 py-2">Bleaching</div>
-                <div className="col-span-1 px-4 py-2">P.O.T.</div>
-                <div className="col-span-2 px-4 py-2 ">Bleaching + Toner</div>
-                <div className="col-span-1 px-4 py-2 ">£79.00</div>
-                <div className="col-span-2 px-4 py-2">Colour Correction</div>
-                <div className="col-span-1 px-4 py-2">£110.00</div>
-                <div className="col-span-2 px-4 py-2 ">
-                  Dip-Dye/Ombre/Bayalage
-                </div>
-                <div className="col-span-1 px-4 py-2 ">£110.00</div>
-                <div className="col-span-2 px-4 py-2">Full Head HiLites</div>
-                <div className="col-span-1 px-4 py-2">£110.00</div>
-                <div className="col-span-2 px-4 py-2 ">Full Head Tint</div>
-                <div className="col-span-1 px-4 py-2 ">£80.00</div>
-                <div className="col-span-2 px-4 py-2">Hair Mask Treatment</div>
-                <div className="col-span-1 px-4 py-2">£25.00</div>
-                <div className="col-span-2 px-4 py-2 ">Half Head HiLites</div>
-                <div className="col-span-1 px-4 py-2 ">£75.00</div>
-                <div className="col-span-2 px-4 py-2">
-                  Semi Permanent Colours
-                </div>
-                <div className="col-span-1 px-4 py-2">£80.00</div>
-                <div className="col-span-2 px-4 py-2 ">
-                  Tint Regrowth (roots)
-                </div>
-                <div className="col-span-1 px-4 py-2 ">£45.00</div>
-                <div className="col-span-2 px-4 py-2">Toner</div>
-                <div className="col-span-1 px-4 py-2">£15.00</div>
-                <div className="col-span-2 px-4 py-2 ">Toner (Half Head)</div>
-                <div className="col-span-1 px-4 py-2 ">£20.00</div>
-                <div className="col-span-2 px-4 py-2">Toner (Full Head)</div>
-                <div className="col-span-1 px-4 py-2">£25.00</div>
-                <div className="col-span-2 px-4 py-2 ">
-                  T-Section Highlights
-                </div>
-                <div className="col-span-1 px-4 py-2 ">£55.00</div>
+                {services
+                  .filter((service) => service.category === "Technical")
+                  .map((service, index) => (
+                    <div
+                      key={`${service.name}` + `${index}`}
+                      className="grid grid-cols-2 text-sm sm:text-base pl-3 w-full"
+                    >
+                      <div className="sm:px-4 py-2">{service.name}</div>
+                      <div className=" sm:px-4 py-2">
+                        £
+                        {service.name === "Bleaching"
+                          ? "P.O.T"
+                          : service.price.toFixed(2)}
+                      </div>
+                    </div>
+                  ))}
                 <div className="col-span-3 px-4 py-2 font-bold text-center bg-gray-300 dark:bg-gray-700">
                   Hair Treatments
                 </div>
-                <div className="col-span-2 px-4 py-2">
-                  Brazilian Blow-Dry Long/Medium/Short
-                </div>
-                <div className="col-span-1 py-2 break-words sm:px-4">
-                  £200.00/£150.00/£120.00
-                </div>
-                <div className="col-span-2 px-4 py-2 ">Olaplex™</div>
-                <div className="col-span-1 px-4 py-2 ">£30.00</div>
-                <div className="col-span-2 px-4 py-2">Perms and Waves</div>
-                <div className="col-span-1 px-4 py-2">P.O.T.</div>
+                {services
+                  .filter((service) => service.category === "Hair Treatments")
+                  .map((service, index) => (
+                    <div
+                      key={`${service.name}` + `${index}`}
+                      className="grid grid-cols-2 text-sm sm:text-base pl-3 w-full"
+                    >
+                      <div className="sm:px-4 py-2">{service.name}</div>
+                      <div className=" sm:px-4 py-2">
+                        £{service.price.toFixed(2)}
+                      </div>
+                    </div>
+                  ))}
               </div>
             </div>
             <h3 className="my-4 text-xl text-center">Terms and Conditions</h3>
@@ -192,4 +176,19 @@ function ServiceMenu(): JSX.Element {
   );
 }
 
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const url = `hair-services?sortBy=${"all"}&category=${""}`;
+
+  const response = await fetch(`${NEXT_URL}/api/${url}`, {
+    method: "GET",
+  });
+  const data = await response.json();
+  return {
+    props: {
+      services: data,
+    }, // will be passed to the page component as props
+  };
+};
 export default ServiceMenu;

@@ -1,15 +1,7 @@
 import { useState, createContext, useReducer, useContext } from "react";
 
 import { NEXT_URL } from "../config";
-
-type ServiceProps = {
-  _id?: string;
-  name?: string;
-  price?: number;
-  category?: string;
-  categoryOptions?: string[];
-  createdAt?: string;
-};
+import { ServiceProps } from "../lib/types";
 
 export interface IServiceState {
   service: ServiceProps;
@@ -20,7 +12,7 @@ export interface IServiceState {
   isError: boolean;
 }
 
-export const initialState: IServiceState = {
+export const initialServiceState: IServiceState = {
   service: {
     _id: "",
     name: "",
@@ -32,8 +24,10 @@ export const initialState: IServiceState = {
       "Technical",
       "Hair Treatments",
     ],
+    sortBy: "latest",
+    sortByOptions: ["latest", "oldest"],
   },
-  isLoading: false,
+  isLoading: true,
   error: "",
   success: false,
   message: "",
@@ -46,14 +40,27 @@ export enum ServiceActionTypes {
   ADD_SERVICE = "ADD_SERVICE",
   UPDATE_SERVICE = "UPDATE_SERVICE",
   DELETE_SERVICE = "DELETE_SERVICE",
+  FETCH_SERVICE_ITEM = "FETCH_SERVICE_ITEM",
 }
 
+// ***** Create Context *****
 const ServiceContext = createContext<{
   state: IServiceState;
   dispatch: React.Dispatch<any>;
   createService: (service: ServiceProps, cookie: string) => void;
-}>({ state: initialState, dispatch: () => null, createService: () => null });
+  updateServiceItem: (service: ServiceProps, cookie: string) => void;
+  fetchServiceItem: (data: ServiceProps) => void;
+  deleteServiceItem: (id: string, cookie: string) => void;
+}>({
+  state: initialServiceState,
+  dispatch: () => null,
+  createService: () => null,
+  updateServiceItem: () => null,
+  fetchServiceItem: () => null,
+  deleteServiceItem: () => null,
+});
 
+// ***** Reducer *****
 const serviceReducer = (state: IServiceState, action: any) => {
   switch (action.type) {
     case ServiceActionTypes.ACTION_REQUEST:
@@ -68,22 +75,70 @@ const serviceReducer = (state: IServiceState, action: any) => {
         error: action.payload,
         isError: true,
       };
+    case ServiceActionTypes.ADD_SERVICE:
+      return {
+        ...state,
+        isLoading: false,
+        success: true,
+        message: action.payload,
+      };
+    case ServiceActionTypes.UPDATE_SERVICE:
+      return {
+        ...state,
+        isLoading: false,
+        success: true,
+        message: action.payload,
+      };
+    case ServiceActionTypes.DELETE_SERVICE:
+      return {
+        ...state,
+        isLoading: false,
+        success: true,
+        message: action.payload,
+      };
+    case ServiceActionTypes.FETCH_SERVICE_ITEM:
+      return {
+        ...state,
+        isLoading: false,
+        service: {
+          categoryOptions: initialServiceState?.service?.categoryOptions,
+          ...action.payload,
+        },
+      };
     default:
       return state;
   }
 };
 
+// ***** Provider *****
 export const ServiceProvider: React.FC = ({ children }) => {
-  const [state, dispatch] = useReducer(serviceReducer, initialState);
+  const [state, dispatch] = useReducer(serviceReducer, initialServiceState);
 
+  // ***** Fetch Service Item *****
+  /**
+   *
+   * @param data
+   */
+  const fetchServiceItem = async (data: ServiceProps) => {
+    dispatch({ type: ServiceActionTypes.FETCH_SERVICE_ITEM, payload: data });
+  };
+
+  // ***** ADD SERVICE *****
+  /**
+   *
+   * @param service
+   * @param cookie
+   */
   const createService = async (service: ServiceProps, cookie: string) => {
     try {
+      dispatch({ type: ServiceActionTypes.ACTION_REQUEST });
       const response = await fetch(`${NEXT_URL}/api/hair-services`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          cookie: cookie,
         },
-        body: JSON.stringify(service),
+        body: JSON.stringify({ service }),
       });
       const data = await response.json();
       if (data.error) {
@@ -104,8 +159,85 @@ export const ServiceProvider: React.FC = ({ children }) => {
     }
   };
 
+  // ***** UPDATE SERVICE *****
+  /**
+   *
+   * @param service
+   * @param cookie
+   */
+  const updateServiceItem = async (service: ServiceProps, cookie: string) => {
+    try {
+      dispatch({ type: ServiceActionTypes.ACTION_REQUEST });
+      const response = await fetch(
+        `${NEXT_URL}/api/hair-services/${service._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            cookie: cookie,
+          },
+          body: JSON.stringify({ service }),
+        }
+      );
+      const data = await response.json();
+      if (data.error) {
+        dispatch({
+          type: ServiceActionTypes.ACTION_FAILURE,
+          payload: data.error,
+        });
+      }
+      dispatch({
+        type: ServiceActionTypes.UPDATE_SERVICE,
+        payload: data.message,
+      });
+    } catch (error) {
+      dispatch({
+        type: ServiceActionTypes.ACTION_FAILURE,
+        payload: error.message,
+      });
+    }
+  };
+
+  // ***** DELETE SERVICE ITEM *****
+  const deleteServiceItem = async (id: string, cookie: string) => {
+    try {
+      dispatch({ type: ServiceActionTypes.ACTION_REQUEST });
+      const response = await fetch(`${NEXT_URL}/api/hair-services/${id}`, {
+        method: "DELETE",
+        headers: {
+          cookie: cookie,
+        },
+      });
+      const data = await response.json();
+      if (data.error) {
+        dispatch({
+          type: ServiceActionTypes.ACTION_FAILURE,
+          payload: data.error,
+        });
+      }
+      dispatch({
+        type: ServiceActionTypes.DELETE_SERVICE,
+        payload: data.message,
+      });
+    } catch (error) {
+      dispatch({
+        type: ServiceActionTypes.ACTION_FAILURE,
+        payload: error.message,
+      });
+    }
+  };
+
   return (
-    <ServiceContext.Provider value={{ state, dispatch, createService }}>
+    <ServiceContext.Provider
+      value={{
+        state,
+        dispatch,
+        createService,
+        updateServiceItem,
+        fetchServiceItem,
+        deleteServiceItem,
+      }}
+    >
       {children}
     </ServiceContext.Provider>
   );

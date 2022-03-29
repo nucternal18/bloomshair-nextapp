@@ -5,11 +5,18 @@ import { IFormData } from "../../lib/types";
 import ServiceForm from "../Forms/ServiceForm";
 
 interface ICreateHairService {
-  opened: boolean;
-  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  isOpenCreateDrawer: boolean;
+  setTsOpenCreateDrawer: React.Dispatch<React.SetStateAction<boolean>>;
+  token: string;
+  refreshData: () => void;
 }
 
-const CreateService = ({ opened, setOpened }: ICreateHairService) => {
+const CreateService = ({
+  isOpenCreateDrawer,
+  setTsOpenCreateDrawer,
+  token,
+  refreshData,
+}: ICreateHairService) => {
   const { state, createService } = useService();
   const {
     register,
@@ -25,16 +32,17 @@ const CreateService = ({ opened, setOpened }: ICreateHairService) => {
   });
 
   const submitHandler: SubmitHandler<Partial<IFormData>> = (data): void => {
-    console.log(data);
+    createService(data, token);
     reset();
-    setOpened(false);
+    setTsOpenCreateDrawer(false);
+    refreshData();
   };
 
   return (
     <div>
       <Drawer
-        opened={opened}
-        onClose={() => setOpened(false)}
+        opened={isOpenCreateDrawer}
+        onClose={() => setTsOpenCreateDrawer(false)}
         title="Create Hair Service"
         position="right"
         padding="xl"
@@ -46,6 +54,7 @@ const CreateService = ({ opened, setOpened }: ICreateHairService) => {
           errors={errors}
           submitHandler={submitHandler}
           list={state?.service?.categoryOptions}
+          buttonName="Add Service"
         />
       </Drawer>
     </div>

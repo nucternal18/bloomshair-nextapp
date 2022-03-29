@@ -1,18 +1,20 @@
 import Link from "next/link";
-import { FaTimes } from "react-icons/fa";
-
-import { OrderProps } from "../../context/order/OrderContext";
+import { FaEdit, FaTimes, FaTrash } from "react-icons/fa";
+import { ServiceProps } from "../../../lib/types";
 
 // component
-import Button from "../Button";
+import Button from "../../Button";
+import { UpdateService } from "../../ServiceContainer";
 
 interface ITable {
-  tableData: Partial<OrderProps>[];
+  tableData: Partial<ServiceProps>[];
+  handleDelete: (id: string) => void;
+  handleUpdateDrawerOpen: (id: string) => void;
 }
 
-const Table = ({ tableData }: ITable) => {
+const Table = ({ tableData, handleDelete, handleUpdateDrawerOpen }: ITable) => {
   return (
-    <table className="w-full sm:rounded-2xl  md:table">
+    <table className="w-full sm:rounded-2xl md:table">
       <thead className="bg-gray-50 dark:bg-teal-500  hidden md:table-header-group">
         <tr className="md:table-row absolute  -top-full font-mono md:top-auto gap-2 -left-full md:left-auto  md:relative">
           <th
@@ -29,13 +31,13 @@ const Table = ({ tableData }: ITable) => {
                   md:table-cell
                 "
           >
-            ID
+            Name
           </th>
 
           <th
             scope="col"
             className="
-                  px-3
+                  px-2
                   py-3
                   text-left 
                   font-medium
@@ -46,12 +48,12 @@ const Table = ({ tableData }: ITable) => {
                   md:table-cell
                 "
           >
-            DATE
+            Price
           </th>
           <th
             scope="col"
             className="
-                  px-3
+                  px-2
                   py-3
                   text-left 
                   font-medium
@@ -62,12 +64,12 @@ const Table = ({ tableData }: ITable) => {
                   md:table-cell
                 "
           >
-            TOTAL
+            Category
           </th>
           <th
             scope="col"
             className="
-                  px-3
+                  px-2
                   py-3
                   text-left 
                   font-medium
@@ -78,12 +80,12 @@ const Table = ({ tableData }: ITable) => {
                   md:table-cell
                 "
           >
-            PAID
+            Created At
           </th>
           <th
             scope="col"
             className="
-                  px-3
+                  px-2
                   py-3
                   text-left 
                   font-medium
@@ -94,27 +96,11 @@ const Table = ({ tableData }: ITable) => {
                   md:table-cell
                 "
           >
-            DELIVERED
-          </th>
-          <th
-            scope="col"
-            className="
-                  px-3
-                  py-3
-                  text-left 
-                  font-medium
-                  text-gray-800
-                  dark:text-gray-100
-                  uppercase
-                  tracking-wider
-                  md:table-cell
-                "
-          >
-            DETAILS
+            Actions
           </th>
         </tr>
       </thead>
-      <tbody className=" block px-1 md:px-0  md:table-row-group">
+      <tbody className=" block px-1 md:px-0 pb-4  md:table-row-group">
         {tableData?.map((item) => (
           <tr
             key={item._id}
@@ -122,66 +108,47 @@ const Table = ({ tableData }: ITable) => {
           >
             <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
               <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
-                ID
+                Name
               </span>
               <div className="flex items-center">
                 <div className="text-sm font-medium text-ellipsis overflow-hidden">
-                  {item._id}
+                  {item.name}
                 </div>
               </div>
             </td>
-            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
+            <td className="p-2 flex items-center sm:text-center whitespace-nowrap md:table-cell gap-2">
               <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
-                DATE
+                Price
               </span>
               <div className="flex items-center">
                 <div className="text-sm font-medium text-ellipsis overflow-hidden">
+                  {item.price.toFixed(2)}
+                </div>
+              </div>
+            </td>
+            <td className="p-2 flex items-center sm:text-center whitespace-nowrap md:table-cell gap-2">
+              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
+                Category
+              </span>
+              <div className="flex items-center">
+                <div className="text-sm font-medium text-ellipsis overflow-hidden">
+                  {item.category}
+                </div>
+              </div>
+            </td>
+            <td className="p-2 flex items-center sm:text-center whitespace-nowrap md:table-cell gap-2">
+              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
+                Created At
+              </span>
+              <div className="flex items-center">
+                <div className="text-sm font-medium text-ellipsis overflow-hidden border px-2 drop-shadow-lg rounded-xl text-gray-200 bg-teal-500 border-teal-500">
                   {new Date(item.createdAt).toLocaleDateString()}
                 </div>
               </div>
             </td>
             <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
-              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
-                TOTAL PRICE
-              </span>
-              <div className="flex items-center">
-                <div className="text-sm font-medium text-ellipsis overflow-hidden">
-                  £{item.totalPrice}
-                </div>
-              </div>
-            </td>
-            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
-              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
-                PAID
-              </span>
-              <div className="flex items-center">
-                <div className="text-sm font-medium text-ellipsis overflow-hidden">
-                  {item.isPaid ? (
-                    new Date(item.paidAt).toLocaleDateString()
-                  ) : (
-                    <FaTimes className="text-red-500" />
-                  )}
-                </div>
-              </div>
-            </td>
-            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
-              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
-                DELIVERED
-              </span>
-              <div className="flex items-center">
-                <div className="text-sm font-medium text-ellipsis overflow-hidden">
-                  {item.isDelivered ? (
-                    new Date(item.deliveredAt).toLocaleDateString()
-                  ) : (
-                    <FaTimes className="text-red-500 " />
-                  )}
-                </div>
-              </div>
-            </td>
-
-            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
               <span className="inline-block w-1/3 md:hidden uppercase font-bold text-teal-500 font-mono">
-                DETAILS
+                Actions
               </span>
               <span
                 className="
@@ -191,11 +158,36 @@ const Table = ({ tableData }: ITable) => {
                     leading-5
                   "
               >
-                <Button type="button" color="dark">
-                  <Link href={`/orders/${item._id}`}>
-                    <a>Details</a>
-                  </Link>
-                </Button>
+                <button
+                  type="button"
+                  className="text-blue-600 text-md"
+                  onClick={() => handleUpdateDrawerOpen(item._id)}
+                >
+                  <FaEdit
+                    fontSize={18}
+                    className="drop-shadow-md transition ease-in-out delay-150 hover:text-indigo-500 hover:-translate-y-1 hover:scale-110  duration-300"
+                  />
+                </button>
+              </span>
+
+              <span
+                className="
+                    px-2
+                    inline-flex
+                    text-xs
+                    leading-5
+                  "
+              >
+                <button
+                  type="button"
+                  className="text-red-600 text-md"
+                  onClick={() => handleDelete(item._id)}
+                >
+                  <FaTrash
+                    fontSize={18}
+                    className="drop-shadow-md transition ease-in-out delay-150 hover:text-rose-500 hover:-translate-y-1 hover:scale-110  duration-300"
+                  />
+                </button>
               </span>
             </td>
           </tr>
