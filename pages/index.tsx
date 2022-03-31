@@ -95,12 +95,13 @@ export default function Home({ products }): JSX.Element {
             </div>
           </div>
         </section>
-        <section className="bg-white dark:bg-gray-900">
-          <div className="container mx-auto text-center py-4 border-b-2 border-yellow-400 max-w-screen-sm">
-            <h1 className="text-4xl font-thin font-serif uppercase">
+        <section className="bg-white dark:bg-gray-900 ">
+          <div className="container md:mx-auto text-center py-4 border-b-2 border-yellow-400  sm:max-w-screen-sm">
+            <h1 className="text-2xl sm:text-4xl font-thin font-serif uppercase">
               Our Best Sellers
             </h1>
           </div>
+
           <ProductCarousel products={products} />
         </section>
 

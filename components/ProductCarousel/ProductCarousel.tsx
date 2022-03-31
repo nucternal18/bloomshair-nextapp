@@ -21,7 +21,7 @@ const ProductCarousel = ({ products }: Products) => {
         <motion.div
           drag="x"
           dragConstraints={{ right: 0, left: -width }}
-          className="flex gap-2 py-2 cursor-grab focus:cursor-grabbing"
+          className="flex gap-2 py-2 cursor-grab lg:justify-center focus:cursor-grabbing"
         >
           {products.map((product) => (
             <motion.div
