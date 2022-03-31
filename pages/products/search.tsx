@@ -4,7 +4,7 @@ import { GetServerSideProps } from "next";
 // Components
 import Paginate from "../../components/Paginate";
 import Layout from "../../components/Layout/Layout/Layout";
-import Product from "../../components/ProductCard/ProductCard";
+import ProductCard from "../../components/ProductCard";
 import Button from "../../components/Button";
 
 import { NEXT_URL } from "../../config";
@@ -42,7 +42,10 @@ function Products(props): JSX.Element {
               {products.map((product) => {
                 return (
                   <div key={product._id}>
-                    <Product product={product} />
+                    <ProductCard
+                      product={product}
+                      isAvailable={product.countInStock > 0}
+                    />
                   </div>
                 );
               })}

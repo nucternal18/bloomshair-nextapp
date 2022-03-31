@@ -4,7 +4,7 @@ import { GetServerSideProps } from "next";
 // Components
 import Paginate from "../../components/Paginate";
 import Layout from "../../components/Layout/Layout/Layout";
-import Product from "../../components/ProductCard/ProductCard";
+import ProductCard from "../../components/ProductCard";
 import Button from "../../components/Button";
 import SearchBox from "../../components/SearchBox";
 
@@ -45,7 +45,7 @@ function Products({ products, keyword, pages, page }): JSX.Element {
               {products.map((product) => {
                 return (
                   <div key={product._id}>
-                    <Product
+                    <ProductCard
                       product={product}
                       isAvailable={product.countInStock > 0}
                     />
