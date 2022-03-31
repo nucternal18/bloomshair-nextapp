@@ -4,7 +4,7 @@ import { GetServerSideProps } from "next";
 // Components
 import Paginate from "../../components/Paginate";
 import Layout from "../../components/Layout/Layout/Layout";
-import Product from "../../components/Product";
+import Product from "../../components/ProductCard/ProductCard";
 import Button from "../../components/Button";
 
 import { NEXT_URL } from "../../config";

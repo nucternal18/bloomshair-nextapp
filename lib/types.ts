@@ -17,3 +17,21 @@ export type ServiceProps = {
   sortBy?: string;
   sortByOptions?: string[];
 };
+
+export type ReviewProps = {
+  rating: number;
+  comment: string;
+};
+
+export type ProductProps = {
+  _id: string;
+  name: string;
+  price: number;
+  image: string;
+  brand: string;
+  category: string;
+  countInStock: number;
+  description: string;
+  rating?: number;
+  numReviews?: number;
+};

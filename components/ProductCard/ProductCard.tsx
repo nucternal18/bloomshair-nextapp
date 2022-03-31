@@ -1,16 +1,20 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import Rating from "./Rating";
-import { Card, CardBody, CardTitle, CardText } from "./Card";
-import Button from "./Button";
-import { NEXT_URL } from "../config";
-import { CartItemsProps } from "../context/cart/cartState";
-import { useCart } from "../context/cart/cartContext";
-import { addToCart } from "../context/cart/cartActions";
-import { toast } from "react-toastify";
+import Rating from "../Rating";
+import { Card, CardBody, CardTitle, CardText } from "../Card";
+import Button from "../Button";
+import { CartItemsProps } from "../../context/cart/cartState";
+import { useCart } from "../../context/cart/cartContext";
+import { addToCart } from "../../context/cart/cartActions";
+import { ProductProps } from "../../lib/types";
 
-const Product = ({ product }) => {
+interface IProductCard {
+  product: ProductProps;
+  isAvailable?: boolean;
+}
+
+const ProductCard = ({ product, isAvailable }: IProductCard) => {
   const router = useRouter();
   const { state, dispatch } = useCart();
   const addToCartHandler = () => {
@@ -64,19 +68,21 @@ const Product = ({ product }) => {
           >
             details
           </Button>
-          <Button
-            type="button"
-            color="dark"
-            className="rounded-lg"
-            disabled={product.countInStock === 0}
-            onClick={addToCartHandler}
-          >
-            Add to Cart
-          </Button>
+          {isAvailable && product.countInStock > 0 && (
+            <Button
+              type="button"
+              color="dark"
+              className="rounded-lg"
+              disabled={product.countInStock === 0}
+              onClick={addToCartHandler}
+            >
+              Add to Cart
+            </Button>
+          )}
         </div>
       </CardBody>
     </Card>
   );
 };
 
-export default Product;
+export default ProductCard;

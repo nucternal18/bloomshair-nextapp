@@ -96,54 +96,14 @@ export default function Home({ products }): JSX.Element {
           </div>
         </section>
         <section className="bg-white dark:bg-gray-900">
+          <div className="container mx-auto text-center py-4 border-b-2 border-yellow-400 max-w-screen-sm">
+            <h1 className="text-4xl font-thin font-serif uppercase">
+              Our Best Sellers
+            </h1>
+          </div>
           <ProductCarousel products={products} />
         </section>
-        <section className="">
-          <div className="grid grid-cols-1 sm:grid-cols-2 ">
-            <div className="flex flex-col items-center justify-center px-8 py-4 h-64 md:h-auto bg-black">
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                className="flex flex-col items-center justify-center w-full"
-                variants={variants}
-                transition={{ duration: 2.0 }}
-              >
-                {/* <p className="mb-4 text-3xl font-thin text-center text-yellow-500">
-                  We will be closed from 24th December until 3rd January 2022
-                </p> */}
-                <p className="mb-4 text-3xl font-thin text-center text-white">
-                  KEEPING YOU & OUR TEAM SAFE
-                </p>
-                <Button type="button" color="yellow">
-                  <Link href="/book-online">
-                    <a>Book Now!</a>
-                  </Link>
-                </Button>
-              </motion.div>
-            </div>
-            <div
-              className="flex flex-col items-center justify-center w-full "
-              style={{
-                backgroundImage: `url('https://res.cloudinary.com/dtkjg8f0n/image/upload/v1626471844/blooms_hair_products/george-bohunicky-qJKT2rMU0VU-unsplash_shgcmp.webp')`,
-                backgroundPosition: "center",
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                height: "450px",
-              }}
-            >
-              <p className="mb-2 text-4xl font-thin text-center text-white">
-                About Blooms
-              </p>
-              <div>
-                <Button type="button" color="yellow">
-                  <Link href="/about">
-                    <a>See More</a>
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
+
         <BottomPageContainer />
       </main>
     </Layout>

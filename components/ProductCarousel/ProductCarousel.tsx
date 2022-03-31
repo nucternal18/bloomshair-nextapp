@@ -1,7 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ProductProps } from "../../context/product/productContext";
+
+import ProductCard from "../../components/ProductCard";
+import { ProductProps } from "../../lib/types";
 
 interface Products {
   products?: ProductProps[];
@@ -26,10 +28,14 @@ const ProductCarousel = ({ products }: Products) => {
               key={product._id}
               className="min-h-[30rem] min-w-[20rem] sm:min-h-[35rem] sm:min-w-[25rem] p-5"
             >
-              <img
+              {/* <img
                 src={product.image}
                 alt={product.name}
                 className="w-full h-full rounded-2xl bg-cover bg-no-repeat shadow-xl bg-center"
+              /> */}
+              <ProductCard
+                product={product}
+                isAvailable={product.countInStock > 0}
               />
             </motion.div>
           ))}

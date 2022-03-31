@@ -4,22 +4,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { NEXT_URL } from "../../config";
 import { uploadImage } from "../../lib/upload";
-
-export type ReviewProps = {
-  rating: number;
-  comment: string;
-};
-
-export type ProductProps = {
-  _id: string;
-  name: string;
-  price: number;
-  image: string;
-  brand: string;
-  category: string;
-  countInStock: number;
-  description: string;
-};
+import { ProductProps, ReviewProps } from "../../lib/types";
 
 interface IProduct {
   requestStatus?: string;

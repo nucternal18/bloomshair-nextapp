@@ -50,12 +50,12 @@ function BottomPageContainer() {
             />
             <div className="absolute">
               <div className="flex flex-col items-center justify-center">
-                <p className="mb-2 text-4xl font-thin text-center text-gray-400">
-                  Book Online
+                <p className="mb-2 text-4xl font-thin text-center text-white">
+                  About Blooms
                 </p>
                 <div>
                   <Button type="button" color="yellow">
-                    <Link href="/book-online">
+                    <Link href="/about">
                       <a>See More</a>
                     </Link>
                   </Button>
@@ -85,7 +85,7 @@ function BottomPageContainer() {
             />
             <div className="absolute ">
               <div className="flex flex-col items-center justify-center">
-                <p className="mb-2 text-4xl font-thin text-center text-gray-400">
+                <p className="mb-2 text-4xl font-thin text-center text-white">
                   Service Menu
                 </p>
                 <div>
@@ -121,7 +121,7 @@ function BottomPageContainer() {
             <div className="absolute ">
               <div className="flex flex-wrap items-center justify-center ">
                 <div className="flex flex-col items-center justify-center">
-                  <p className="mb-2 text-4xl font-thin text-center text-gray-400">
+                  <p className="mb-2 text-4xl font-thin text-center text-white">
                     Contact Blooms
                   </p>
                   <div>
@@ -177,17 +177,17 @@ function BottomPageContainer() {
               <ul className="flex justify-center ">
                 <li className="px-1 py-2 m-1 text-gray-300 hover:text-blue-500">
                   <a href="https://www.facebook.com/bloomshair">
-                    <FaFacebook className="text-4xl " />
+                    <FaFacebook fontSize={28} />
                   </a>
                 </li>
-                <li className="px-1 py-2 m-1 text-gray-300 hover:text-blue-500">
+                <li className="px-1 py-2 m-1 text-gray-300 hover:text-rose-600">
                   <a href="https://www.instagram.com/blooms_hair/">
-                    <FaInstagram className="text-4xl " />
+                    <FaInstagram fontSize={28} />
                   </a>
                 </li>
-                <li className="px-1 py-2 m-1 text-gray-300 hover:text-blue-500">
+                <li className="px-1 py-2 m-1 text-gray-300 hover:text-green-500">
                   <a href="https://www.google.com/maps/place/Blooms+Hair/@51.526503,-0.0994912,15z/data=!4m5!3m4!1s0x0:0x7abe1309f8f21d14!8m2!3d51.526503!4d-0.0994912">
-                    <FaGoogle className="text-4xl " />
+                    <FaGoogle fontSize={28} />
                   </a>
                 </li>
               </ul>
