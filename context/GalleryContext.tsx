@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { useState, createContext } from "react";
+import { useState, createContext, useReducer, useContext } from "react";
 
 import { NEXT_URL } from "../config";
 
@@ -7,22 +7,16 @@ import { NEXT_URL } from "../config";
 import { uploadImage } from "../lib/upload";
 
 interface GalleryInterface {
-  createPicture: (imgUrl) => void;
-  deletePicture: (id: string) => void;
-  uploadGalleryImage: (base64EncodedImage: string | ArrayBuffer) => void;
   requestStatus: string;
   success: boolean;
   loading: boolean;
   error: null;
   uploading: boolean;
-  image: { url: string } | null;
+  image: string | null;
   message: null;
 }
 
-export const GalleryContext = createContext<GalleryInterface | null>({
-  createPicture: () => {},
-  deletePicture: () => {},
-  uploadGalleryImage: () => {},
+const initialGalleryState = {
   requestStatus: "",
   success: false,
   loading: false,
@@ -30,26 +24,110 @@ export const GalleryContext = createContext<GalleryInterface | null>({
   uploading: false,
   image: null,
   message: null,
+};
+
+export enum ActionType {
+  GALLERY_ACTION_REQUEST = "GALLERY_ACTION_REQUEST",
+  GALLERY_ACTION_FAIL = "GALLERY_ACTION_FAIL",
+  GALLERY_CREATE_SUCCESS = "GALLERY_CREATE_SUCCESS",
+  GALLERY_DELETE_SUCCESS = "GALLERY_DELETE_SUCCESS",
+  GALLERY_UPDATE_SUCCESS = "GALLERY_UPDATE_SUCCESS",
+  GALLERY_CREATE_REVIEW_SUCCESS = "GALLERY_CREATE_REVIEW_SUCCESS",
+  GALLERY_IMAGE_UPLOAD_REQUEST = "GALLERY_IMAGE_UPLOAD_REQUEST",
+  GALLERY_IMAGE_UPLOAD_SUCCESS = "GALLERY_IMAGE_UPLOAD_SUCCESS",
+}
+
+export const GalleryContext = createContext<{
+  state: GalleryInterface;
+  dispatch: React.Dispatch<any>;
+  createPicture: (imgUrl) => void;
+  deletePicture: (id: string) => void;
+  uploadGalleryImage: (base64EncodedImage: string | ArrayBuffer) => void;
+}>({
+  state: initialGalleryState,
+  dispatch: () => null,
+  createPicture: () => {},
+  deletePicture: () => {},
+  uploadGalleryImage: () => {},
 });
 
+const galleryReducer = (state, action) => {
+  switch (action.type) {
+    case ActionType.GALLERY_ACTION_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: null,
+        message: null,
+      };
+    case ActionType.GALLERY_ACTION_FAIL:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        uploading: false,
+        error: action.payload,
+        message: null,
+      };
+    case ActionType.GALLERY_CREATE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: null,
+        message: action.payload,
+        image: null,
+      };
+    case ActionType.GALLERY_DELETE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: null,
+        message: action.payload,
+      };
+    case ActionType.GALLERY_UPDATE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: null,
+        message: action.payload,
+        image: null,
+      };
+    case ActionType.GALLERY_IMAGE_UPLOAD_REQUEST:
+      return {
+        ...state,
+        uploading: true,
+        success: false,
+        error: null,
+      };
+    case ActionType.GALLERY_IMAGE_UPLOAD_SUCCESS:
+      return {
+        ...state,
+        uploading: false,
+        success: true,
+        error: null,
+        image: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
 const GalleryContextProvider = ({ children }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
-  const [image, setImage] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [message, setMessage] = useState(null);
-  const [requestStatus, setRequestStatus] = useState("");
+  const [state, dispatch] = useReducer(galleryReducer, initialGalleryState);
 
   /**
-   *
+   *@description - upload a new picture
    * @param imageUrl
    */
-  const createPicture = async (imageUrl) => {
+  const createPicture = async (imageUrl: string) => {
     try {
-      setLoading(true);
+      dispatch({ type: ActionType.GALLERY_ACTION_REQUEST });
 
-      await fetch(`${NEXT_URL}/api/gallery`, {
+      const res = await fetch(`${NEXT_URL}/api/gallery`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,18 +135,18 @@ const GalleryContextProvider = ({ children }) => {
         body: JSON.stringify({ imageUrl }),
       });
 
-      setLoading(false);
-      setSuccess(true);
-      setRequestStatus("success");
-      setMessage("Picture created successfully");
+      if (res.ok) {
+        dispatch({
+          type: ActionType.GALLERY_CREATE_SUCCESS,
+          payload: "Picture created",
+        });
+      }
     } catch (error) {
-      setLoading(false);
-      setRequestStatus("error");
       const err =
         error.response && error.response.data.message
           ? error.response.data.message
           : "Unable to create order";
-      setError(err);
+      dispatch({ type: ActionType.GALLERY_ACTION_FAIL, payload: err });
     }
   };
 
@@ -76,26 +154,25 @@ const GalleryContextProvider = ({ children }) => {
    *
    * @param id
    */
-  const deletePicture = async (id) => {
+  const deletePicture = async (id: string) => {
     try {
-      setLoading(true);
+      dispatch({ type: ActionType.GALLERY_ACTION_REQUEST });
 
-      await fetch(`${NEXT_URL}/api/gallery/${id}`, {
+      const res = await fetch(`${NEXT_URL}/api/gallery/${id}`, {
         method: "DELETE",
       });
-
-      setLoading(false);
-      setSuccess(true);
-      setRequestStatus("success");
-      setMessage("Picture deleted successfully");
+      if (res.ok) {
+        dispatch({
+          type: ActionType.GALLERY_DELETE_SUCCESS,
+          payload: "Picture deleted",
+        });
+      }
     } catch (error) {
-      setLoading(false);
-      setRequestStatus("error");
       const err =
         error.response && error.response.data.message
           ? error.response.data.message
           : "Unable to delete product";
-      setError(err);
+      dispatch({ type: ActionType.GALLERY_ACTION_FAIL, payload: err });
     }
   };
 
@@ -103,32 +180,32 @@ const GalleryContextProvider = ({ children }) => {
    *
    * @param base64EncodedImage
    */
-  const uploadGalleryImage = async (base64EncodedImage) => {
-    setUploading(true);
-
+  const uploadGalleryImage = async (
+    base64EncodedImage: string | ArrayBuffer
+  ) => {
     try {
+      dispatch({ type: ActionType.GALLERY_IMAGE_UPLOAD_REQUEST });
       const data = await uploadImage(base64EncodedImage);
-      setRequestStatus("success");
-      setMessage("Image uploaded successfully");
-      setImage(data);
-      setUploading(false);
+      dispatch({
+        type: ActionType.GALLERY_IMAGE_UPLOAD_SUCCESS,
+        payload: data,
+      });
     } catch (error) {
-      console.error(error);
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : "Unable to delete product";
+      dispatch({ type: ActionType.GALLERY_ACTION_FAIL, payload: err });
     }
   };
   return (
     <GalleryContext.Provider
       value={{
+        state,
+        dispatch,
         createPicture,
         deletePicture,
         uploadGalleryImage,
-        requestStatus,
-        message,
-        loading,
-        success,
-        uploading,
-        error,
-        image,
       }}
     >
       {children}
@@ -136,4 +213,12 @@ const GalleryContextProvider = ({ children }) => {
   );
 };
 
-export default GalleryContextProvider;
+const useGallery = () => {
+  const context = useContext(GalleryContext);
+  if (context === undefined) {
+    throw new Error("useGallery must be used within a GalleryContextProvider");
+  }
+  return context;
+};
+
+export { GalleryContextProvider, useGallery };

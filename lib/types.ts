@@ -1,9 +1,10 @@
 export type IFormData = {
-  search: string;
-  price: number;
-  category: string;
+  search?: string;
+  price?: number;
+  category?: string;
   sortBy?: string;
   serviceName?: string;
+  image?: string | ArrayBuffer | null;
 };
 
 export type ServiceProps = {

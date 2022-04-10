@@ -1,48 +1,56 @@
-import { useContext, useState, useEffect } from "react";
-import Image from "next/image";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { FaPlusCircle } from "react-icons/fa";
 import { getSession } from "next-auth/react";
+import { toast } from "react-toastify";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 // Components
 import Table from "../../../components/Tables/GalleryTable";
-import Notification from "../../../components/notification/notification";
 import Spinner from "../../../components/Spinner";
 import ErrorMessage from "../../../components/ErrorMessage";
 import AdminLayout from "../../../components/Layout/AdminLayout/AdminLayout";
-import Button from "../../../components/Button";
+import { ImageUploadForm } from "../../../components/Forms";
 
 // Context
-import { GalleryContext } from "../../../context/GalleryContext";
+import { ActionType, useGallery } from "../../../context/GalleryContext";
 
 // Server Url
 import { NEXT_URL } from "../../../config";
 
 // utils
 import { getUser } from "../../../lib/getUser";
-import { toast } from "react-toastify";
+import Button from "../../../components/Button";
 
-const GalleryListScreen = (props) => {
-  const { pictures } = props;
+const GalleryListScreen = ({ pictures, isLoading }) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
   const router = useRouter();
   const {
     deletePicture,
     uploadGalleryImage,
     createPicture,
-    error,
-    uploading,
-    image,
-    message,
-    requestStatus,
-  } = useContext(GalleryContext);
+    dispatch,
+    state: { uploading, error, success, message, image },
+  } = useGallery();
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  /**
+   * @description - This function is used to refresh the page after a successful action
+   */
+  const refreshData = () => {
+    router.replace(router.asPath);
+    setIsRefreshing(true);
+  };
 
   useEffect(() => {
     setIsRefreshing(false);
   }, [pictures]);
 
-  const uploadFileHandler = (e) => {
-    const file = e.target.files[0];
+  const uploadFileHandler = (file) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
@@ -52,32 +60,46 @@ const GalleryListScreen = (props) => {
       toast.error("something went wrong!");
     };
   };
-  const submitHandler = (e) => {
-    e.preventDefault();
 
-    createPicture(image.url);
-    router.reload();
+  /**
+   * @description - This function is used to upload the image to cloudinary
+   * @param data
+   */
+  const submitHandler = async (data) => {
+    console.log(data.image[0].name);
+    try {
+      dispatch({ type: ActionType.GALLERY_IMAGE_UPLOAD_REQUEST });
+      if (data.image.length > 0) {
+        uploadFileHandler(data.image[0]);
+        dispatch({ type: ActionType.GALLERY_IMAGE_UPLOAD_SUCCESS });
+      }
+    } catch (error) {
+      toast.error("something went wrong!" + error.message);
+      dispatch({
+        type: ActionType.GALLERY_ACTION_FAIL,
+        payload: error.message,
+      });
+    }
   };
-  const deleteHandler = (id) => {
+
+  /**
+   * @description - This function is used to upload a new picture to the server
+   */
+  const addImageHandler = () => {
+    createPicture(image);
+    reset();
+    refreshData();
+  };
+
+  /**
+   * @description - This function is used to delete the image from the server
+   * @param id
+   */
+  const deleteHandler = (id: string) => {
     deletePicture(id);
-    router.reload();
+    refreshData();
   };
 
-  let notification;
-  if (requestStatus === "success") {
-    notification = {
-      status: "success",
-      title: "Success!",
-      message: message,
-    };
-  }
-  if (requestStatus === "error") {
-    notification = {
-      status: "error",
-      title: "Error!",
-      message: error,
-    };
-  }
   return (
     <AdminLayout>
       <main className="w-full p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
@@ -90,33 +112,20 @@ const GalleryListScreen = (props) => {
               <p className="mb-2 text-center">Load your latest Pictures</p>
             </div>
             <div>
-              <form
-                onSubmit={submitHandler}
-                className="flex flex-col justify-center px-2 py-2 mx-2 my-2 bg-transparent"
-              >
-                <div className="mb-4">
-                  <label className="flex justify-center mb-2 mr-2 text-base font-bold text-gray-700">
-                    <FaPlusCircle className="text-4xl" />
-                    <input
-                      type="file"
-                      onChange={uploadFileHandler}
-                      className="hidden"
-                    />
-                    {uploading && <Spinner message="Uploading..." />}
-                    {error && <div className="justify-center">{error}</div>}
-                  </label>
-                </div>
-                <div className="flex justify-center">
-                  {image && (
-                    <Image src={image.url} alt="" width={100} height={100} />
-                  )}
-                </div>
-                <div className="flex items-center justify-center px-4 pt-4 mb-4 border-t-4 border-current border-gray-200">
-                  <Button type="submit" color="dark">
-                    Add Picture
-                  </Button>
-                </div>
-              </form>
+              <ImageUploadForm
+                submitHandler={submitHandler}
+                uploading={uploading}
+                error={error}
+                image={image}
+                register={register}
+                errors={errors}
+                handleSubmit={handleSubmit}
+              />
+              <div className="flex items-center justify-center px-4 pt-4 mb-4 border-t-4 border-current border-gray-200">
+                <Button type="button" color="dark" onClick={addImageHandler}>
+                  Add Picture
+                </Button>
+              </div>
             </div>
           </div>
           <div className="container px-2 pt-6 pb-8 mt-6 mb-4  shadow-2xl md:mx-auto">
@@ -126,29 +135,19 @@ const GalleryListScreen = (props) => {
               </div>
             </div>
             <div>
+              {isLoading && <Spinner message="Loading pictures..." />}
               {isRefreshing ? (
                 <Spinner message="refreshing..." />
               ) : error ? (
                 <ErrorMessage variant="danger">{error}</ErrorMessage>
               ) : (
                 <div className="w-full mx-auto overscroll-auto">
-                  <Table
-                    tableData={pictures}
-                    headingColumns={["ID", "IMAGE", "CREATED AT", "ACTIONS"]}
-                    deleteHandler={deleteHandler}
-                  />
+                  <Table tableData={pictures} deleteHandler={deleteHandler} />
                 </div>
               )}
             </div>
           </div>
         </section>
-        {notification && (
-          <Notification
-            status={notification.status}
-            title={notification.title}
-            message={notification.message}
-          />
-        )}
       </main>
     </AdminLayout>
   );
@@ -181,7 +180,7 @@ export async function getServerSideProps(context) {
   const data = await res.json();
 
   return {
-    props: { pictures: data }, // will be passed to the page component as props
+    props: { pictures: data, isLoading: data ? false : true }, // will be passed to the page component as props
   };
 }
 

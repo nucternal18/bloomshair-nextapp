@@ -74,14 +74,16 @@ const Navbar = () => {
 
   // Check the top position of the navigation in the window
   useEffect(() => {
-    document.addEventListener("scroll", (e) => {
+    const handleScrollTop = (e) => {
       const scrolled = document.scrollingElement.scrollTop;
       if (scrolled >= 5) {
         setPos("moved");
       } else {
         setPos("top");
       }
-    });
+    };
+    document.addEventListener("scroll", handleScrollTop);
+    return () => document.removeEventListener("scroll", handleScrollTop);
   }, []);
 
   // toggle the mobile navigation bar and the user dropdown list

@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { createContext, useReducer, useContext } from "react";
-import { toast } from "react-toastify";
-import { useRouter } from "next/router";
 import { NEXT_URL } from "../../config";
 import { uploadImage } from "../../lib/upload";
 import { ProductProps, ReviewProps } from "../../lib/types";
@@ -14,9 +12,10 @@ interface IProduct {
   error?: string | Error | null;
   image?: string;
   uploading?: boolean;
+  page?: number;
 }
 
-enum ActionType {
+export enum ActionType {
   PRODUCT_ACTION_REQUEST = "PRODUCT_ACTION_REQUEST",
   PRODUCT_ACTION_FAIL = "PRODUCT_ACTION_FAIL",
   PRODUCT_CREATE_SUCCESS = "PRODUCT_CREATE_SUCCESS",
@@ -24,6 +23,7 @@ enum ActionType {
   PRODUCT_UPDATE_SUCCESS = "PRODUCT_UPDATE_SUCCESS",
   PRODUCT_CREATE_REVIEW_SUCCESS = "PRODUCT_CREATE_REVIEW_SUCCESS",
   PRODUCT_IMAGE_UPLOAD_SUCCESS = "PRODUCT_IMAGE_UPLOAD_SUCCESS",
+  CHANGE_PAGE = "CHANGE_PAGE",
 }
 
 const initialState = {
@@ -34,6 +34,7 @@ const initialState = {
   error: null,
   image: "",
   uploading: false,
+  page: 1,
 };
 
 export const ProductContext = createContext<{
@@ -85,13 +86,14 @@ export const productReducer = (state, action) => {
       return { ...state, loading: false, success: true };
     case ActionType.PRODUCT_IMAGE_UPLOAD_SUCCESS:
       return { ...state, loading: false, success: true, image: action.payload };
+    case ActionType.CHANGE_PAGE:
+      return { ...state, page: action.payload.page };
     default:
       return state;
   }
 };
 
 const ProductContextProvider = ({ children }) => {
-  const router = useRouter();
   const [state, dispatch] = useReducer(productReducer, initialState);
 
   /**

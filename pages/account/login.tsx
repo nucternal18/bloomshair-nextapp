@@ -42,7 +42,7 @@ export default function Login() {
       toast.error("Invalid email or password");
     }
     if (result.ok && redirect === "/checkout") {
-      router.push("/checkout");
+      router.replace("/checkout");
     }
     if (result.ok) {
       const session = await getSession();
@@ -50,7 +50,7 @@ export default function Login() {
         type: ActionType.USER_PROFILE_LOAD_SUCCESS,
         payload: session.user,
       });
-      router.push("/");
+      router.replace("/");
     }
   };
 

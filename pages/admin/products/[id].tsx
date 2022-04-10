@@ -14,6 +14,7 @@ import AdminLayout from "../../../components/Layout/AdminLayout/AdminLayout";
 const TextEditor = dynamic(() => import("../../../components/Editor"), {
   ssr: false,
 });
+import FormRowInput from "../../../components/Forms/FormComponents/FormRowInput";
 
 //Context
 import { useProduct } from "../../../context/product/productContext";
@@ -21,18 +22,19 @@ import { useProduct } from "../../../context/product/productContext";
 // Server Url
 import { getUser } from "../../../lib/getUser";
 import { NEXT_URL } from "../../../config";
+import { GetServerSidePropsContext } from "next";
 
-const ProductEditScreen = (props): JSX.Element => {
+const ProductEditScreen = ({ product, productId, isLoading }): JSX.Element => {
   const router = useRouter();
   const { state, uploadProdImage, updateProduct } = useProduct();
   const { loading, image, error, message } = state;
-  const [name, setName] = useState(props.product.name);
-  const [price, setPrice] = useState(props.product.price);
-  const [brand, setBrand] = useState(props.product.brand);
-  const [category, setCategory] = useState(props.product.category);
-  const [countInStock, setCountInStock] = useState(props.product.countInStock);
+  const [name, setName] = useState(product.name);
+  const [price, setPrice] = useState(product.price);
+  const [brand, setBrand] = useState(product.brand);
+  const [category, setCategory] = useState(product.category);
+  const [countInStock, setCountInStock] = useState(product.countInStock);
   const [mounted, setMounted] = useState(false);
-  const [value, setValue] = useState(props.product.description);
+  const [value, setValue] = useState(product.description);
 
   const ALLOWED_FORMATS = ["image/jpeg", "image/png", "image/jpg"];
 
@@ -44,17 +46,16 @@ const ProductEditScreen = (props): JSX.Element => {
     e.preventDefault();
 
     updateProduct({
-      _id: props.productId,
+      _id: productId,
       name,
       price,
-      image: image ? image : props.product.image,
+      image: image ? image : product.image,
       brand,
       category,
       countInStock,
       description: value,
     });
-    toast.success(message);
-    router.push("/admin/products");
+    router.replace("/admin/products");
   };
 
   const uploadFileHandler = (e) => {
@@ -101,7 +102,7 @@ const ProductEditScreen = (props): JSX.Element => {
                       <Image src={image} alt={name} width={450} height={350} />
                     ) : (
                       <Image
-                        src={props.product?.image}
+                        src={product?.image}
                         alt={name}
                         width={250}
                         height={250}
@@ -188,7 +189,7 @@ const ProductEditScreen = (props): JSX.Element => {
                 <TextEditor value={value} setValue={setValue} />
                 <div className="flex items-center justify-center px-4 pt-4 mb-4 border-t-4 border-current border-gray-200">
                   <Button type="submit" color="dark">
-                    <p className="text-3xl font-semibold">Update</p>
+                    <span className="text-3xl font-semibold">Update</span>
                   </Button>
                 </div>
               </form>
@@ -200,7 +201,7 @@ const ProductEditScreen = (props): JSX.Element => {
   );
 };
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { id } = context.params;
   const req = context.req;
   const session = await getSession({ req });
@@ -229,7 +230,11 @@ export async function getServerSideProps(context) {
   const data = await res.json();
 
   return {
-    props: { product: data.product, productId: id }, // will be passed to the page component as props
+    props: {
+      product: data.product,
+      productId: id,
+      isLoading: data.product ? false : true,
+    }, // will be passed to the page component as props
   };
 }
 

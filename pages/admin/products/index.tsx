@@ -17,21 +17,44 @@ import { useProduct } from "../../../context/product/productContext";
 import { getUser } from "../../../lib/getUser";
 import { NEXT_URL } from "../../../config";
 import { toast } from "react-toastify";
+import { GetServerSidePropsContext } from "next";
 
 const Products = (props) => {
   const { products } = props;
   const router = useRouter();
   const { state, deleteProduct, createProduct } = useProduct();
   const { success, error, message } = state;
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const page = state?.page;
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+    setIsRefreshing(true);
+  };
+
+  useEffect(() => {
+    setIsRefreshing(false);
+  }, [products]);
+
+  useEffect(() => {
+    const subscribe = () => {
+      const url = `${NEXT_URL}/admin/products?page=${page}`;
+      router.replace(url);
+    };
+    subscribe();
+  }, [page]);
 
   useEffect(() => {
     if (success) {
       toast.success(message);
     }
+  }, [success]);
+
+  useEffect(() => {
     if (error) {
       toast.error(error);
     }
-  }, [success, error]);
+  }, [success]);
 
   const data = products.map((row) => {
     return {
@@ -50,13 +73,13 @@ const Products = (props) => {
     if (window.confirm("Are you sure?")) {
       // DELETE Products
       deleteProduct(id);
-      router.reload();
+      refreshData();
     }
   };
 
   const createProductHandler = () => {
     createProduct();
-    router.reload();
+    refreshData();
   };
 
   return (
@@ -76,24 +99,29 @@ const Products = (props) => {
             </div>
           </div>
           <div>
-            <div className="w-full mx-auto overscroll-auto">
-              <Table
-                tableData={data}
-                headingColumns={[
-                  "ID",
-                  "IMAGE",
-                  "NAME",
-                  "PRICE",
-                  "CATEGORY",
-                  "BRAND",
-                  "COUNT IN STOCK",
-                  "ACTION",
-                ]}
-                deleteHandler={deleteHandler}
-              />
-
-              <Paginate pages={props.pages} page={props.page} isAdmin={true} />
-            </div>
+            {isRefreshing ? (
+              <div className="w-full h-full flex items-center justify-center">
+                <Spinner />
+              </div>
+            ) : (
+              <div className="w-full mx-auto overscroll-auto">
+                <Table
+                  tableData={data}
+                  headingColumns={[
+                    "ID",
+                    "IMAGE",
+                    "NAME",
+                    "PRICE",
+                    "CATEGORY",
+                    "BRAND",
+                    "COUNT IN STOCK",
+                    "ACTION",
+                  ]}
+                  deleteHandler={deleteHandler}
+                />
+              </div>
+            )}
+            <Paginate numberOfPages={props.pages} />
           </div>
         </section>
       </main>
@@ -101,12 +129,14 @@ const Products = (props) => {
   );
 };
 
-export async function getServerSideProps({
-  req,
-  query: { pageNumber = 1, keyword = "" },
-}) {
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const req = ctx.req;
   const session = await getSession({ req });
-
+  const { page, keyword } = ctx.query;
+  let url = `products?page=${page || 1}`;
+  if (keyword) {
+    url += `&keyword=${keyword || ""}`;
+  }
   if (!session) {
     // If no token is present redirect user to the login page
     return {
@@ -126,15 +156,12 @@ export async function getServerSideProps({
       },
     };
   }
-  const res = await fetch(
-    `${NEXT_URL}/api/products?keyword=${keyword}&pageNumber=${pageNumber}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const res = await fetch(`${NEXT_URL}/api/${url}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   const data = await res.json();
 
   return {

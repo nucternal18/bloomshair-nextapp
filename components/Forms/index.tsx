@@ -5,6 +5,7 @@ import RequestPasswordResetForm from "./RequestPasswordResetForm";
 import ShippingAddressForm from "./ShippingAddressForm";
 import UpdateProfileForm from "./UpdateProfileForm";
 import SearchForm from "./SearchForm";
+import ImageUploadForm from "./ImageUploadForm";
 
 export {
   ChangePasswordForm,
@@ -14,4 +15,5 @@ export {
   ShippingAddressForm,
   UpdateProfileForm,
   SearchForm,
+  ImageUploadForm,
 };

@@ -1,6 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
-import { withSentry } from "@sentry/nextjs";
 import { getSession } from "next-auth/react";
 import db from "../../../lib/db";
 import { getUser } from "../../../lib/getUser";
@@ -53,4 +52,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default withSentry(handler);
+export default handler;

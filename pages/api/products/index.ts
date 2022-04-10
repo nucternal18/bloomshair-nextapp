@@ -13,8 +13,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
      * @route GET /api/products
      * @access Public
      */
+
     const pageSize = 6;
-    const page = Number(req.query.pageNumber) || 1;
+    let page: number;
+    if (Number(req.query.page) > 1) {
+      page = Number(req.query.page);
+    } else {
+      page = 1;
+    }
     const keyword = req.query.keyword
       ? {
           name: {
@@ -30,7 +36,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       .skip(pageSize * (page - 1));
     res
       .status(201)
-      .json({ products, page, pages: Math.ceil(count / pageSize) });
+      .json({ products, pages: Math.ceil(count / pageSize), page: page });
   } else if (req.method === "POST") {
     /**
      * @desc Create a  product
