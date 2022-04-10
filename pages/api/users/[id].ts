@@ -49,7 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      * @route PUT /api/users/:id
      * @access Private/Admin
      */
-    const { displayName, image, email, isAdmin } = req.body;
+    const { displayName, image, email, isAdmin, category } = req.body;
 
     const user = await User.findById(id);
 
@@ -58,6 +58,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       user.image = image || user.image;
       user.email = email || user.email;
       user.isAdmin = isAdmin || user.isAdmin;
+      user.category = category || user.category;
 
       const updatedUser = await user.save();
 
@@ -66,6 +67,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         name: updatedUser.name,
         email: updatedUser.email,
         isAdmin: updatedUser.isAdmin,
+        category: updatedUser.category,
       });
     } else {
       res.status(404).json({ message: "User not found" });

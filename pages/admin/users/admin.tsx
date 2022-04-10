@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
+import { FaPlus } from "react-icons/fa";
 import { useRouter } from "next/router";
-import { toast } from "react-toastify";
+import Link from "next/link";
 
 // Components
 import AdminLayout from "../../../components/Layout/AdminLayout/AdminLayout";
 import Button from "../../../components/Button";
 import Table from "../../../components/Tables/UserTable";
 import Spinner from "../../../components/Spinner";
+import { CreateAdmin } from "../../../components/DrawerContainers";
 
 // context
 import { ActionType, useAuth } from "../../../context/auth/AuthContext";
@@ -17,17 +19,20 @@ import { getUser } from "../../../lib/getUser";
 
 import { NEXT_URL } from "../../../config";
 import { UserInfoProps } from "../../../lib/types";
+import { toast } from "react-toastify";
 
-const CustomerListScreen = ({ users, loading }) => {
+const AdminUserListScreen = ({ users, loading }) => {
   const router = useRouter();
   const {
-    state: { success, message },
+    state: { message, success },
     dispatch,
     deleteUser,
   } = useAuth();
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
-  const customer = users.filter(
-    (user: UserInfoProps) => user.category === "customer"
+  const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
+  const admins = users.filter(
+    (user: UserInfoProps) =>
+      user.category === "superAdmin" || user.category === "administrator"
   );
 
   const refreshData = () => {
@@ -39,14 +44,14 @@ const CustomerListScreen = ({ users, loading }) => {
     setIsRefreshing(false);
   }, [users]);
 
-  //  useEffect(() => {
-  //    if (success) {
-  //      toast.success(message);
-  //      dispatch({ type: ActionType.USER_ACTION_RESET });
-  //    }
-  //  }, [success]);
+  // useEffect(() => {
+  //   if (success) {
+  //     toast.success(message);
+  //     dispatch({ type: ActionType.USER_ACTION_RESET });
+  //   }
+  // }, [success]);
 
-  const deleteHandler = (id: string) => {
+  const deleteHandler = (id) => {
     deleteUser(id);
     refreshData();
   };
@@ -57,18 +62,32 @@ const CustomerListScreen = ({ users, loading }) => {
           <div className="flex items-center justify-between mb-4 border-b-2 border-current border-gray-200">
             <div>
               <h1 className="p-5 mt-6 text-3xl md:text-5xl font-thin font-mono">
-                Customers
+                Admin
               </h1>
+            </div>
+            <div>
+              <Button
+                type="button"
+                color="dark"
+                onClick={() => setIsOpenDrawer(!isOpenDrawer)}
+              >
+                Create Admin
+              </Button>
             </div>
           </div>
           {isRefreshing ? (
             <Spinner message="loading..." />
           ) : (
             <div className="overflow-hidden sm:drop-shadow-2xl sm:rounded-2xl">
-              <Table tableData={customer} deleteHandler={deleteHandler} />
+              <Table tableData={admins} deleteHandler={deleteHandler} />
             </div>
           )}
         </section>
+        <CreateAdmin
+          refreshData={refreshData}
+          isOpenDrawer={isOpenDrawer}
+          setIsOpenDrawer={setIsOpenDrawer}
+        />
       </main>
     </AdminLayout>
   );
@@ -113,4 +132,4 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default CustomerListScreen;
+export default AdminUserListScreen;

@@ -14,7 +14,7 @@ import Button from "../../../components/Button";
 import {
   CreateService,
   UpdateService,
-} from "../../../components/ServiceContainer";
+} from "../../../components/DrawerContainers";
 import AdminLayout from "../../../components/Layout/AdminLayout";
 import Table from "../../../components/Tables/ServiceTable";
 import Spinner from "../../../components/Spinner";
@@ -97,7 +97,7 @@ const HairServices = ({ services, token }) => {
               <Button
                 color="dark"
                 type="button"
-                onClick={() => setTsOpenCreateDrawer((o) => !o)}
+                onClick={() => setTsOpenCreateDrawer((open) => !open)}
               >
                 <FaPlus className="mr-1" /> Create Service
               </Button>

@@ -39,3 +39,23 @@ export type ProductProps = {
   rating?: number;
   numReviews?: number;
 };
+
+export type UserInfoProps = {
+  id?: string;
+  _id?: string;
+  name: string;
+  image?: string;
+  token?: string;
+  isAdmin?: boolean;
+  email: string;
+  emailVerified?: boolean;
+  category?: string;
+  shippingAddress?: {
+    address: string;
+    city: string;
+    postalCode: string;
+    country: string;
+  };
+  createdAt?: Date;
+  updatedAt?: Date;
+};

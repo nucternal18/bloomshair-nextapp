@@ -4,7 +4,7 @@ import { ServiceProps } from "../../../lib/types";
 
 // component
 import Button from "../../Button";
-import { UpdateService } from "../../ServiceContainer";
+import { UpdateService } from "../../DrawerContainers";
 
 interface ITable {
   tableData: Partial<ServiceProps>[];

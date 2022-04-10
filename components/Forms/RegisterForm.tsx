@@ -2,6 +2,7 @@
 import React from "react";
 import Button from "../Button";
 import ErrorMessage from "../ErrorMessage";
+import FormRowInput from "./FormComponents/FormRowInput";
 
 function RegisterForm({
   submitHandler,
@@ -18,6 +19,19 @@ function RegisterForm({
       className="px-2 pt-6 pb-8 mx-2 mb-4 bg-transparent w-full"
     >
       <div className="mb-4">
+        {/* <FormRowInput
+          {...register("name", {
+            required: "This is required",
+            minLength: {
+              value: 2,
+              message: "Please enter a name with at least 2 characters",
+            },
+            pattern: {
+              value: /^[A-Za-z -]+$/,
+              message: "Please enter a valid name",
+            },
+          })}
+        /> */}
         <label
           htmlFor="name"
           className="block mb-2 text-base font-bold text-gray-700"

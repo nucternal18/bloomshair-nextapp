@@ -14,6 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       email,
       isAdmin,
       image,
+      category,
       shippingAddress,
       emailVerified,
     } = req.body;
@@ -48,7 +49,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         ? image
         : "https://res.cloudinary.com/dtkjg8f0n/image/upload/e_sharpen:100,q_auto/v1621633003/sample.webp",
       isAdmin,
-      shippingAddress: shippingAddress,
+      category: category ? category : "customer",
+      shippingAddress: shippingAddress ? shippingAddress : null,
       emailVerified: emailVerified,
     });
     await db.disconnect();

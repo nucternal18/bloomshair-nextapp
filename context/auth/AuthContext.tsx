@@ -3,24 +3,7 @@ import { getSession } from "next-auth/react";
 import { NEXT_URL } from "../../config";
 // utils
 import { uploadImage } from "../../lib/upload";
-
-type UserInfoProps = {
-  id: string;
-  name: string;
-  image?: string;
-  token?: string;
-  isAdmin?: boolean;
-  email: string;
-  emailVerified?: boolean;
-  shippingAddress?: {
-    address: string;
-    city: string;
-    postalCode: string;
-    country: string;
-  };
-  createdAt?: Date;
-  updatedAt?: Date;
-};
+import { UserInfoProps } from "../../lib/types";
 
 interface InitialAuthState {
   loading: boolean;
@@ -28,6 +11,7 @@ interface InitialAuthState {
   error?: any;
   image?: string;
   message?: string;
+  categoryOptions?: string[];
   user: UserInfoProps | undefined;
 }
 
@@ -37,12 +21,14 @@ const initialState = {
   error: null,
   image: "",
   message: "",
+  categoryOptions: ["customer", "administrator", "superAdmin"],
   user: undefined,
 };
 
 export enum ActionType {
   USER_ACTION_REQUEST = "USER_ACTION_REQUEST",
   USER_ACTION_FAIL = "USER_ACTION_FAIL",
+  USER_ACTION_RESET = "USER_ACTION_RESET",
   USER_REGISTER_SUCCESS = "USER_REGISTER_SUCCESS",
   USER_PROFILE_LOAD_SUCCESS = "USER_PROFILE_LOAD_SUCCESS",
   USER_UPDATE_PROFILE_SUCCESS = "USER_UPDATE_PROFILE_SUCCESS",
@@ -61,7 +47,14 @@ export const authContext = createContext<{
     displayName: string,
     email: string,
     password: string,
-    isAdmin?: boolean
+    isAdmin?: boolean,
+    category?: string
+  ) => void;
+  createAdmin: (
+    displayName: string,
+    email: string,
+    isAdmin?: boolean,
+    category?: string
   ) => void;
   updateUserProfile: (user: UserInfoProps) => void;
   deleteUser: (id: string) => void;
@@ -70,7 +63,8 @@ export const authContext = createContext<{
     image: string,
     displayName: string,
     email: string,
-    isAdmin: boolean
+    isAdmin: boolean,
+    category?: string
   ) => void;
   uploadUserImage: (base64EncodedImage: string | ArrayBuffer) => void;
   resetPassword: (password: string, token: string) => void;
@@ -78,6 +72,7 @@ export const authContext = createContext<{
   state: initialState,
   dispatch: () => null,
   registerUser: () => {},
+  createAdmin: () => {},
   updateUserProfile: () => {},
   deleteUser: () => {},
   editUser: () => {},
@@ -93,6 +88,8 @@ const authReducer = (state: InitialAuthState, action) => {
       return { ...state, loading: true };
     case ActionType.USER_ACTION_FAIL:
       return { ...state, loading: false, error: action.payload };
+    case ActionType.USER_ACTION_RESET:
+      return { ...state, loading: false, success: false, error: null };
     case ActionType.USER_REGISTER_SUCCESS:
       return {
         ...state,
@@ -175,8 +172,7 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
   const registerUser = async (
     displayName: string,
     email: string,
-    password: string,
-    isAdmin?: boolean
+    password: string
   ) => {
     try {
       dispatch({
@@ -192,8 +188,9 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
           displayName,
           email,
           password,
-          isAdmin: isAdmin ? isAdmin : false,
+          isAdmin: false,
           emailVerified: false,
+          category: "customer",
           shippingAddress: {
             address: "",
             city: "",
@@ -221,13 +218,56 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
       });
     }
   };
+  const createAdmin = async (
+    displayName: string,
+    email: string,
+    isAdmin?: boolean,
+    category?: string
+  ) => {
+    try {
+      dispatch({
+        type: ActionType.USER_ACTION_REQUEST,
+      });
+
+      const res = await fetch(`${NEXT_URL}/api/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          displayName,
+          email,
+          isAdmin: isAdmin,
+          emailVerified: false,
+          category: category,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        dispatch({
+          type: ActionType.USER_REGISTER_SUCCESS,
+          payload: data.message,
+        });
+      }
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : "User registration Unsuccessful. Please try again.";
+      dispatch({
+        type: ActionType.USER_ACTION_FAIL,
+        payload: err,
+      });
+    }
+  };
 
   /**
    * @desc reset a Users password
    * @param password
    * @param token
    */
-  const resetPassword = async (password, token) => {
+  const resetPassword = async (password: string, token: string) => {
     try {
       dispatch({
         type: ActionType.USER_ACTION_REQUEST,
@@ -345,7 +385,8 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
     image: string,
     displayName: string,
     email: string,
-    isAdmin: boolean
+    isAdmin: boolean,
+    category: string
   ) => {
     try {
       dispatch({
@@ -357,7 +398,7 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ displayName, image, email, isAdmin }),
+        body: JSON.stringify({ displayName, image, email, isAdmin, category }),
       });
 
       if (res.ok) {
@@ -410,6 +451,7 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
         state,
         dispatch,
         registerUser,
+        createAdmin,
         updateUserProfile,
         deleteUser,
         editUser,

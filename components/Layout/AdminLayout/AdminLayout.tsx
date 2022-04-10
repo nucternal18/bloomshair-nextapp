@@ -37,7 +37,9 @@ const AdminLayout = ({ children, title }) => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Sidebar />
-      <main className="relative md:ml-72">{children}</main>
+      <main className="relative md:ml-64 bg-white dark:bg-gray-900">
+        {children}
+      </main>
       <ToastContainer />
     </div>
   );

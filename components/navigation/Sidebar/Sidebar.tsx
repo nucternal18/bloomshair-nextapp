@@ -33,7 +33,7 @@ const Sidebar = () => {
   };
 
   return (
-    <nav className="relative z-10 flex flex-wrap items-center m-2 drop-shadow-2xl justify-between px-4 py-4 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 rounded-md sm:rounded-r-md md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-no-wrap md:overflow-hidden md:w-64">
+    <nav className="relative z-10 flex flex-wrap items-center my-2 ml-2 mr-2 sm:mr-0 drop-shadow-2xl dark:drop-shadow-none justify-between px-4 py-4 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 rounded-md sm:rounded-r-md md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-no-wrap md:overflow-hidden md:w-64">
       <div className="flex flex-wrap items-center justify-between w-full px-0 mx-auto md:flex-col md:items-stretch md:min-h-full md:flex-no-wrap">
         {/* Toggler */}
         <div className="flex items-center gap-4 sm:gap-1">
@@ -143,6 +143,12 @@ const Sidebar = () => {
               <ActiveLink href="/admin/users">
                 <FaUserCircle className="mr-2 text-sm" />
                 Manage Customers
+              </ActiveLink>
+            </li>
+            <li className="flex flex-row items-center">
+              <ActiveLink href="/admin/users/admin">
+                <FaUserCircle className="mr-2 text-sm" />
+                Manage Admins
               </ActiveLink>
             </li>
             <li className="items-center">

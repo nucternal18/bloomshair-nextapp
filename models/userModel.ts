@@ -8,6 +8,7 @@ export interface IUser extends mongoose.Document {
   password: string;
   isAdmin: boolean;
   emailVerified?: boolean;
+  category: string;
   shippingAddress: {
     address: string;
     city: string;
@@ -42,6 +43,11 @@ const usersSchema = new mongoose.Schema<IUser>(
     emailVerified: {
       type: Boolean,
       default: false,
+    },
+    category: {
+      type: String,
+      enum: ["customer", "administrator", "superAdmin"],
+      default: "customer",
     },
     shippingAddress: {
       address: { type: String },
