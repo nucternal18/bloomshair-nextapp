@@ -21,7 +21,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (product) res.status(200).json({ product });
     } catch (error) {
       res.status(404).json({ message: "Product not found", error });
-      throw new Error("Product not found");
     }
   } else if (req.method === "DELETE") {
     /**
@@ -52,7 +51,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     } catch (error) {
       res.status(404).json({ message: "Unable to delete product", error });
-      throw new Error("Product not found");
     }
   } else if (req.method === "PUT") {
     /**
@@ -90,8 +88,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       res.status(201).json(updatedProduct);
     } else {
-      res.status(404);
-      throw new Error("Product not found");
+      res
+        .status(404)
+        .json({ message: "Unable to update product. Product not found" });
     }
   } else {
     res.setHeader("Allow", ["GET"]);

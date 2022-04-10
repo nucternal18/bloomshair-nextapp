@@ -5,6 +5,9 @@ export type IFormData = {
   sortBy?: string;
   serviceName?: string;
   image?: string | ArrayBuffer | null;
+  name?: string;
+  brand?: string;
+  countInStock?: number;
 };
 
 export type ServiceProps = {

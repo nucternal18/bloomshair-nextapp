@@ -5,6 +5,7 @@ import { getSession } from "next-auth/react";
 import { FaPlusCircle } from "react-icons/fa";
 import dynamic from "next/dynamic";
 import { toast } from "react-toastify";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 //components
 import Spinner from "../../../components/Spinner";
@@ -23,18 +24,28 @@ import { useProduct } from "../../../context/product/productContext";
 import { getUser } from "../../../lib/getUser";
 import { NEXT_URL } from "../../../config";
 import { GetServerSidePropsContext } from "next";
+import { IFormData } from "../../../lib/types";
 
 const ProductEditScreen = ({ product, productId, isLoading }): JSX.Element => {
   const router = useRouter();
   const { state, uploadProdImage, updateProduct } = useProduct();
-  const { loading, image, error, message } = state;
-  const [name, setName] = useState(product.name);
-  const [price, setPrice] = useState(product.price);
-  const [brand, setBrand] = useState(product.brand);
-  const [category, setCategory] = useState(product.category);
-  const [countInStock, setCountInStock] = useState(product.countInStock);
+  const { loading, image, error } = state;
   const [mounted, setMounted] = useState(false);
   const [value, setValue] = useState(product.description);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Partial<IFormData>>({
+    defaultValues: {
+      name: product.name,
+      price: product.price,
+      brand: product.brand,
+      category: product.category,
+      countInStock: product.countInStock,
+    },
+  });
 
   const ALLOWED_FORMATS = ["image/jpeg", "image/png", "image/jpg"];
 
@@ -42,17 +53,15 @@ const ProductEditScreen = ({ product, productId, isLoading }): JSX.Element => {
     setMounted(true);
   }, []);
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-
+  const submitHandler: SubmitHandler<Partial<IFormData>> = (data) => {
     updateProduct({
       _id: productId,
-      name,
-      price,
+      name: data.name,
+      price: data.price,
       image: image ? image : product.image,
-      brand,
-      category,
-      countInStock,
+      brand: data.brand,
+      category: data.category,
+      countInStock: data.countInStock,
       description: value,
     });
     router.replace("/admin/products");
@@ -70,12 +79,24 @@ const ProductEditScreen = ({ product, productId, isLoading }): JSX.Element => {
     };
   };
 
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <main className="w-full h-screen p-4 mx-auto overflow-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+          <div className="flex items-center justify-center">
+            <Spinner message="Loading Product Details..." />
+          </div>
+        </main>
+      </AdminLayout>
+    );
+  }
+
   return (
     mounted && (
       <AdminLayout>
         <main className="w-full h-screen p-4 mx-auto overflow-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
           <section className="container px-2 pt-6 pb-8 mx-2 mt-6 mb-4 rounded shadow-2xl md:mx-auto ">
-            <div className="flex items-center justify-between px-4 mb-4 border-b-4 border-current border-gray-200">
+            <div className="flex items-center justify-between px-4 mb-4 border-b-2 border-current border-gray-200">
               <div className="mt-6">
                 <Button
                   color="dark"
@@ -86,110 +107,102 @@ const ProductEditScreen = ({ product, productId, isLoading }): JSX.Element => {
                 </Button>
               </div>
               <div>
-                <h1 className="p-5 mt-6 text-3xl font-bold md:text-5xl">
+                <h1 className="p-5 mt-6 text-3xl font-thin md:text-5xl">
                   Edit Product
                 </h1>
               </div>
             </div>
             <FormContainer>
               <form
-                onSubmit={submitHandler}
+                onSubmit={handleSubmit(submitHandler)}
                 className="w-full px-12 pt-6 pb-8 mx-2 mb-4  sm:mx-auto"
               >
                 <div className="flex flex-col items-center justify-around md:flex-row">
-                  <div className="flex flex-col items-center w-full mb-4">
-                    {image ? (
-                      <Image src={image} alt={name} width={450} height={350} />
-                    ) : (
-                      <Image
-                        src={product?.image}
-                        alt={name}
-                        width={250}
-                        height={250}
-                      />
-                    )}
-                    {loading ? (
-                      <Spinner message="loading..." />
-                    ) : (
+                  {loading ? (
+                    <Spinner message="loading..." />
+                  ) : (
+                    <div className="flex flex-col items-center w-full mb-2">
+                      {image ? (
+                        <Image
+                          src={image}
+                          alt={product?.name}
+                          width={450}
+                          height={350}
+                        />
+                      ) : (
+                        <Image
+                          src={product?.image}
+                          alt={product?.name}
+                          width={250}
+                          height={250}
+                        />
+                      )}
                       <label className="block py-2 my-2 mr-2 text-base font-bold ">
-                        <FaPlusCircle className="text-4xl" />
+                        <FaPlusCircle
+                          fontSize={21}
+                          className="text-4xl cursor-pointer"
+                        />
                         <input
                           type="file"
                           onChange={uploadFileHandler}
                           className="hidden"
                         />
                       </label>
-                    )}
-                  </div>
+                    </div>
+                  )}
                   {error && <div className="justify-center">{error}</div>}
                   <div className="w-full">
-                    <div className="flex flex-col w-full mb-4">
-                      <label className="block mb-1 mr-2 text-base font-bold ">
-                        Name
-                      </label>
-                      <input
-                        className="w-full px-3 py-2 leading-tight text-gray-500 border rounded shadow-md appearance-none focus:outline-none "
-                        type="name"
-                        placeholder="Enter your name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                      ></input>
+                    <div className="flex flex-col w-full mb-2">
+                      <FormRowInput
+                        type={"name"}
+                        title={"Name"}
+                        errors={errors}
+                        inputType={"text"}
+                        {...register("name")}
+                      />
                     </div>
-                    <div className="flex flex-col mb-4">
-                      <label className="block mb-1 mr-2 text-base font-bold ">
-                        Price
-                      </label>
-                      <input
-                        className="w-full px-3 py-2 leading-tight text-gray-500 border rounded shadow-md appearance-none focus:outline-none "
-                        type="number"
-                        placeholder="Enter Price"
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                      ></input>
+                    <div className="flex flex-col mb-2">
+                      <FormRowInput
+                        type={"price"}
+                        title={"Price"}
+                        errors={errors}
+                        inputType={"text"}
+                        {...register("price")}
+                      />
                     </div>
-
-                    <div className="flex flex-col mb-4">
-                      <label className="block mb-1 mr-2 text-base font-bold ">
-                        Brand
-                      </label>
-                      <input
-                        className="w-full px-3 py-2 leading-tight text-gray-500 border rounded shadow-md appearance-none focus:outline-none "
-                        type="text"
-                        placeholder="Enter Brand"
-                        value={brand}
-                        onChange={(e) => setBrand(e.target.value)}
-                      ></input>
+                    <div className="flex flex-col mb-2">
+                      <FormRowInput
+                        type={"brand"}
+                        title={"Brand"}
+                        errors={errors}
+                        inputType={"text"}
+                        {...register("brand")}
+                      />
                     </div>
-                    <div className="flex flex-col mb-4">
-                      <label className="block mb-1 mr-2 text-base font-bold ">
-                        Category
-                      </label>
-                      <input
-                        className="w-full px-3 py-2 leading-tight text-gray-500 border rounded shadow-md appearance-none focus:outline-none "
-                        type="text"
-                        placeholder="Enter Category"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                      ></input>
+                    <div className="flex flex-col mb-2">
+                      <FormRowInput
+                        type={"category"}
+                        title={"Category"}
+                        errors={errors}
+                        inputType={"text"}
+                        {...register("category")}
+                      />
                     </div>
-                    <div className="flex flex-col mb-4">
-                      <label className="block mb-1 mr-2 text-base font-bold ">
-                        Count In Stock
-                      </label>
-                      <input
-                        className="w-full px-3 py-2 leading-tight text-gray-500 border rounded shadow-md appearance-none focus:outline-none "
-                        type="text"
-                        placeholder="Enter Count In Stock"
-                        value={countInStock}
-                        onChange={(e) => setCountInStock(e.target.value)}
-                      ></input>
+                    <div className="flex flex-col mb-2">
+                      <FormRowInput
+                        type={"countInStock"}
+                        title={"Count In Stock"}
+                        errors={errors}
+                        inputType={"number"}
+                        {...register("countInStock")}
+                      />
                     </div>
                   </div>
                 </div>
                 <TextEditor value={value} setValue={setValue} />
-                <div className="flex items-center justify-center px-4 pt-4 mb-4 border-t-4 border-current border-gray-200">
+                <div className="flex items-center justify-center px-4 pt-4 my-4 border-t-2 border-current border-gray-200">
                   <Button type="submit" color="dark">
-                    <span className="text-3xl font-semibold">Update</span>
+                    <span className="text-2xl font-thin font-mono">Update</span>
                   </Button>
                 </div>
               </form>

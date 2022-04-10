@@ -24,6 +24,7 @@ export enum ActionType {
   PRODUCT_CREATE_REVIEW_SUCCESS = "PRODUCT_CREATE_REVIEW_SUCCESS",
   PRODUCT_IMAGE_UPLOAD_SUCCESS = "PRODUCT_IMAGE_UPLOAD_SUCCESS",
   CHANGE_PAGE = "CHANGE_PAGE",
+  PRODUCT_ACTION_RESET = "PRODUCT_ACTION_RESET",
 }
 
 const initialState = {
@@ -88,6 +89,8 @@ export const productReducer = (state, action) => {
       return { ...state, loading: false, success: true, image: action.payload };
     case ActionType.CHANGE_PAGE:
       return { ...state, page: action.payload.page };
+    case ActionType.PRODUCT_ACTION_RESET:
+      return { ...state, loading: false, success: false, error: null };
     default:
       return state;
   }
