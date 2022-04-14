@@ -21,7 +21,7 @@ import { NEXT_URL } from "../../../config";
 import { getUser } from "../../../lib/getUser";
 import Button from "../../../components/Button";
 
-const GalleryListScreen = ({ pictures, isLoading }) => {
+const GalleryAdminPage = ({ pictures, isLoading }) => {
   const {
     register,
     handleSubmit,
@@ -103,11 +103,11 @@ const GalleryListScreen = ({ pictures, isLoading }) => {
   return (
     <AdminLayout>
       <main className="w-full p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
-        <section className="flex flex-col ">
-          <div className="container px-2 pt-6 pb-8 mt-6 mb-4 shadow-2xl md:mx-auto">
+        <section className="container max-w-screen-lg flex flex-col sm:mx-auto">
+          <div className=" px-2 pt-6 pb-8 mt-6 mb-4 shadow-2xl w-full">
             <div className="my-6 ">
-              <h1 className="p-5 mt-6 mb-4 text-5xl font-bold text-center">
-                Pictures
+              <h1 className="p-5 mt-6 mb-4 text-5xl font-thin text-center">
+                Upload Pictures
               </h1>
               <p className="mb-2 text-center">Load your latest Pictures</p>
             </div>
@@ -121,17 +121,17 @@ const GalleryListScreen = ({ pictures, isLoading }) => {
                 errors={errors}
                 handleSubmit={handleSubmit}
               />
-              <div className="flex items-center justify-center px-4 pt-4 mb-4 border-t-4 border-current border-gray-200">
+              <div className="flex items-center justify-center px-4 pt-4 mb-4 border-t-2 border-current border-gray-200">
                 <Button type="button" color="dark" onClick={addImageHandler}>
                   Add Picture
                 </Button>
               </div>
             </div>
           </div>
-          <div className="container px-2 pt-6 pb-8 mt-6 mb-4  shadow-2xl md:mx-auto">
-            <div className="flex items-center justify-between px-4 mb-4 border-b-4 border-current border-gray-200">
+          <div className="px-2 pt-6 pb-8 mt-6 mb-4   w-full">
+            <div className="flex items-center justify-between px-4 mb-4 border-b-2 border-current border-gray-200">
               <div>
-                <h1 className="p-5 mt-6 text-5xl font-bold">Pictures</h1>
+                <h1 className="p-5 mt-6 text-4xl font-thin">Pictures</h1>
               </div>
             </div>
             <div>
@@ -141,7 +141,7 @@ const GalleryListScreen = ({ pictures, isLoading }) => {
               ) : error ? (
                 <ErrorMessage variant="danger">{error}</ErrorMessage>
               ) : (
-                <div className="w-full mx-auto overscroll-auto">
+                <div className="w-full shadow-2xl mx-auto overscroll-auto">
                   <Table tableData={pictures} deleteHandler={deleteHandler} />
                 </div>
               )}
@@ -184,4 +184,4 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default GalleryListScreen;
+export default GalleryAdminPage;

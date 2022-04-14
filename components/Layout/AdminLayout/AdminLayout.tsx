@@ -1,3 +1,4 @@
+import AdminNavbar from "@components/navigation/AdminNavbar";
 import Head from "next/head";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "../../navigation/Sidebar/Sidebar";
@@ -38,7 +39,8 @@ const AdminLayout = ({ children, title }) => {
       </Head>
       <Sidebar />
       <main className="relative md:ml-64 bg-white dark:bg-gray-900">
-        {children}
+        <AdminNavbar />
+        <div className="w-full">{children}</div>
       </main>
       <ToastContainer />
     </div>

@@ -1,8 +1,13 @@
-import PropTypes from "prop-types";
+import { GalleryProps } from "@lib/types";
 import Image from "next/image";
 import { FaTrash } from "react-icons/fa";
 
-const Table = ({ tableData, deleteHandler }) => {
+interface IGalleryTable {
+  tableData: GalleryProps[];
+  deleteHandler: (id: string) => void;
+}
+
+const Table = ({ tableData, deleteHandler }: IGalleryTable) => {
   return (
     <table className="w-full sm:rounded-2xl md:table">
       <thead className="bg-gray-50 dark:bg-teal-500  hidden md:table-header-group">
@@ -123,12 +128,6 @@ const Table = ({ tableData, deleteHandler }) => {
       </tbody>
     </table>
   );
-};
-
-Table.propTypes = {
-  tableData: PropTypes.arrayOf(PropTypes.object).isRequired,
-  headingColumns: PropTypes.arrayOf(PropTypes.string).isRequired,
-  breakOn: PropTypes.oneOf(["small", "medium", "large"]),
 };
 
 export default Table;

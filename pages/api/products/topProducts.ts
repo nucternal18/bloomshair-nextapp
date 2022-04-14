@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { withSentry } from "@sentry/nextjs";
 import Product from "../../../models/productModel";
 import db from "../../../lib/db";
 

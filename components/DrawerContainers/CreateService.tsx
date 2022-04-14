@@ -2,7 +2,7 @@ import { Drawer } from "@mantine/core";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useService } from "../../context/serviceContext";
 import { IFormData } from "../../lib/types";
-import ServiceForm from "../Forms/ServiceForm";
+import ServiceForm from "../Forms/CreateServiceForm";
 
 interface ICreateHairService {
   isOpenCreateDrawer: boolean;

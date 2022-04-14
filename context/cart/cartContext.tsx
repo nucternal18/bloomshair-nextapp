@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer } from "react";
+import { CartItemsProps, ShippingAddressProps } from "../../lib/types";
 import { ActionType, Actions } from "./cartActions";
-import { CartItemsProps, ShippingAddressProps } from "./cartState";
+
 import {
   cartItemsFromStorage,
   paymentMethodFromStorage,

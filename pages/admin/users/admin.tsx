@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
 import { FaPlus } from "react-icons/fa";
 import { useRouter } from "next/router";
-import Link from "next/link";
 
 // Components
 import AdminLayout from "../../../components/Layout/AdminLayout/AdminLayout";
@@ -19,9 +18,9 @@ import { getUser } from "../../../lib/getUser";
 
 import { NEXT_URL } from "../../../config";
 import { UserInfoProps } from "../../../lib/types";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
-const AdminUserListScreen = ({ users, loading }) => {
+const AdminUserListScreen = ({ users }) => {
   const router = useRouter();
   const {
     state: { message, success },
@@ -58,7 +57,7 @@ const AdminUserListScreen = ({ users, loading }) => {
   return (
     <AdminLayout>
       <main className="w-full h-screen p-2 mx-auto overflow-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
-        <section className="container px-2 pt-6 pb-8 mt-6 mb-4 md:mx-auto ">
+        <section className="container max-w-screen-lg px-2 pt-6 pb-8 mt-6 mb-4 md:mx-auto ">
           <div className="flex items-center justify-between mb-4 border-b-2 border-current border-gray-200">
             <div>
               <h1 className="p-5 mt-6 text-3xl md:text-5xl font-thin font-mono">
@@ -71,7 +70,8 @@ const AdminUserListScreen = ({ users, loading }) => {
                 color="dark"
                 onClick={() => setIsOpenDrawer(!isOpenDrawer)}
               >
-                Create Admin
+                <FaPlus fontSize={18} className="mr-1" />
+                <span>Create Admin</span>
               </Button>
             </div>
           </div>

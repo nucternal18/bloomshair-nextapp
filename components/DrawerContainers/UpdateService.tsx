@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useService } from "../../context/serviceContext";
 import { IFormData, ServiceProps } from "../../lib/types";
-import ServiceForm from "../Forms/ServiceForm";
+import ServiceForm from "../Forms/CreateServiceForm";
 
 interface IUpdateHairService {
   isOpenUpdateDrawer: boolean;

@@ -1,31 +1,3 @@
-export type PaymentResProps = {
-  id: string;
-  status: string;
-  orderId: string;
-  update_time: string;
-  email_address: string;
-};
-
-export type paymentMethodProps = {
-  paymentMethod: string;
-};
-export type ShippingAddressProps = {
-  address: string;
-  city: string;
-  postalCode: string;
-  country: string;
-  deliveryMethod?: string;
-};
-
-export type CartItemsProps = {
-  product: string;
-  name: string;
-  image: string;
-  price: number;
-  countInStock: number;
-  qty: number;
-};
-
 export const cartItemsFromStorage =
   typeof window !== "undefined"
     ? localStorage.getItem("cartItems")

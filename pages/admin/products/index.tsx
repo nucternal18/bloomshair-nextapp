@@ -67,7 +67,7 @@ const Products = ({ products, pages }) => {
    */
   const data = products.map((row: Partial<ProductProps>) => {
     return {
-      id: row["_id"],
+      _id: row["_id"],
       image: row["image"],
       name: row["name"],
       price: row["price"],
@@ -97,7 +97,7 @@ const Products = ({ products, pages }) => {
   return (
     <AdminLayout>
       <main className="w-full h-screen p-2 mx-auto overflow-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
-        <section className="container px-2 pt-6 pb-8 mt-6 mb-4 shadow-2xl md:mx-auto ">
+        <section className="container max-w-screen-lg px-2 pt-6 pb-8 mt-6 mb-4  md:mx-auto ">
           <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
             <div>
               <h1 className="p-3 text-4xl font-thin md:p-5 md:text-5xl">
@@ -116,7 +116,7 @@ const Products = ({ products, pages }) => {
                 <Spinner />
               </div>
             ) : (
-              <div className="w-full mx-auto overscroll-auto">
+              <div className="w-full overscroll-auto sm:drop-shadow-2xl sm:rounded-2xl">
                 <Table tableData={data} deleteHandler={deleteHandler} />
               </div>
             )}

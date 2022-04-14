@@ -13,16 +13,16 @@ import { useQuery } from "react-query";
 import { useTheme } from "next-themes";
 
 // context
-import { useCart } from "../../../context/cart/cartContext";
-import { useAuth } from "../../../context/auth/AuthContext";
+import { useCart } from "@context/cart/cartContext";
+import { useAuth } from "@context/auth/AuthContext";
+import { getCartItems } from "@context/cart/cartActions";
 
 // components
-import CartContainer from "../../CartContainer";
-const CartIcon = dynamic(() => import("../../CartIcon"), { ssr: false });
+import CartContainer from "@components/CartContainer";
+const CartIcon = dynamic(() => import("@components/CartIcon"), { ssr: false });
 
 // navlinks
 import { navLink } from "../../../data";
-import { getCartItems } from "../../../context/cart/cartActions";
 import { BloomsLogo } from "../../SVG/BloomsLogo";
 
 const Navbar = () => {

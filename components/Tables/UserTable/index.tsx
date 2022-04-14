@@ -5,7 +5,12 @@ import { FaEdit, FaTrash, FaCheck, FaTimes } from "react-icons/fa";
 import { NEXT_URL } from "../../../config";
 import { UserInfoProps } from "../../../lib/types";
 
-const Table = ({ tableData, deleteHandler }) => {
+interface IUserTable {
+  tableData: UserInfoProps[];
+  deleteHandler: (id: string) => void;
+}
+
+const Table = ({ tableData, deleteHandler }: IUserTable) => {
   const router = useRouter();
 
   return (
@@ -233,12 +238,6 @@ const Table = ({ tableData, deleteHandler }) => {
       </tbody>
     </table>
   );
-};
-
-Table.propTypes = {
-  tableData: PropTypes.arrayOf(PropTypes.object).isRequired,
-  headingColumns: PropTypes.arrayOf(PropTypes.string).isRequired,
-  breakOn: PropTypes.oneOf(["small", "medium", "large"]),
 };
 
 export default Table;

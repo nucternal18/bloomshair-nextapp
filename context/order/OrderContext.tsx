@@ -4,15 +4,12 @@ import { createContext, useReducer, useContext } from "react";
 import { NEXT_URL } from "../../config";
 import { orderConfirmationEmail } from "../../lib/emailServices";
 import { sendMail } from "../../lib/mail";
-import {
-  CartItemsProps,
-  PaymentResProps,
-  ShippingAddressProps,
-} from "../cart/cartState";
+import { OrderProps, PaymentResProps } from "../../lib/types";
 
-enum ActionType {
+export enum ActionType {
   ORDER_ACTION_REQUEST = "ORDER_ACTION_REQUEST",
   ORDER_ACTION_FAIL = "ORDER_ACTION_FAIL",
+  ORDER_ACTION_CLEAR = "ORDER_ACTION_CLEAR",
   ORDER_CREATE_SUCCESS = "ORDER_CREATE_SUCCESS",
   ORDER_DETAILS_SUCCESS = "ORDER_DETAILS_SUCCESS",
   ORDER_PAY_SUCCESS = "ORDER_PAY_SUCCESS",
@@ -20,26 +17,6 @@ enum ActionType {
   ORDER_TOTAL_PRICE = "ORDER_TOTAL_PRICE",
   ORDER_CONFIRMATION_SUCCESS = "ORDER_CONFIRMATION_SUCCESS",
 }
-
-export type OrderProps = {
-  orderItems?: CartItemsProps[];
-  user?: {
-    name: string;
-    email: string;
-  };
-  shippingAddress?: ShippingAddressProps;
-  paymentMethod?: string;
-  itemsPrice?: number;
-  shippingPrice?: number;
-  taxPrice?: number;
-  totalPrice?: number;
-  isPaid?: boolean;
-  paidAt?: Date;
-  createdAt?: Date;
-  deliveredAt?: Date;
-  isDelivered?: boolean;
-  _id?: string;
-};
 
 interface IOrderState {
   success?: boolean;
@@ -79,6 +56,8 @@ export const orderReducer = (state, action) => {
       return { ...state, loading: true };
     case ActionType.ORDER_ACTION_FAIL:
       return { ...state, loading: false, error: action.payload };
+    case ActionType.ORDER_ACTION_CLEAR:
+      return { ...state, loading: false, success: false, error: null };
     case ActionType.ORDER_CREATE_SUCCESS:
       return { ...state, loading: false, success: true, order: action.payload };
     case ActionType.ORDER_DETAILS_SUCCESS:
@@ -139,6 +118,10 @@ const OrderContextProvider = ({ children }) => {
     }
   };
 
+  /**
+   * @description send order confirmation email
+   * @param id
+   */
   const sendOrderConfirmationEmail = async (id: string) => {
     try {
       dispatch({
