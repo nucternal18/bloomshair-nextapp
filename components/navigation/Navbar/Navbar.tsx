@@ -11,6 +11,7 @@ import { RiAdminFill } from "react-icons/ri";
 import { signOut } from "next-auth/react";
 import { useQuery } from "react-query";
 import { useTheme } from "next-themes";
+import { useSnipcart } from "use-snipcart";
 
 // context
 import { useCart } from "@context/cart/cartContext";
@@ -18,7 +19,6 @@ import { useAuth } from "@context/auth/AuthContext";
 import { getCartItems } from "@context/cart/cartActions";
 
 // components
-import CartContainer from "@components/CartContainer";
 const CartIcon = dynamic(() => import("@components/CartIcon"), { ssr: false });
 
 // navlinks
@@ -38,6 +38,7 @@ const Navbar = () => {
   const { isLoading, data: cartItems } = useQuery("cart", getCartItems, {
     initialData: state.cart.cartItems,
   });
+  const { cart = {} } = useSnipcart();
 
   useEffect(() => {
     setMounted(true);
@@ -108,7 +109,7 @@ const Navbar = () => {
     <nav
       aria-label="main-navigation"
       data-testid="main-navigation"
-      className={`top-0 z-50 flex flex-wrap items-center justify-between w-full px-2 py-2 text-gray-900 dark:text-gray-200 ${
+      className={`top-0 z-10 flex flex-wrap items-center justify-between w-full px-2 py-2 text-gray-900 dark:text-gray-200 ${
         router.asPath === "/" && pos === "top"
           ? "bg-transparent absolute"
           : pos === "top"
@@ -131,6 +132,7 @@ const Navbar = () => {
                     : "#000"
                 }`}
               />
+              <span hidden>Home</span>
             </a>
           </Link>
         )}
@@ -157,6 +159,7 @@ const Navbar = () => {
           <div className="flex items-center lg:hidden">
             {authState.user && (
               <button
+                aria-label="user-dropdown"
                 className="flex items-center  bg-gray-200 border-2 border-yellow-500 rounded-full"
                 disabled
               >
@@ -170,27 +173,20 @@ const Navbar = () => {
                 />
               </button>
             )}
-            <button className="">
-              <Link href={"/cart"}>
-                <a
+            <button
+              aria-label="cart-button"
+              className="snipcart-checkout text-2xl  list-none cursor-pointer hover:text-yellow-400"
+            >
+              {!isLoading && (
+                <CartIcon
+                  itemCount={cart.items?.count || 0}
                   className={`${
-                    router.asPath === "/cart" ? "text-yellow-500" : ""
-                  }text-2xl  list-none cursor-pointer hover:text-yellow-400`}
-                >
-                  {!isLoading && (
-                    <CartIcon
-                      itemCount={state.cart?.cartItems
-                        ?.reduce((acc, item) => acc + item.qty, 0)
-                        .toString()}
-                      className={`${
-                        router.asPath === "/" && pos === "top"
-                          ? "text-gray-200"
-                          : "text-gray-900 dark:text-gray-200"
-                      } font-bold relative flex items-center justify-center w-12 h-12 cursor-pointer `}
-                    />
-                  )}
-                </a>
-              </Link>
+                    router.asPath === "/" && pos === "top"
+                      ? "text-gray-200"
+                      : "text-gray-900 dark:text-gray-200"
+                  } font-bold relative flex items-center justify-center w-12 h-12 cursor-pointer `}
+                />
+              )}
             </button>
           </div>
         </div>
@@ -206,7 +202,7 @@ const Navbar = () => {
                       : router.asPath === link.link
                       ? "text-yellow-500"
                       : ""
-                  } flex items-center lg:block ml-0 mb-0 cursor-pointer py-1   hover:text-yellow-400 text-xs md:text-sm font-normal list-none uppercase`}
+                  } flex items-center lg:block ml-0 mb-0 cursor-pointer py-1   hover:text-yellow-400 text-xs  font-normal list-none uppercase`}
                 >
                   {link.title}
                 </a>
@@ -216,12 +212,13 @@ const Navbar = () => {
           <li className="flex px-1 m-0 list-none ">
             <button
               type="button"
+              aria-label="toggle-theme-button"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className={`flex p-1 ml-4 font-medium list-none  cursor-pointer md:block lg:ml-0 lg:mb-0 lg:p-1 lg:px-1 focus:outline-none focus:ring-none focus:border-transparent`}
             >
               {theme === "light" ? (
                 <FiSun
-                  fontSize={21}
+                  fontSize={18}
                   className={`${
                     router.asPath === "/" && pos === "top"
                       ? "text-gray-200"
@@ -230,7 +227,7 @@ const Navbar = () => {
                 />
               ) : (
                 <FiMoon
-                  fontSize={21}
+                  fontSize={18}
                   className={`${
                     router.asPath === "/" && pos === "top"
                       ? "text-gray-200"
@@ -238,11 +235,13 @@ const Navbar = () => {
                   } font-bold `}
                 />
               )}
+              <span hidden>toggle theme</span>
             </button>
           </li>
           {authState.user ? (
             <li className="px-1 m-0 text-base list-none">
               <button
+                aria-label="user-dropdown-button"
                 className="flex items-center bg-white border-2 border-yellow-500 rounded-full"
                 onClick={toggleUserDropdown}
               >
@@ -264,7 +263,10 @@ const Navbar = () => {
                 ref={ref}
               >
                 <div>
-                  <button className="flex items-center px-4 py-2 space-x-2">
+                  <button
+                    aria-label="user-profile-link"
+                    className="flex items-center px-4 py-2 space-x-2"
+                  >
                     <FaUser fontSize={18} />
                     <Link href={"/account/profile"}>
                       <a
@@ -279,7 +281,10 @@ const Navbar = () => {
                     </Link>
                   </button>
                   {authState.user.isAdmin && (
-                    <button className="flex items-center px-4 py-2 space-x-2">
+                    <button
+                      aria-label="admin-link"
+                      className="flex items-center px-4 py-2 space-x-2"
+                    >
                       <RiAdminFill fontSize={18} />
                       <Link href={"/admin"}>
                         <a
@@ -295,6 +300,7 @@ const Navbar = () => {
                     </button>
                   )}
                   <button
+                    aria-label="logout-button"
                     className="flex items-center px-4 py-2 space-x-2 text-lg hover:text-yellow-500"
                     onClick={logoutHandler}
                   >
@@ -307,6 +313,7 @@ const Navbar = () => {
           ) : (
             <li className="m-0 list-none ">
               <button
+                aria-label="login-button"
                 className={`${
                   router.asPath === "/" && pos === "top"
                     ? "text-gray-200"
@@ -317,37 +324,34 @@ const Navbar = () => {
               >
                 <FiLogIn fontSize={18} />
                 <Link href={"/account/login"}>
-                  <a className="flex items-center md:block ml-2 mb-2 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1  text-sm font-medium list-none uppercase">
+                  <a className="flex items-center md:block ml-2 mb-2 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1  text-xs font-medium list-none uppercase">
                     Sign In
                   </a>
                 </Link>
               </button>
             </li>
           )}
-          <li className="m-0 list-none mb-1">
+          <li className="list-none mb-1 flex items-center gap-1">
             <button
-              className={` text-2xl font-medium  uppercase list-none cursor-pointer flex items-center`}
-              onClick={toggleCartDrawer}
+              aria-label="cart-button"
+              className={`snipcart-checkout text-xl font-medium  uppercase list-none cursor-pointer `}
             >
               <CartIcon
-                itemCount={state.cart?.cartItems?.reduce(
-                  (acc, item) => acc + item.qty,
-                  0
-                )}
+                itemCount={cart.items?.count || 0}
                 className={`${
                   router.asPath === "/" && pos === "top"
                     ? "text-gray-200"
                     : "text-gray-900 dark:text-gray-200"
-                } font-bold relative flex items-center justify-center w-12 h-12 cursor-pointer `}
+                } font-bold relative flex items-center justify-center w-12 h-12  `}
               />
             </button>
+            <span className="text-sm mt-2">
+              £{cart.subtotal?.toFixed(2) ?? 0}
+            </span>
           </li>
         </ul>
       </div>
-      <CartContainer
-        cartIsOpen={cartIsOpen}
-        toggleCartDrawer={toggleCartDrawer}
-      />
+
       {/* Mobile Nav links */}
       <aside
         className={
@@ -365,6 +369,7 @@ const Navbar = () => {
               onClick={toggle}
             >
               <FaTimes fontSize={21} />
+              <span hidden>close</span>
             </button>
 
             <button
@@ -377,6 +382,7 @@ const Navbar = () => {
               ) : (
                 <FiMoon fontSize={21} className="font-bold " />
               )}
+              <span hidden>toggle-theme</span>
             </button>
           </div>
 
@@ -389,6 +395,7 @@ const Navbar = () => {
                 >
                   <Link href={link.link}>
                     <a
+                      aria-label={link.title}
                       className={`${
                         router.asPath === link.link ? "text-yellow-500" : ""
                       }flex items-center  ml-4 mb-2 cursor-pointer py-1.5  px-2   hover:text-yellow-400 text-lg font-medium list-none uppercase`}
@@ -401,7 +408,10 @@ const Navbar = () => {
               {authState.user ? (
                 <>
                   <li className="px-1 m-0 text-base list-none text-md">
-                    <button className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2">
+                    <button
+                      aria-label="user-profile-button"
+                      className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2"
+                    >
                       <FaUser fontSize={18} />
                       <Link href={"/account/profile"}>
                         <a
@@ -418,7 +428,10 @@ const Navbar = () => {
                   </li>
                   {authState.user.isAdmin && (
                     <li className="px-1 m-0 text-base list-none text-md">
-                      <button className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2">
+                      <button
+                        aria-label="admin-button"
+                        className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2"
+                      >
                         <RiAdminFill fontSize={18} />
                         <Link href={"/admin"}>
                           <a
@@ -436,6 +449,7 @@ const Navbar = () => {
                   )}
                   <li className="px-1 m-0 text-base list-none text-md">
                     <button
+                      aria-label="logout-button"
                       className="flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2  space-x-2  text-lg font-medium list-none uppercase"
                       onClick={logoutHandler}
                     >
@@ -446,7 +460,10 @@ const Navbar = () => {
                 </>
               ) : (
                 <li className="flex items-center px-1 m-0 text-base list-none text-md">
-                  <button className="flex items-center">
+                  <button
+                    aria-label="login-button"
+                    className="flex items-center"
+                  >
                     <FiLogIn fontSize={18} className="ml-5 mr-1 " />
                     <Link href={"/account/login"}>
                       <a

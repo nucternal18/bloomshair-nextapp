@@ -4,7 +4,7 @@ import { AiOutlineShopping } from "react-icons/ai";
 function CartIcon({ itemCount, ...props }) {
   return (
     <div
-      className="relative flex items-center justify-center w-12 h-12 cursor-pointer"
+      className="relative flex items-center justify-center w-12 h-12"
       {...props}
     >
       <div className="">

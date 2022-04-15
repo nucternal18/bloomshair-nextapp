@@ -1,8 +1,6 @@
 import React from "react";
 import Head from "next/head";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { ToastContainer } from "react-toastify";
 
 import Navbar from "../../navigation/Navbar/Navbar";
 import Footer from "../../Footer";
@@ -61,7 +59,9 @@ function Layout({ title, description, children }: ILayout): JSX.Element {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Navbar />
-      <main className={`relative ${router.asPath === "/" ? "mt-0" : "mt-24"}`}>
+      <main
+        className={`relative ${router.asPath === "/" ? "mt-0" : "mt-24"} z-0`}
+      >
         {children}
       </main>
       <Footer />

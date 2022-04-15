@@ -9,6 +9,7 @@ type ButtonProps = {
   type: "submit" | "button";
   children?: ReactNode;
   props?: any;
+  buttonName?: string;
   onClick?: () => void;
 };
 
@@ -20,13 +21,22 @@ const Button: React.FunctionComponent<
     ButtonProps
 > = forwardRef<Ref, ButtonProps>(
   (
-    { children, disabled, className, type, color, ...props }: ButtonProps,
+    {
+      children,
+      disabled,
+      className,
+      type,
+      buttonName,
+      color,
+      ...props
+    }: ButtonProps,
     ref
   ) => (
     <button
       ref={ref}
       {...props}
       disabled={disabled}
+      aria-label={`${buttonName}-button`}
       type={type}
       className={`${colors[color]} ${className} ${
         disabled ? "opacity-60 cursor-not-allowed" : ""

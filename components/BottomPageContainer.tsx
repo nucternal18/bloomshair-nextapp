@@ -2,8 +2,10 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { FaFacebook, FaInstagram, FaGoogle } from "react-icons/fa";
+import { Resize } from "@cloudinary/url-gen/actions/resize";
 
 import Button from "./Button";
+import { buildImage } from "@lib/cloudinaryUrl";
 
 const shimmer = (w, h) => `
 <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -27,16 +29,18 @@ const toBase64 = (str) =>
 function BottomPageContainer() {
   return (
     <>
-      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+      <section className="grid grid-cols-1 sm:grid-cols-3">
         <div className="relative">
           <div
             className="relative flex items-center justify-center"
             style={{ height: "400px" }}
           >
             <Image
-              src={
-                "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1621805390/blooms_hair_products/AdobeStock_278832769_qrecru.webp"
-              }
+              src={buildImage(
+                "blooms_hair_products/AdobeStock_278832769_qrecru"
+              )
+                .resize(Resize.scale().width(400).height(400))
+                .toURL()}
               alt="home background image"
               layout="fill"
               objectFit="cover"
@@ -54,7 +58,11 @@ function BottomPageContainer() {
                   About Blooms
                 </p>
                 <div>
-                  <Button type="button" color="yellow">
+                  <Button
+                    buttonName="about-blooms"
+                    type="button"
+                    color="yellow"
+                  >
                     <Link href="/about">
                       <a>See More</a>
                     </Link>
@@ -70,13 +78,15 @@ function BottomPageContainer() {
             style={{ height: "400px" }}
           >
             <Image
-              src={
-                "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1621805395/blooms_hair_products/AdobeStock_192477796_vtn3n4.webp"
-              }
+              src={buildImage(
+                "blooms_hair_products/AdobeStock_192477796_vtn3n4"
+              )
+                .resize(Resize.scale().width(400).height(400))
+                .toURL()}
               alt="home background image"
               layout="fill"
               objectFit="cover"
-              quality={75}
+              quality={50}
               placeholder="blur"
               blurDataURL={`data:image/svg+xml;base64,${toBase64(
                 shimmer(700, 475)
@@ -89,7 +99,11 @@ function BottomPageContainer() {
                   Service Menu
                 </p>
                 <div>
-                  <Button type="button" color="yellow">
+                  <Button
+                    buttonName="service-menu"
+                    type="button"
+                    color="yellow"
+                  >
                     <Link href="/service-menu">
                       <a>See More</a>
                     </Link>
@@ -105,9 +119,11 @@ function BottomPageContainer() {
             style={{ height: "400px" }}
           >
             <Image
-              src={
-                "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1621805383/blooms_hair_products/AdobeStock_208497707_gpctl8.webp"
-              }
+              src={buildImage(
+                "blooms_hair_products/AdobeStock_208497707_gpctl8"
+              )
+                .resize(Resize.scale().width(400).height(400))
+                .toURL()}
               alt="home background image"
               layout="fill"
               objectFit="cover"
@@ -125,7 +141,11 @@ function BottomPageContainer() {
                     Contact Blooms
                   </p>
                   <div>
-                    <Button type="button" color="yellow">
+                    <Button
+                      buttonName="contact-blooms"
+                      type="button"
+                      color="yellow"
+                    >
                       <Link href="/contact-us">
                         <a>Contact Now</a>
                       </Link>
@@ -178,16 +198,19 @@ function BottomPageContainer() {
                 <li className="px-1 py-2 m-1 text-gray-300 hover:text-blue-500">
                   <a href="https://www.facebook.com/bloomshair">
                     <FaFacebook fontSize={28} />
+                    <span hidden>Got to our facebook page</span>
                   </a>
                 </li>
                 <li className="px-1 py-2 m-1 text-gray-300 hover:text-rose-600">
                   <a href="https://www.instagram.com/blooms_hair/">
                     <FaInstagram fontSize={28} />
+                    <span hidden>Got to our instagram page</span>
                   </a>
                 </li>
                 <li className="px-1 py-2 m-1 text-gray-300 hover:text-green-500">
                   <a href="https://www.google.com/maps/place/Blooms+Hair/@51.526503,-0.0994912,15z/data=!4m5!3m4!1s0x0:0x7abe1309f8f21d14!8m2!3d51.526503!4d-0.0994912">
                     <FaGoogle fontSize={28} />
+                    <span hidden>Got to our google page</span>
                   </a>
                 </li>
               </ul>

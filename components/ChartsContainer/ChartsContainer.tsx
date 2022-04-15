@@ -7,7 +7,7 @@ const ChartsContainer = ({ monthlyStats }) => {
   return (
     <section className="px-4 mx-auto max-w-screen-xl mt-24 font-mono text-gray-900 dark:text-gray-200 md:px-6 flex flex-col gap-4 items-center justify-center">
       <div className="flex flex-col gap-4">
-        <h5 className="text-2xl font-semibold">Monthly Applications</h5>
+        <h5 className="text-2xl font-semibold">Monthly Sales Total</h5>
         <button
           type="button"
           onClick={() => setBarChart(!barChart)}

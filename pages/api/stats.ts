@@ -78,7 +78,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         .format("MMM YYYY");
       return { date, totalPrice };
     });
-    console.log(monthlySalesStats);
+
     await db.disconnect();
     res.status(200).json({
       productStats,

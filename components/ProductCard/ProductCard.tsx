@@ -1,40 +1,56 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { Cloudinary } from "@cloudinary/url-gen";
+
+// components
 import Rating from "../Rating";
 import { Card, CardBody, CardTitle, CardText } from "../Card";
 import Button from "../Button";
-import { CartItemsProps } from "../../context/cart/cartState";
+
+// context
 import { useCart } from "../../context/cart/cartContext";
 import { addToCart } from "../../context/cart/cartActions";
-import { ProductProps } from "../../lib/types";
+import { CartItemsProps, ProductProps } from "../../lib/types";
+import { NEXT_URL } from "@config/index";
 
 interface IProductCard {
   product: ProductProps;
   isAvailable?: boolean;
 }
 
+const cld = new Cloudinary({
+  cloud: {
+    cloudName: "dtkjg8f0n",
+  },
+  url: {
+    secure: true, // force https, set to false to force http
+  },
+});
+
 const ProductCard = ({ product, isAvailable }: IProductCard) => {
+  const url = product.image.substring(61, product.image.lastIndexOf("."));
+  const productImageUrl = cld.image(url).quality("auto").format("auto").toURL();
   const router = useRouter();
   const { state, dispatch } = useCart();
-  const addToCartHandler = () => {
-    const items: CartItemsProps = {
-      product: product._id,
-      name: product.name,
-      image: product.image,
-      price: product.price,
-      countInStock: product.countInStock,
-      qty: state.cart.qty,
-    };
+  // const addToCartHandler = () => {
+  //   const items: CartItemsProps = {
+  //     product: product._id,
+  //     name: product.name,
+  //     image: product.image,
+  //     price: product.price,
+  //     countInStock: product.countInStock,
+  //     qty: state.cart.qty,
+  //   };
 
-    dispatch(addToCart(items));
-  };
+  //   dispatch(addToCart(items));
+  // };
   return (
     <Card>
       <Link href={`/products/${product._id}`}>
         <a>
           <Image
-            src={product.image}
+            src={productImageUrl}
             alt={product.name}
             className="rounded-t-lg"
             width={400}
@@ -63,7 +79,7 @@ const ProductCard = ({ product, isAvailable }: IProductCard) => {
             color="dark"
             className="rounded-lg"
             onClick={() => {
-              router.push(`/products/${product._id}`);
+              router.replace(`${NEXT_URL}/products/${product._id}`);
             }}
           >
             details
@@ -72,9 +88,13 @@ const ProductCard = ({ product, isAvailable }: IProductCard) => {
             <Button
               type="button"
               color="dark"
-              className="rounded-lg"
+              className="snipcart-add-item rounded-lg"
+              data-item-id={product._id}
+              data-item-price={product.price}
+              data-item-url={`/products/${product._id}`}
+              data-item-image={productImageUrl}
+              data-item-name={product.name}
               disabled={product.countInStock === 0}
-              onClick={addToCartHandler}
             >
               Add to Cart
             </Button>

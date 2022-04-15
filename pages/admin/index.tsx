@@ -11,7 +11,6 @@ import StatsContainer from "@components/StatsContainer";
 import ChartsContainer from "@components/ChartsContainer";
 
 export default function Dashboard({ stats }) {
-  console.log(stats);
   return (
     <AdminLayout title="Admin">
       <section className=" w-full h-screen px-4 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 md:px-10">

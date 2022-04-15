@@ -16,8 +16,9 @@ import {
   addToCart,
 } from "../../context/cart/cartActions";
 import { NEXT_URL } from "../../config";
-import { CartItemsProps } from "../../context/cart/cartState";
+
 import { GetServerSideProps } from "next";
+import { CartItemsProps } from "@lib/types";
 
 function Cart({ session }) {
   const router = useRouter();

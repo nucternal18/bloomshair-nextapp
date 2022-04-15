@@ -50,6 +50,7 @@ class MyDocument extends Document {
             hidden
             id="snipcart"
             data-api-key={process.env.NEXT_PUBLIC_SNIPCART_PUBLIC_TEST_API_KEY}
+            data-currency="gbp"
             data-config-modal-style="side"
           ></div>
         </body>
