@@ -1,3 +1,4 @@
+import moment from "moment";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 
@@ -36,7 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     await db.connectDB();
 
     const productStats = await Product.countDocuments({});
-    const userStats = await User.countDocuments({});
+    const userStats = await User.where({ isAdmin: false }).countDocuments();
     const orderStats = await Order.countDocuments({});
     const ordersDelivered = await Order.where({
       isDelivered: true,
@@ -45,16 +46,39 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const totalSalesStats = await Order.aggregate([
       { $group: { _id: null, total: { $sum: "$totalPrice" } } },
     ]);
-    const monthlySalesStats = await Order.aggregate([
-      { $project: { month: { $month: "$createdAt" }, totalPrice: 1 } },
+
+    const monthlySales = await Order.aggregate([
+      {
+        $project: {
+          month: { $month: "$createdAt" },
+          year: { $year: "$createdAt" },
+          totalPrice: 1,
+        },
+      },
       {
         $group: {
-          _id: { month: "$month" },
+          _id: {
+            month: "$month",
+            year: "$year",
+          },
           totalPrice: { $sum: "$totalPrice" },
         },
       },
+      { $sort: { "_id.year": 1, "_id.month": 1 } },
     ]);
 
+    const monthlySalesStats = monthlySales.map((item) => {
+      const {
+        _id: { year, month },
+        totalPrice,
+      } = item;
+      const date = moment()
+        .month(month - 1)
+        .year(year)
+        .format("MMM YYYY");
+      return { date, totalPrice };
+    });
+    console.log(monthlySalesStats);
     await db.disconnect();
     res.status(200).json({
       productStats,
