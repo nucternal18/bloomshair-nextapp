@@ -1,4 +1,4 @@
-import { OrderProps } from "../context/order/OrderContext";
+import { OrderProps } from "./types";
 
 export const verifyEmail = (
   subject: string,
