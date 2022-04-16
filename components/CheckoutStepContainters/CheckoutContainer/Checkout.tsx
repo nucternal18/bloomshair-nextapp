@@ -70,11 +70,11 @@ const CheckOutContainer = ({ userInfo, paypalClientID, handleStepChange }) => {
     }
   }, [cartItems]);
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   if (error) {
+  //     toast.error(error);
+  //   }
+  // }, [error]);
 
   /**
    * @description Creates a paypal order and returns the paypal orderID
