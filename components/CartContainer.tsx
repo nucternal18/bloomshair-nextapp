@@ -11,7 +11,7 @@ import { removeFromCart, addToCart } from "../context/cart/cartActions";
 import CartItem from "./CartItem";
 import Button from "./Button";
 import { NEXT_URL } from "../config";
-import { CartItemsProps } from "../context/cart/cartState";
+import { CartItemsProps } from "@lib/types";
 
 function CartContainer({ cartIsOpen, toggleCartDrawer }) {
   const router = useRouter();
