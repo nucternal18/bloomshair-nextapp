@@ -33,7 +33,8 @@
     "next.config.js",
     ".eslintrc.js",
     "jest.config.js",
-    "next-sitemap.js"
+    "next-sitemap.js",
+    "/pages/api/auth/[...nextauth].ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "/pages/api/auth/[...nextauth].ts"]
 }
