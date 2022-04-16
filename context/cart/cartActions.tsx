@@ -1,8 +1,4 @@
-import {
-  CartItemsProps,
-  paymentMethodProps,
-  ShippingAddressProps,
-} from "./cartState";
+import { CartItemsProps, ShippingAddressProps } from "@lib/types";
 
 export enum ActionType {
   CART_ADD_ITEM = "CART_ADD_ITEM",
