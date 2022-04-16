@@ -1,5 +1,5 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import NextAuth from "next-auth";
+import { NextApiRequest, NextApiResponse } from "next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import User from "../../../models/userModel";
 
@@ -8,17 +8,6 @@ import db from "../../../lib/db";
 type CredentialsProps = {
   email: string;
   password: string;
-};
-
-type SessionProps = {
-  user: {
-    _id: string;
-    image: string;
-    name: string;
-    email: string;
-    isAdmin: boolean;
-  };
-  expires: Date;
 };
 
 export default NextAuth({
