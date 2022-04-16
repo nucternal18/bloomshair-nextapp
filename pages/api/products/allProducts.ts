@@ -1,12 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { withSentry } from "@sentry/nextjs";
 import Product from "../../../models/productModel";
 import db from "../../../lib/db";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
     /**
-     * @desc Get top rated products
+     * @desc Get all products
      * @route GET /api/products/topProducts
      * @access Public
      */

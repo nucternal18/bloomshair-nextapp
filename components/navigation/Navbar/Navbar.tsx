@@ -27,7 +27,7 @@ import { BloomsLogo } from "../../SVG/BloomsLogo";
 
 const Navbar = () => {
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [cartIsOpen, setCartIsOpen] = useState<boolean>(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState<boolean>(false);
@@ -127,7 +127,7 @@ const Navbar = () => {
                 fill={`${
                   router.asPath === "/" && pos === "top"
                     ? "#fff"
-                    : theme === "dark"
+                    : resolvedTheme === "dark"
                     ? "#fff"
                     : "#000"
                 }`}
@@ -216,7 +216,7 @@ const Navbar = () => {
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className={`flex p-1 ml-4 font-medium list-none  cursor-pointer md:block lg:ml-0 lg:mb-0 lg:p-1 lg:px-1 focus:outline-none focus:ring-none focus:border-transparent`}
             >
-              {theme === "light" ? (
+              {resolvedTheme === "light" ? (
                 <FiSun
                   fontSize={18}
                   className={`${
@@ -345,7 +345,13 @@ const Navbar = () => {
                 } font-bold relative flex items-center justify-center w-12 h-12  `}
               />
             </button>
-            <span className="text-sm mt-2">
+            <span
+              className={`${
+                router.asPath === "/" && pos === "top"
+                  ? "text-gray-200"
+                  : "text-gray-900 dark:text-gray-200"
+              } text-sm mt-2 `}
+            >
               £{cart.subtotal?.toFixed(2) ?? 0}
             </span>
           </li>
@@ -377,7 +383,7 @@ const Navbar = () => {
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className="flex p-1  font-medium list-none cursor-pointer md:block lg:ml-0 lg:mb-0 lg:p-1 lg:px-1 focus:outline-none focus:ring-none focus:border-transparent"
             >
-              {theme === "light" ? (
+              {resolvedTheme === "light" ? (
                 <FiSun fontSize={21} className="font-bold " />
               ) : (
                 <FiMoon fontSize={21} className="font-bold " />

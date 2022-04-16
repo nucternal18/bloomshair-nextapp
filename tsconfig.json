@@ -32,7 +32,8 @@
     "tailwind.config.js",
     "next.config.js",
     ".eslintrc.js",
-    "jest.config.js"
+    "jest.config.js",
+    "next-sitemap.js"
   ],
   "exclude": ["node_modules"]
 }
