@@ -1,4 +1,4 @@
-import { useState, memo, useCallback } from "react";
+import { useState, memo, FC, useRef, useCallback } from "react";
 
 import {
   GoogleMap,
@@ -14,58 +14,62 @@ const center = {
   lng: -0.099461,
 };
 
-const Maps = ({ containerStyle, zoom }) => {
+interface MapProps {
+  containerStyle: {
+    height: string;
+  };
+  zoom: number;
+}
+
+const Maps: FC<MapProps> = ({ containerStyle, zoom }): JSX.Element => {
+  const [selected, setSelected] = useState(false);
+  const mapRef = useRef<any>(null);
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
   });
-  const [selected, setSelected] = useState(false);
 
-  const [map, setMap] = useState(null);
+  const onLoad = useCallback((mapInstance) => {
+    const bounds = new google.maps.LatLngBounds();
 
-  const onLoad = useCallback(function callback(map) {
-    const bounds = new window.google.maps.LatLngBounds();
-    map.fitBounds(bounds);
-    setMap(map);
-  }, []);
-
-  const onUnmount = useCallback(function callback(map) {
-    setMap(null);
+    bounds.extend(new google.maps.LatLng(center.lat, center.lng));
+    mapRef.current = mapInstance;
+    mapInstance.fitBounds(bounds);
   }, []);
 
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={center}
-      zoom={zoom}
       onLoad={onLoad}
-      onUnmount={onUnmount}
     >
       <Marker
-        position={{ lat: 51.526528, lng: -0.099461 }}
+        position={{ lat: center.lat, lng: center.lng }}
         onClick={() => {
           setSelected(true);
         }}
       />
-      {selected && (
+      {selected ? (
         <InfoWindow
-          position={{ lat: 51.526528, lng: -0.099461 }}
+          position={{ lat: center.lat, lng: center.lng }}
           onCloseClick={() => {
             setSelected(false);
           }}
         >
-          <div>
-            <h1 className="p-2 mb-2 text-xl font-bold text-white bg-black">
+          <p>
+            <span className="p-2 mb-2 text-xl font-bold text-white bg-black">
               Blooms Hair
-            </h1>
-            <p className="mb-4 font-thin">9 Lever Street, London. EC1V 3QU</p>
-          </div>
+            </span>
+            <span className="mb-4 font-thin">
+              9 Lever Street, London. EC1V 3QU
+            </span>
+          </p>
         </InfoWindow>
-      )}
+      ) : null}
     </GoogleMap>
   ) : (
-    <div className="flex items-center justify-center">
-      <Spinner message="loading map..." />
+    <div>
+      <Spinner message="loading maps" />
     </div>
   );
 };

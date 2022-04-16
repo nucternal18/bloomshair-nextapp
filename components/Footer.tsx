@@ -83,7 +83,7 @@ const Footer = () => {
               A: 9 Lever Street, London EC1V 3QU
             </p>
             <div className="w-full">
-              <Maps containerStyle={containerStyle} zoom={17} />
+              <Maps containerStyle={containerStyle} zoom={18} />
             </div>
           </div>
           <div className="w-full mb-4 sm:mb-0">
