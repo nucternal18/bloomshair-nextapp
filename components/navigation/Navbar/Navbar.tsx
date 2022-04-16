@@ -35,9 +35,7 @@ const Navbar = () => {
   const [pos, setPos] = useState<string>("top");
   const { state } = useCart();
   const { state: authState } = useAuth();
-  const { isLoading, data: cartItems } = useQuery("cart", getCartItems, {
-    initialData: state.cart.cartItems,
-  });
+
   const { cart = {} } = useSnipcart();
 
   useEffect(() => {
@@ -177,16 +175,14 @@ const Navbar = () => {
               aria-label="cart-button"
               className="snipcart-checkout text-2xl  list-none cursor-pointer hover:text-yellow-400"
             >
-              {!isLoading && (
-                <CartIcon
-                  itemCount={cart.items?.count || 0}
-                  className={`${
-                    router.asPath === "/" && pos === "top"
-                      ? "text-gray-200"
-                      : "text-gray-900 dark:text-gray-200"
-                  } font-bold relative flex items-center justify-center w-12 h-12 cursor-pointer `}
-                />
-              )}
+              <CartIcon
+                itemCount={cart.items?.count || 0}
+                className={`${
+                  router.asPath === "/" && pos === "top"
+                    ? "text-gray-200"
+                    : "text-gray-900 dark:text-gray-200"
+                } font-bold relative flex items-center justify-center w-12 h-12 cursor-pointer `}
+              />
             </button>
           </div>
         </div>
