@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { FaTimes } from "react-icons/fa";
 
-import { OrderProps } from "../../context/order/OrderContext";
-
 // component
 import Button from "../Button";
 
+// types
+import { OrderProps } from "@lib/types";
 interface ITable {
   tableData: Partial<OrderProps>[];
 }
