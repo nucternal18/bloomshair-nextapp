@@ -111,7 +111,7 @@ const serviceReducer = (state: IServiceState, action: any) => {
 };
 
 // ***** Provider *****
-export const ServiceProvider: React.FC = ({ children }) => {
+export const ServiceProvider = ({ children }) => {
   const [state, dispatch] = useReducer(serviceReducer, initialServiceState);
 
   // ***** Fetch Service Item *****
