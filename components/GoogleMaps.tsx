@@ -6,6 +6,7 @@ import {
   Marker,
   InfoWindow,
   useJsApiLoader,
+  InfoBox,
 } from "@react-google-maps/api";
 import Spinner from "./Spinner";
 
