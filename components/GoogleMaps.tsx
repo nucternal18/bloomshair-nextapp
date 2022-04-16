@@ -49,23 +49,6 @@ const Maps: FC<MapProps> = ({ containerStyle, zoom }): JSX.Element => {
           setSelected(true);
         }}
       />
-      {selected ? (
-        <InfoWindow
-          position={{ lat: center.lat, lng: center.lng }}
-          onCloseClick={() => {
-            setSelected(false);
-          }}
-        >
-          <p>
-            <span className="p-2 mb-2 text-xl font-bold text-white bg-black">
-              Blooms Hair
-            </span>
-            <span className="mb-4 font-thin">
-              9 Lever Street, London. EC1V 3QU
-            </span>
-          </p>
-        </InfoWindow>
-      ) : null}
     </GoogleMap>
   ) : (
     <div>
