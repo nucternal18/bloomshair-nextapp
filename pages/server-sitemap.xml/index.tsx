@@ -7,10 +7,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const response = await fetch(`${NEXT_URL}/api/products/allProducts`);
   const data = await response.json();
 
-  const fields = data.map((product) => ({
-    loc: `${NEXT_URL}/products/${product._id}`,
-    lastmod: new Date(product.updatedAt).toISOString(),
-  }));
+  const fields = data.map((product) => `${NEXT_URL}/products/${product._id}`);
 
   return getServerSideSitemapIndex(ctx, fields);
 };
