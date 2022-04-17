@@ -45,6 +45,7 @@ jobs:
           echo NEXT_PUBLIC_SENTRY_DSN=${{ secrets.NEXT_PUBLIC_SENTRY_DSN }} >> .env.local
           echo NEXT_PUBLIC_SNIPCART_PUBLIC_API_KEY=${{ secrets.NEXT_PUBLIC_SNIPCART_PUBLIC_API_KEY }} >> .env.local
           echo SITE_URL=${{ secrets.SITE_URL }} >> .env.local
+          echo NEXT_PUBLIC_CLOUDINARY_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_NAME }} >> .env.local
           cat .env.local
       - name: Create .sentryclirc file
         run: |
@@ -60,7 +61,7 @@ jobs:
       - run: yarn install
       - run: yarn lint
       # - run: yarn test:ci
-      - run: yarn build
+      - run: yarn run build
       - run: pm2 reload bloomshair-nextapp
     env:
       CI: true
