@@ -43,6 +43,8 @@ jobs:
           echo NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} >> .env.local
           echo SENTRY_DSN=${{ secrets.SENTRY_DSN }} >> .env.local
           echo NEXT_PUBLIC_SENTRY_DSN=${{ secrets.NEXT_PUBLIC_SENTRY_DSN }} >> .env.local
+          echo NEXT_PUBLIC_SNIPCART_PUBLIC_API_KEY=${{ secrets.NEXT_PUBLIC_SNIPCART_PUBLIC_API_KEY }} >> .env.local
+          echo SITE_URL=${{ secrets.SITE_URL }} >> .env.local
           cat .env.local
       - name: Create .sentryclirc file
         run: |
