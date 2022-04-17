@@ -16,7 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      * @access Public
      */
     try {
-      const product = await Product.findOne({ _id: id });
+      const product = await Product.findOne({ slug: req.query.slug });
       if (product) res.status(200).json({ product });
     } catch (error) {
       res.status(404).json({ message: "Product not found", error });

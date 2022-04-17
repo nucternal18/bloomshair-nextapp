@@ -38,6 +38,7 @@ export type ProductProps = {
   description: string;
   rating?: number;
   numReviews?: number;
+  slug?: string;
 };
 
 export type UserInfoProps = {

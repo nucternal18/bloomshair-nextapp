@@ -69,7 +69,7 @@ function ProductDetails({ product, productId, userInfo }) {
                 <Button
                   type="button"
                   color="dark"
-                  onClick={() => router.back()}
+                  onClick={() => router.replace(`${NEXT_URL}/products`)}
                 >
                   Go Back
                 </Button>
@@ -135,9 +135,9 @@ function ProductDetails({ product, productId, userInfo }) {
                         color="dark"
                         type="button"
                         className="snipcart-add-item"
-                        data-item-id={product._id}
+                        data-item-id={product.slug}
                         data-item-price={product.price}
-                        data-item-url={`/products/${product._id}`}
+                        data-item-url={`/products/${product.slug}`}
                         data-item-image={productImageUrl}
                         data-item-name={product.name}
                         disabled={product.countInStock === 0}
@@ -292,13 +292,16 @@ function ProductDetails({ product, productId, userInfo }) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const req = context.req;
   const session = await getSession({ req });
-  const { id } = context.params;
+  const { slug } = context.params;
 
   if (!session) {
-    const productRes = await fetch(`${NEXT_URL}/api/products/${id}`);
+    const productRes = await fetch(`${NEXT_URL}/api/products/${slug}`);
     const productData = await productRes.json();
     return {
-      props: { product: productData.product, productId: id },
+      props: {
+        product: productData.product,
+        productId: productData.product._id,
+      },
     };
   }
 
@@ -310,7 +313,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         cookie: context.req.headers.cookie,
       },
     }),
-    fetch(`${NEXT_URL}/api/products/${id}`),
+    fetch(`${NEXT_URL}/api/products/${slug}`),
   ]);
 
   const [userData, productData] = await Promise.all([
@@ -325,7 +328,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       product: productData.product,
-      productId: id,
+      productId: productData.product._id,
       userInfo: userData,
     }, // will be passed to the page component as props
   };

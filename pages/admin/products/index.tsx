@@ -74,6 +74,7 @@ const Products = ({ products, pages }) => {
       category: row["category"],
       brand: row["brand"],
       countInStock: row["countInStock"],
+      slug: row["slug"],
     };
   });
 

@@ -348,7 +348,7 @@ const Navbar = () => {
                   : "text-gray-900 dark:text-gray-200"
               } text-sm mt-2 `}
             >
-              £{cart.subtotal?.toFixed(2) ?? 0}
+              {cart.items?.count > 0 && `£${cart.subtotal?.toFixed(2)}`}
             </span>
           </li>
         </ul>

@@ -47,7 +47,7 @@ const ProductCard = ({ product, isAvailable }: IProductCard) => {
   // };
   return (
     <Card>
-      <Link href={`/products/${product._id}`}>
+      <Link href={`/products/${product.slug}`}>
         <a>
           <Image
             src={productImageUrl}
@@ -62,7 +62,7 @@ const ProductCard = ({ product, isAvailable }: IProductCard) => {
       </Link>
       <CardBody className="px-3">
         <CardTitle className="text-lg truncate">
-          <Link href={`/products/${product._id}`}>
+          <Link href={`/products/${product.slug}`}>
             <a className="font-semibold ">{product.name}</a>
           </Link>
         </CardTitle>
@@ -79,7 +79,7 @@ const ProductCard = ({ product, isAvailable }: IProductCard) => {
             color="dark"
             className="rounded-lg"
             onClick={() => {
-              router.replace(`${NEXT_URL}/products/${product._id}`);
+              router.replace(`${NEXT_URL}/products/${product.slug}`);
             }}
           >
             details
@@ -89,9 +89,9 @@ const ProductCard = ({ product, isAvailable }: IProductCard) => {
               type="button"
               color="dark"
               className="snipcart-add-item rounded-lg"
-              data-item-id={product._id}
+              data-item-id={product.slug}
               data-item-price={product.price}
-              data-item-url={`/products/${product._id}`}
+              data-item-url={`/products/${product.slug}`}
               data-item-image={productImageUrl}
               data-item-name={product.name}
               disabled={product.countInStock === 0}

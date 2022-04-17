@@ -7,7 +7,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const response = await fetch(`${NEXT_URL}/api/products/allProducts`);
   const data = await response.json();
 
-  const fields = data.map((product) => `${NEXT_URL}/products/${product._id}`);
+  const fields = data.map((product) => `${NEXT_URL}/products/${product.slug}`);
 
   return getServerSideSitemapIndex(ctx, fields);
 };

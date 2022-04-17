@@ -221,7 +221,7 @@ const Table = ({ tableData, deleteHandler }: IProductTable) => {
                   "
                 >
                   <button type="button" className="text-blue-600 text-md">
-                    <Link href={`/admin/products/${item._id}`}>
+                    <Link href={`/admin/products/${item.slug}`}>
                       <a>
                         <FaEdit
                           fontSize={18}

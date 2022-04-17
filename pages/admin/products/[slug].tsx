@@ -215,7 +215,7 @@ const ProductEditScreen = ({ product, productId, isLoading }): JSX.Element => {
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { id } = context.params;
+  const { slug } = context.params;
   const req = context.req;
   const session = await getSession({ req });
 
@@ -239,13 +239,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const res = await fetch(`${NEXT_URL}/api/products/${id}`);
+  const res = await fetch(`${NEXT_URL}/api/products/${slug}`);
   const data = await res.json();
 
   return {
     props: {
       product: data.product,
-      productId: id,
+      productId: data.product._id,
       isLoading: data.product ? false : true,
     }, // will be passed to the page component as props
   };
