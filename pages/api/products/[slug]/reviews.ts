@@ -6,12 +6,12 @@ import db from "../../../../lib/db";
 import { getUser } from "../../../../lib/getUser";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { id } = req.query;
+  const { slug } = req.query;
   const session = await getSession({ req });
   if (req.method === "POST") {
     /**
      * @desc Create new review
-     * @route POST /api/products/:id/reviews
+     * @route POST /api/products/:slug/reviews
      * @access Private
      */
     if (!session) {
@@ -25,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const userData = await getUser(req);
 
     try {
-      const product = await Product.findById(id);
+      const product = await Product.findById(slug);
 
       if (product) {
         const alreadyReviewed = product.reviews.find(
@@ -33,8 +33,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         );
 
         if (alreadyReviewed) {
-          res.status(400);
-          throw new Error("Product already reviewed");
+          res
+            .status(400)
+            .json({ message: "You have already reviewed this product" });
         }
 
         const review = {
@@ -53,8 +54,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         res.status(201).json({ message: "Review created successfully" });
       }
     } catch (error) {
-      res.status(404).json({ message: "Review not created" });
-      throw new Error("Product not found");
+      res
+        .status(404)
+        .json({ message: "Review not created. Product not found" });
     }
   } else {
     res.status(405).json({ message: `Method ${req.method} not allowed` });

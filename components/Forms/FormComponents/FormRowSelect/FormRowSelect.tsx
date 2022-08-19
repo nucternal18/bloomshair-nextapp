@@ -27,6 +27,7 @@ const FormRowSelect: React.FunctionComponent<
         className="w-full px-3 py-2 leading-tight text-gray-900 bg-white shadow appearance-none focus:ring-0 focus:outline-none  dark:bg-white"
         id={`${type}`}
         ref={ref}
+        placeholder={`${name}`}
         aria-label={`${type}-input`}
         aria-errormessage={`${type}-error`}
         name={`${type}`}

@@ -82,10 +82,10 @@ const Products = ({ products, pages }) => {
    * @description - function to delete a product
    * @param id
    */
-  const deleteHandler = (id: string) => {
+  const deleteHandler = (slug: string, id: string) => {
     if (window.confirm("Are you sure?")) {
       // DELETE Products
-      deleteProduct(id);
+      deleteProduct(slug, id);
       refreshData();
     }
   };

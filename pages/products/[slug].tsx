@@ -110,7 +110,7 @@ function ProductDetails({ product, productId, userInfo }) {
                           Price:
                         </span>
                         <span>
-                          <strong>£{product.price.toFixed(2)}</strong>
+                          <strong>£ {Number(product.price).toFixed(2)}</strong>
                         </span>
                       </div>
                     </div>
@@ -135,7 +135,7 @@ function ProductDetails({ product, productId, userInfo }) {
                         color="dark"
                         type="button"
                         className="snipcart-add-item"
-                        data-item-id={product.slug}
+                        data-item-id={product._id}
                         data-item-price={product.price}
                         data-item-url={`/products/${product.slug}`}
                         data-item-image={productImageUrl}

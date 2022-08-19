@@ -63,6 +63,7 @@ const ProductEditScreen = ({ product, productId, isLoading }): JSX.Element => {
       category: data.category,
       countInStock: data.countInStock,
       description: value,
+      slug: product.slug,
     });
     router.replace("/admin/products");
   };

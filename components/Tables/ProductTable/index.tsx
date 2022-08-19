@@ -1,12 +1,10 @@
-import PropTypes from "prop-types";
 import Image from "next/image";
 import Link from "next/link";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import styles from "../../../styles/Table.module.css";
 import { ProductProps } from "../../../lib/types";
 
 interface IProductTable {
-  deleteHandler: (id: string) => void;
+  deleteHandler: (slug: string, id: string) => void;
   tableData: ProductProps[];
 }
 
@@ -243,7 +241,7 @@ const Table = ({ tableData, deleteHandler }: IProductTable) => {
                   <button
                     type="button"
                     className="text-red-600 text-md"
-                    onClick={() => deleteHandler(item._id)}
+                    onClick={() => deleteHandler(item.slug, item._id)}
                   >
                     <FaTrash
                       fontSize={18}

@@ -71,7 +71,9 @@ const ProductCard = ({ product, isAvailable }: IProductCard) => {
             value={product.rating}
             text={`${product.numReviews} reviews`}
           />
-          <CardText className="text-xl">£{product.price.toFixed(2)}</CardText>
+          <CardText className="text-xl">
+            £{Number(product.price).toFixed(2)}
+          </CardText>
         </div>
         <div className="grid grid-cols-2 gap-2 mt-2">
           <Button
@@ -89,7 +91,7 @@ const ProductCard = ({ product, isAvailable }: IProductCard) => {
               type="button"
               color="dark"
               className="snipcart-add-item rounded-lg"
-              data-item-id={product.slug}
+              data-item-id={product._id}
               data-item-price={product.price}
               data-item-url={`/products/${product.slug}`}
               data-item-image={productImageUrl}

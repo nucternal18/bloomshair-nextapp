@@ -23,6 +23,7 @@ const moduleExports = withTm(
       runtimeCaching,
       buildExcludes: [/middleware-manifest\.json$/, /_middleware\.js$/],
     },
+    swcMinify: true,
   })
 );
 

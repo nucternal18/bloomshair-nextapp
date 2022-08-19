@@ -43,10 +43,10 @@ export const ProductContext = createContext<{
   dispatch: React.Dispatch<any>;
   createProduct: () => void | Promise<void>;
   createProductReview: (
-    productId: string,
+    productSlug: string,
     review: ReviewProps
   ) => void | Promise<void>;
-  deleteProduct: (id: string) => void | Promise<void>;
+  deleteProduct: (productSlug: string, id: string) => void | Promise<void>;
   updateProduct: (props: ProductProps) => void | Promise<void>;
   uploadProdImage: (
     base64EncodedImage: string | ArrayBuffer
@@ -154,13 +154,14 @@ const ProductContextProvider = ({ children }) => {
     category,
     countInStock,
     description,
+    slug,
   }) => {
     try {
       dispatch({
         type: ActionType.PRODUCT_ACTION_REQUEST,
       });
 
-      const res = await fetch(`${NEXT_URL}/api/products/${_id}`, {
+      const res = await fetch(`${NEXT_URL}/api/products/${slug}/${_id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -198,13 +199,13 @@ const ProductContextProvider = ({ children }) => {
    * @desc delete a single product from database
    * @param id
    */
-  const deleteProduct = async (id: string) => {
+  const deleteProduct = async (productSlug: string, id: string) => {
     try {
       dispatch({
         type: ActionType.PRODUCT_ACTION_REQUEST,
       });
 
-      const res = await fetch(`${NEXT_URL}/api/products/${id}`, {
+      const res = await fetch(`${NEXT_URL}/api/products/${productSlug}/${id}`, {
         method: "DELETE",
       });
 
@@ -231,14 +232,14 @@ const ProductContextProvider = ({ children }) => {
    * @param review
    */
   const createProductReview = async (
-    productId: string,
+    productSlug: string,
     review: ReviewProps
   ) => {
     try {
       dispatch({
         type: ActionType.PRODUCT_ACTION_REQUEST,
       });
-      await fetch(`${NEXT_URL}/api/products/${productId}/reviews`, {
+      await fetch(`${NEXT_URL}/api/products/${productSlug}/reviews`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

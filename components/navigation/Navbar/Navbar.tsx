@@ -9,14 +9,11 @@ import { FiLogIn, FiLogOut, FiMoon, FiSun } from "react-icons/fi";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { RiAdminFill } from "react-icons/ri";
 import { signOut } from "next-auth/react";
-import { useQuery } from "react-query";
 import { useTheme } from "next-themes";
 import { useSnipcart } from "use-snipcart";
 
 // context
-import { useCart } from "@context/cart/cartContext";
 import { useAuth } from "@context/auth/AuthContext";
-import { getCartItems } from "@context/cart/cartActions";
 
 // components
 const CartIcon = dynamic(() => import("@components/CartIcon"), { ssr: false });
@@ -33,7 +30,6 @@ const Navbar = () => {
   const [isDropDownOpen, setIsDropDownOpen] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
   const [pos, setPos] = useState<string>("top");
-  const { state } = useCart();
   const { state: authState } = useAuth();
 
   const { cart = {} } = useSnipcart();
