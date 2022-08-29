@@ -10,7 +10,7 @@ const moduleExports = withTm(
   withPWA({
     reactStrictMode: true,
     experimental: {
-      esmExternals: "loose",
+      esmExternals: true,
     },
     images: {
       domains: ["firebasestorage.googleapis.com", "res.cloudinary.com"],
