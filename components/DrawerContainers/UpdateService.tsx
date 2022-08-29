@@ -25,9 +25,9 @@ const UpdateService = ({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Partial<IFormData>>({
+  } = useForm<Partial<ServiceProps>>({
     defaultValues: {
-      serviceName: service?.name,
+      name: service?.name,
       price: service?.price,
       category: service?.category,
     },
@@ -35,15 +35,15 @@ const UpdateService = ({
 
   useEffect(() => {
     const newServiceItem = {
-      serviceName: service?.name,
+      name: service?.name,
       price: service?.price,
       category: service?.category,
     };
     reset(newServiceItem);
   }, [service, isOpenUpdateDrawer]);
 
-  const submitHandler: SubmitHandler<Partial<IFormData>> = (data): void => {
-    const updatedServiceItem = { ...data, _id: service?._id };
+  const submitHandler: SubmitHandler<Partial<ServiceProps>> = (data): void => {
+    const updatedServiceItem = { ...data, _id: service?.id };
     updateServiceItem(updatedServiceItem, token);
     reset();
     setTsOpenUpdateDrawer(false);

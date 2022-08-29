@@ -1,7 +1,7 @@
 import { useState, createContext, useReducer, useContext } from "react";
 
 import { NEXT_URL } from "../config";
-import { ServiceProps } from "../lib/types";
+import { ServiceCategory, ServiceProps } from "../lib/types";
 
 export interface IServiceState {
   service: ServiceProps;
@@ -14,10 +14,10 @@ export interface IServiceState {
 
 export const initialServiceState: IServiceState = {
   service: {
-    _id: "",
+    id: "",
     name: "",
     price: 0,
-    category: "Gents Hair",
+    category: ServiceCategory.Gents_Hair,
     categoryOptions: [
       "Gents Hair",
       "Ladies Hair",
@@ -169,7 +169,7 @@ export const ServiceProvider = ({ children }) => {
     try {
       dispatch({ type: ServiceActionTypes.ACTION_REQUEST });
       const response = await fetch(
-        `${NEXT_URL}/api/hair-services/${service._id}`,
+        `${NEXT_URL}/api/hair-services/${service.id}`,
         {
           method: "PUT",
           headers: {

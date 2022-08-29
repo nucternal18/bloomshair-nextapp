@@ -3,19 +3,19 @@ import {
   UseFormHandleSubmit,
   UseFormRegister,
 } from "react-hook-form";
-import { IFormData } from "../../lib/types";
+import { IFormData, ServiceProps } from "../../lib/types";
 import Button from "../Button";
 
 import FormRowInput from "./FormComponents/FormRowInput";
 import FormRowSelect from "./FormComponents/FormRowSelect";
 
 interface IServiceForm {
-  handleSubmit: UseFormHandleSubmit<Partial<IFormData>>;
-  submitHandler: (data: Partial<IFormData>) => void;
+  handleSubmit: UseFormHandleSubmit<Partial<ServiceProps>>;
+  submitHandler: (data: Partial<ServiceProps>) => void;
   list: string[];
-  register: UseFormRegister<Partial<IFormData>>;
+  register: UseFormRegister<Partial<ServiceProps>>;
   errors: {
-    serviceName?: FieldError;
+    name?: FieldError;
     price?: FieldError;
     category?: FieldError;
   };
@@ -39,8 +39,8 @@ const ServiceForm = ({
           title="Service Name"
           type="serviceName"
           inputType="text"
-          errors={errors && errors?.serviceName}
-          {...register("serviceName")}
+          errors={errors && errors?.name}
+          {...register("name")}
         />
         <FormRowInput
           title="Price"

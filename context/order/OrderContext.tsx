@@ -207,7 +207,7 @@ const OrderContextProvider = ({ children }) => {
         type: ActionType.ORDER_ACTION_REQUEST,
       });
 
-      const res = await fetch(`${NEXT_URL}/api/orders/${order._id}/deliver`, {
+      const res = await fetch(`${NEXT_URL}/api/orders/${order.id}/deliver`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

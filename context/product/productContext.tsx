@@ -146,7 +146,7 @@ const ProductContextProvider = ({ children }) => {
    *
    */
   const updateProduct = async ({
-    _id,
+    id,
     name,
     price,
     image,
@@ -161,7 +161,7 @@ const ProductContextProvider = ({ children }) => {
         type: ActionType.PRODUCT_ACTION_REQUEST,
       });
 
-      const res = await fetch(`${NEXT_URL}/api/products/${slug}/${_id}`, {
+      const res = await fetch(`${NEXT_URL}/api/products/${slug}/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

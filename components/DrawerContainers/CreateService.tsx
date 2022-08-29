@@ -1,7 +1,7 @@
 import { Drawer } from "@mantine/core";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useService } from "../../context/serviceContext";
-import { IFormData } from "../../lib/types";
+import { IFormData, ServiceProps } from "../../lib/types";
 import ServiceForm from "../Forms/CreateServiceForm";
 
 interface ICreateHairService {
@@ -23,16 +23,16 @@ const CreateService = ({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Partial<IFormData>>({
+  } = useForm<Partial<ServiceProps>>({
     defaultValues: {
-      serviceName: "",
+      name: "",
       price: 0,
       category: state?.service?.category,
     },
   });
 
-  const submitHandler: SubmitHandler<Partial<IFormData>> = (data): void => {
-    createService(data, token);
+  const submitHandler: SubmitHandler<Partial<ServiceProps>> = (data): void => {
+    createService(data as ServiceProps, token);
     reset();
     setTsOpenCreateDrawer(false);
     refreshData();
