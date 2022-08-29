@@ -474,7 +474,7 @@ export const orderConfirmationEmail = (
 						<td style="line-height:none;">
 							<h1>
 								<strong>Here's Your Order Reference:</strong>
-								<strong>${order?._id}</strong>
+								<strong>${order?.id}</strong>
 							</h1>
 							<p>Placed on ${new Date(order.createdAt).toLocaleDateString()}</p>
 						</td>

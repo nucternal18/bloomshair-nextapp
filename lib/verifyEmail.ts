@@ -1,6 +1,9 @@
 import { NEXT_URL } from "../config";
+import { UserInfoProps } from "./types";
 
-export const verifyEmail = async (user): Promise<string> => {
+export const verifyEmail = async (
+  user: Partial<UserInfoProps>
+): Promise<string> => {
   try {
     const response = await fetch(`${NEXT_URL}/api/auth/verify`, {
       method: "POST",
@@ -8,7 +11,7 @@ export const verifyEmail = async (user): Promise<string> => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: user._id,
+        id: user.id,
         name: user.name,
         email: user.email,
       }),
