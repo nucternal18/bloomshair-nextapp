@@ -2,9 +2,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import bcrypt from "bcryptjs";
+import { PrismaClient } from "@prisma/client";
 
-import { prisma } from "@lib/prisma-db";
 import { getUser } from "../../../lib/getUser";
+
+const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "PUT") {

@@ -2,8 +2,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { withSentry } from "@sentry/nextjs";
+import { PrismaClient } from "@prisma/client";
 
-import { prisma } from "../../../../../lib/prisma-db";
+const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;

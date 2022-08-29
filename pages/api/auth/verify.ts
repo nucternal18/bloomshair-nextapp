@@ -2,11 +2,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { nanoid } from "nanoid";
 import { withSentry } from "@sentry/nextjs";
+import { PrismaClient } from "@prisma/client";
 
-import { prisma } from "../../../lib/prisma-db";
 import { NEXT_URL } from "../../../config";
 import { sendMail } from "../../../lib/mail";
 import { verifyEmail } from "../../../lib/emailServices";
+
+const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {

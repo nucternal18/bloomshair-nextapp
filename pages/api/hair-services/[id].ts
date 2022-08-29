@@ -1,10 +1,11 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
+import { PrismaClient } from "@prisma/client";
 
-import { prisma } from "../../../lib/prisma-db";
 import { getUser } from "../../../lib/getUser";
-import Service from "../../../models/serviceModel";
+
+const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
@@ -51,13 +52,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       await prisma.$disconnect();
       res.json({ success: true, message: "Service deleted successfully" });
     } catch (error: any) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "Unable to delete service item",
-          error,
-        });
+      res.status(404).json({
+        success: false,
+        message: "Unable to delete service item",
+        error,
+      });
     }
   } else if (req.method === "PUT") {
     /**
@@ -90,13 +89,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       await prisma.$disconnect();
       res.json({ success: true, message: "Service updated successfully" });
     } catch (error: any) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "Unable to update service item",
-          error,
-        });
+      res.status(404).json({
+        success: false,
+        message: "Unable to update service item",
+        error,
+      });
     }
   } else {
     res.setHeader("Allow", ["GET"]);

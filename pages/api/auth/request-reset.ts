@@ -2,11 +2,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { nanoid } from "nanoid";
 import { withSentry } from "@sentry/nextjs";
+import { PrismaClient } from "@prisma/client";
 
-import { prisma } from "../../../lib/prisma-db";
 import { NEXT_URL } from "../../../config";
 import { sendMail } from "../../../lib/mail";
 import { resetPasswordRequestEmail } from "../../../lib/emailServices";
+
+const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
@@ -44,12 +46,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       subject: "Reset your password.",
       html: resetPasswordRequestEmail(subject, name, url),
     });
-    res
-      .status(204)
-      .json({
-        success: true,
-        message: "Password change request sent. Please check you email inbox",
-      });
+    res.status(204).json({
+      success: true,
+      message: "Password change request sent. Please check you email inbox",
+    });
   } else {
     res.setHeader("Allow", ["POST"]);
     res.status(405).json({ message: `Method ${req.method} not allowed` });

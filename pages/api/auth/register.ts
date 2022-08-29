@@ -1,10 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { withSentry } from "@sentry/nextjs";
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
-import { prisma } from "../../../lib/prisma-db";
 import { verifyEmail } from "../../../lib/verifyEmail";
+
+const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {

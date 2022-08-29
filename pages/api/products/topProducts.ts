@@ -1,5 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "../../../lib/prisma-db";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {

@@ -1,10 +1,13 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
+import { PrismaClient } from "@prisma/client";
 
 import { getUser } from "../../../../lib/getUser";
 import { sendMail } from "../../../../lib/mail";
 import { orderConfirmationEmail } from "../../../../lib/emailServices";
+
+const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**

@@ -2,15 +2,12 @@ import { Prisma } from "@prisma/client";
 import moment from "moment";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-
-// models
-import Order from "@models/orderModel";
-import Product from "@models/productModel";
-import User from "@models/userModel";
+import { PrismaClient } from "@prisma/client";
 
 // utils
-import db from "@lib/db";
 import { getUser } from "@lib/getUser";
+
+const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
@@ -35,8 +32,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === "GET") {
-    await db.connectDB();
-
     const productStats = await prisma.products.count();
     const userStats = await prisma.users.findMany({
       where: {
@@ -90,7 +85,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     );
 
-    await db.disconnect();
+    await prisma.$disconnect();
     res.status(200).json({
       productStats,
       userStats: userStats.length,

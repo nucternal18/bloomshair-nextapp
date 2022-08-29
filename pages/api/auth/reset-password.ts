@@ -2,10 +2,12 @@
 import bcrypt from "bcryptjs";
 import { NextApiRequest, NextApiResponse } from "next";
 import { withSentry } from "@sentry/nextjs";
+import { PrismaClient } from "@prisma/client";
 
-import { prisma } from "../../../lib/prisma-db";
 import { sendMail } from "../../../lib/mail";
 import { resetPasswordVerificationEmail } from "../../../lib/emailServices";
+
+const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "PUT") {

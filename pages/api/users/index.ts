@@ -1,9 +1,11 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
+import { PrismaClient } from "@prisma/client";
 
-import { prisma } from "@lib/prisma-db";
 import { getUser } from "@lib/getUser";
+
+const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**

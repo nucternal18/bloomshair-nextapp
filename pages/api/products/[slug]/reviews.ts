@@ -1,10 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
+import { PrismaClient } from "@prisma/client";
 
 import { getUser } from "@lib/getUser";
-import { prisma } from "@lib/prisma-db";
 import { nanoid } from "nanoid";
+
+const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug } = req.query;
@@ -68,12 +70,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           .json({ success: true, message: "Review created successfully" });
       }
     } catch (error) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "Review not created. Product not found",
-        });
+      res.status(404).json({
+        success: false,
+        message: "Review not created. Product not found",
+      });
     }
   } else {
     res.status(405).json({ message: `Method ${req.method} not allowed` });

@@ -2,8 +2,9 @@ import bcrypt from "bcryptjs";
 import NextAuth from "next-auth/next";
 import { NextApiRequest } from "next";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaClient } from "@prisma/client";
 
-import { prisma } from "../../../lib/prisma-db";
+const prisma = new PrismaClient();
 
 type CredentialsProps = {
   email: string;
