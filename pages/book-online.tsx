@@ -34,10 +34,9 @@ function BookOnline(): JSX.Element {
           <>
             <div
               id="frameTitle"
-              className="embedded-widget-title"
+              className="embedded-widget-title text-gray-900 dark:text-gray-200"
               style={{
                 fontSize: "23px",
-                color: "#333",
                 fontFamily: "Arial, Helvetica, sans-serif",
                 lineHeight: "24px",
                 padding: "18px 10px 8px",

@@ -1,8 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import User from "../../../models/userModel";
-import db from "../../../lib/db";
+
+import { prisma } from "@lib/prisma-db";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
@@ -18,22 +18,27 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    await db.connectDB();
-
-    const user = await User.findOne({ email: session.user.email });
-
-    if (user) {
-      res.status(200).json({
-        _id: user._id,
-        image: user.image,
-        name: user.name,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        emailVerified: user.emailVerified,
-        shippingAddress: user.shippingAddress,
+    try {
+      const user = await prisma.users.findUnique({
+        where: { email: session.user.email },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+          isAdmin: true,
+          category: true,
+          shippingAddress: true,
+          emailVerified: true,
+          orders: true,
+          createdAt: true,
+          updatedAt: true,
+        },
       });
-    } else {
-      res.status(404).json({ message: "User not found" });
+      await prisma.$disconnect();
+      res.status(200).json(user);
+    } catch (error: any) {
+      res.status(404).json({ success: false, message: "User not found" });
       throw new Error("User not found");
     }
   } else {

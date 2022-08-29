@@ -9,6 +9,8 @@ import ImageUploadForm from "./ImageUploadForm";
 import ServiceForm from "./CreateServiceForm";
 import CreateAdminForm from "./CreateAdminForm";
 import CreateOrderForm from "./CreateOrderForm";
+import UpdateUserPassForm from "./UpdateUserPassForm";
+import UpdateUserForm from "./UpdateUserForm";
 
 export {
   ChangePasswordForm,
@@ -22,4 +24,6 @@ export {
   ServiceForm,
   CreateAdminForm,
   CreateOrderForm,
+  UpdateUserPassForm,
+  UpdateUserForm,
 };

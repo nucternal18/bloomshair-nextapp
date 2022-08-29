@@ -8,13 +8,26 @@ export type IFormData = {
   name?: string;
   brand?: string;
   countInStock?: number;
+  email?: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
+  country?: string;
+  emailVerified?: boolean;
 };
 
+export enum ServiceCategory {
+  Gents_Hair = "Gents_Hair",
+  Ladies_Hair = "Ladies_Hair",
+  Technical = "Technical",
+  Hair_Treatments = "Hair_Treatments",
+}
+
 export type ServiceProps = {
-  _id?: string;
+  id?: string;
   name?: string;
   price?: number;
-  category?: string;
+  category?: ServiceCategory;
   categoryOptions?: string[];
   createdAt?: string;
   updatedAt?: string;
@@ -28,7 +41,7 @@ export type ReviewProps = {
 };
 
 export type ProductProps = {
-  _id: string;
+  id: string;
   name: string;
   price: number;
   image: string;
@@ -43,20 +56,15 @@ export type ProductProps = {
 
 export type UserInfoProps = {
   id?: string;
-  _id?: string;
-  name: string;
+  name?: string;
   image?: string;
   token?: string;
   isAdmin?: boolean;
-  email: string;
+  email?: string;
   emailVerified?: boolean;
   category?: string;
-  shippingAddress?: {
-    address: string;
-    city: string;
-    postalCode: string;
-    country: string;
-  };
+  shippingAddress?: ShippingAddressProps;
+  orders?: OrderProps[];
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -72,6 +80,7 @@ export type PaymentResProps = {
 export type paymentMethodProps = {
   paymentMethod: string;
 };
+
 export type ShippingAddressProps = {
   address: string;
   city: string;
@@ -106,12 +115,13 @@ export type OrderProps = {
   createdAt?: Date;
   deliveredAt?: Date;
   isDelivered?: boolean;
-  _id?: string;
+  id?: string;
 };
 
 export type GalleryProps = {
-  _id: string;
+  id: string;
   image: string;
+  admin?: Partial<UserInfoProps>;
   createdAt: string;
   updatedAt: string;
 };

@@ -327,8 +327,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   return {
     props: {
-      product: productData.product,
-      productId: productData.product._id,
+      product: productData,
+      productId: productData.id,
       userInfo: userData,
     }, // will be passed to the page component as props
   };

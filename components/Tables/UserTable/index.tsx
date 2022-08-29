@@ -124,7 +124,7 @@ const Table = ({ tableData, deleteHandler }: IUserTable) => {
       <tbody className=" block px-1 md:px-0 pb-4  md:table-row-group">
         {tableData?.map((item: Partial<UserInfoProps>) => (
           <tr
-            key={item._id}
+            key={item.id}
             className="bg-white text-gray-900 dark:text-gray-100 drop-shadow-xl md:shadow-none dark:bg-gray-800 rounded md:rounded-none overflow-hidden  mb-2 md:mb-0 md:border-none block md:table-row"
           >
             <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
@@ -202,7 +202,7 @@ const Table = ({ tableData, deleteHandler }: IUserTable) => {
                     type="button"
                     className="text-blue-600 text-md"
                     onClick={() =>
-                      router.replace(`${NEXT_URL}/admin/users/${item._id}`)
+                      router.replace(`${NEXT_URL}/admin/users/${item.id}`)
                     }
                   >
                     <FaEdit
@@ -223,7 +223,7 @@ const Table = ({ tableData, deleteHandler }: IUserTable) => {
                   <button
                     type="button"
                     className="text-red-600 text-md"
-                    onClick={() => deleteHandler(item._id)}
+                    onClick={() => deleteHandler(item.id)}
                   >
                     <FaTrash
                       fontSize={18}

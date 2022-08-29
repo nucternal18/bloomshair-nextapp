@@ -1,9 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { withSentry } from "@sentry/nextjs";
-import User from "../../../models/userModel";
+import bcrypt from "bcryptjs";
 
-import db from "../../../lib/db";
+import { prisma } from "../../../lib/prisma-db";
 import { verifyEmail } from "../../../lib/verifyEmail";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -31,37 +31,40 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
       return;
     }
-    await db.connectDB();
 
-    const userExist = await User.findOne({ email });
+    const userExist = await prisma.users.findUnique({ where: { email } });
 
     if (userExist) {
-      res.status(422).json({ message: "User already exists" });
-      await db.disconnect();
+      res.status(422).json({ success: false, message: "User already exists" });
+      await prisma.$disconnect();
       return;
     }
 
-    const user = await User.create({
-      name: displayName,
-      email,
-      password,
-      image: image
-        ? image
-        : "https://res.cloudinary.com/dtkjg8f0n/image/upload/e_sharpen:100,q_auto/v1621633003/sample.webp",
-      isAdmin,
-      category: category ? category : "customer",
-      shippingAddress: shippingAddress ? shippingAddress : null,
-      emailVerified: emailVerified,
-    });
-    await db.disconnect();
-    if (user) {
+    try {
+      const hashedPassword = bcrypt.hashSync(password, 10);
+      const user = await prisma.users.create({
+        data: {
+          name: displayName,
+          email,
+          password: hashedPassword,
+          image: image
+            ? image
+            : "https://res.cloudinary.com/dtkjg8f0n/image/upload/e_sharpen:100,q_auto/v1621633003/sample.webp",
+          isAdmin,
+          category: category ? category : "customer",
+          shippingAddress: shippingAddress ? shippingAddress : null,
+          emailVerified: emailVerified,
+        },
+      });
+      await prisma.$disconnect();
       await verifyEmail(user);
       res
         .status(201)
         .json({ success: true, message: "Created user successfully" });
-    } else {
-      res.status(400);
-      throw new Error("Invalid user data");
+    } catch (error) {
+      res
+        .status(404)
+        .json({ success: false, message: "Unable to register user" });
     }
   } else {
     res.setHeader("Allow", ["POST"]);

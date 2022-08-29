@@ -1,9 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import User from "../../../models/userModel";
-import db from "../../../lib/db";
-import { getUser } from "../../../lib/getUser";
+
+import { prisma } from "@lib/prisma-db";
+import { getUser } from "@lib/getUser";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
@@ -32,14 +32,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    await db.connectDB();
-
-    const users = await User.find({});
-    if (users) {
+    try {
+      const users = await prisma.users.findMany({});
+      await prisma.$disconnect();
       res.status(200).json(users);
-    } else {
+    } catch (error) {
       res.status(404).json({ message: "No users found" });
-      throw new Error("Users not found");
     }
   } else {
     res.setHeader("Allow", ["GET"]);

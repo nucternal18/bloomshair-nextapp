@@ -7,8 +7,9 @@ import ImageCard from "../components/pictures/ImageCard";
 import Modal from "../components/Modal";
 // Server Url
 import { NEXT_URL } from "../config";
+import { GalleryProps } from "@lib/types";
 
-function Gallery(props): JSX.Element {
+function Gallery({ pictures }: { pictures: GalleryProps[] }): JSX.Element {
   const [selectedImg, setSelectedImg] = useState(null);
   return (
     <Layout title="Gallery" description="Pictures of hair color and cut">
@@ -20,11 +21,11 @@ function Gallery(props): JSX.Element {
             </h1>
           </div>
           <div className="grid grid-cols-1 gap-1 my-8 md:grid-cols-3 sm:mx-0">
-            {props.pictures.map((doc) => (
+            {pictures.map((doc: GalleryProps) => (
               <ImageCard
                 setSelectedImg={setSelectedImg}
                 image={doc.image}
-                key={doc._id}
+                key={doc.id}
               />
             ))}
           </div>

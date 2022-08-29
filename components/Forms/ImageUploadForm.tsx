@@ -36,7 +36,7 @@ const ImageUploadForm: FC<IImageUploadFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit(submitHandler)}
-      className="flex flex-col justify-center items-center mt-5 lg:h-4/5"
+      className="flex flex-col justify-center items-center"
     >
       <div className="flex ld:flex-row flex-col justify-center items-center bg-white lg:p-5 p-3 lg:w-4/5 w-full">
         <div className="bg-secondaryColor p-3 flex flex-0.7 w-full">
@@ -53,7 +53,7 @@ const ImageUploadForm: FC<IImageUploadFormProps> = ({
                     </p>
                     <p className="text-lg">Click to upload pictures</p>
                   </div>
-                  <p className="mt-32 text-gray-400">
+                  <p className="mt-16 text-center text-gray-400">
                     Use high-quality JPG, PNG less than 10 MB
                   </p>
                 </div>

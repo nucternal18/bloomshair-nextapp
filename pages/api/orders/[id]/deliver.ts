@@ -2,8 +2,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { withSentry } from "@sentry/nextjs";
 import { getSession } from "next-auth/react";
-import Order from "../../../../models/orderModel";
-import db from "../../../../lib/db";
+
+import { prisma } from "../../../../lib/prisma-db";
 import { getUser } from "../../../../lib/getUser";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -36,20 +36,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    await db.connectDB();
-
-    const order = await Order.findById(id);
-
-    if (order) {
-      order.isDelivered = true;
-      order.deliveredAt = Date.now();
-
-      const updatedOrder = await order.save();
-
-      res.status(200).json(updatedOrder);
-    } else {
-      res.status(404).json({ message: "Order not found" });
-      throw new Error("Order not found");
+    try {
+      await prisma.orders.update({
+        where: { id: id as string },
+        data: { isDelivered: true, deliveredAt: new Date() },
+      });
+      await prisma.$disconnect();
+      res
+        .status(201)
+        .json({ success: true, message: "Order marked as delivered" });
+    } catch (error: any) {
+      res
+        .status(404)
+        .json({ success: false, message: "Unable to update order", error });
     }
   } else {
     res.setHeader("Allow", ["PUT"]);

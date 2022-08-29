@@ -41,7 +41,7 @@ const AdminNavbar = () => {
           <button
             type="button"
             className="flex items-center bg-gray-800 dark:bg-yellow-500 px-4 py-2 rounded-3xl text-gray-200 shadow-xl"
-            onClick={() => router.push(`/user-profile/${state.user?.id}`)}
+            onClick={() => router.push(`/account/profile`)}
           >
             <p className="mr-2 capitalize text-base">{state.user?.name}</p>
             <img

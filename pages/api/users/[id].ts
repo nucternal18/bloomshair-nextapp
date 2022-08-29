@@ -1,9 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import User from "../../../models/userModel";
-import db from "../../../lib/db";
-import { getUser } from "../../../lib/getUser";
+
+import { prisma } from "@lib/prisma-db";
+import { getUser } from "@lib/getUser";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
@@ -28,20 +28,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  await db.connectDB();
-
   if (req.method === "GET") {
     /**
      * @desc Get user by Id
      * @route GET /api/users/:id
      * @access Private/admin
      */
-    const user = await User.findById(id);
 
-    if (user) {
+    try {
+      const user = await prisma.users.findUnique({
+        where: { id: id as string },
+      });
+      await prisma.$disconnect();
       res.status(200).json(user);
-    } else {
-      res.status(404).json({ message: "User not found" });
+    } catch (error: any) {
+      res.status(404).json({ success: false, message: "User not found" });
     }
   } else if (req.method === "PUT") {
     /**
@@ -51,26 +52,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      */
     const { displayName, image, email, isAdmin, category } = req.body;
 
-    const user = await User.findById(id);
-
-    if (user) {
-      user.name = displayName || user.name;
-      user.image = image || user.image;
-      user.email = email || user.email;
-      user.isAdmin = isAdmin || user.isAdmin;
-      user.category = category || user.category;
-
-      const updatedUser = await user.save();
-
-      res.status(204).json({
-        _id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        isAdmin: updatedUser.isAdmin,
-        category: updatedUser.category,
+    try {
+      await prisma.users.update({
+        where: { id: id as string },
+        data: {
+          name: displayName,
+          image: image,
+          email: email,
+          isAdmin: isAdmin,
+          category: category,
+        },
       });
-    } else {
-      res.status(404).json({ message: "User not found" });
+      await prisma.$disconnect();
+      res.status(204).json({ success: true, message: "User updated" });
+    } catch (error: any) {
+      res
+        .status(404)
+        .json({ success: false, message: "User not found", error });
     }
   } else if (req.method === "DELETE") {
     /**
@@ -79,14 +77,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      * @access Private/admin
      */
     try {
-      const user = await User.findById(id);
-
-      if (user) {
-        await user.remove();
-        res.json({ message: "User removed successfully" });
-      }
+      await prisma.users.delete({ where: { id: id as string } });
+      await prisma.$disconnect();
+      res.json({ success: true, message: "User removed successfully" });
     } catch (error) {
-      res.status(404).json({ message: "Error removing user" });
+      res.status(404).json({ success: false, message: "Error removing user" });
     }
   } else {
     res.setHeader("Allow", ["GET"]);

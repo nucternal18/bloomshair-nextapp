@@ -1,8 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import Order from "../../../../models/orderModel";
-import db from "../../../../lib/db";
+
 import { getUser } from "../../../../lib/getUser";
 import { sendMail } from "../../../../lib/mail";
 import { orderConfirmationEmail } from "../../../../lib/emailServices";
@@ -21,8 +20,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const userData = await getUser(req);
-
-  await db.connectDB();
 
   if (req.method === "POST") {
     /**
@@ -43,34 +40,39 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       totalPrice,
     } = newOrder;
 
-    if (orderItems && orderItems.length === 0) {
-      await db.disconnect();
+    if (!(orderItems.length > 0) || !shippingAddress) {
       res.status(400).json({ message: "No order items" });
-    } else {
-      const order = new Order({
-        orderItems,
-        user: userData._id,
-        shippingAddress,
-        paymentMethod,
-        itemsPrice,
-        taxPrice,
-        shippingPrice,
-        totalPrice,
-        isPaid: true,
-        paidAt: Date.now(),
-        paymentResult: {
-          id: paymentResult.id,
-          status: paymentResult?.status,
-          orderId: paymentResult?.orderId,
-          update_time: paymentResult?.update_time,
-          email_address:
-            paymentResult?.payer?.email_address || paymentResult?.email_address,
+    }
+    try {
+      const order = await prisma.orders.create({
+        data: {
+          orderItems,
+          user: { connect: { id: userData.id } },
+          shippingAddress,
+          paymentMethod,
+          itemsPrice,
+          taxPrice,
+          shippingPrice,
+          totalPrice,
+          isPaid: true,
+          paidAt: new Date(),
+          paymentResult: {
+            id: paymentResult.id,
+            status: paymentResult?.status,
+            orderId: paymentResult?.orderId,
+            update_time: paymentResult?.update_time,
+            email_address:
+              paymentResult?.payer?.email_address ||
+              paymentResult?.email_address,
+          },
         },
       });
-
-      const createdOrder = await order.save();
-      await db.disconnect();
-      res.status(201).json(createdOrder);
+      await prisma.$disconnect();
+      res.status(201).json({ success: true, message: "Order created", order });
+    } catch (error) {
+      res
+        .status(404)
+        .json({ success: false, message: "Unable to create order" });
     }
   } else if (req.method === "GET") {
     /**
@@ -80,14 +82,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      */
 
     try {
-      const orders = await Order.find({ user: userData._id });
-      await db.disconnect();
+      const orders = await prisma.orders.findUnique({
+        where: { userId: userData.id },
+      });
+      await prisma.$disconnect();
       if (orders) {
         res.status(200).json(orders);
       }
-    } catch (error) {
-      await db.disconnect();
-      res.status(500).json({ message: error.message });
+    } catch (error: any) {
+      res.status(404).json({ success: false, message: error.message });
     }
   } else {
     res.setHeader("Allow", ["PUT"]);

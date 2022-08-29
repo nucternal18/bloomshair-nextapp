@@ -1,9 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import { withSentry } from "@sentry/nextjs";
-import Product from "../../../models/productModel";
-import db from "../../../lib/db";
-import { getUser } from "../../../lib/getUser";
+
+import { prisma } from "@lib/prisma-db";
+import { getUser } from "@lib/getUser";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });
@@ -21,22 +20,23 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     } else {
       page = 1;
     }
-    const keyword = req.query.keyword
-      ? {
-          name: {
-            $regex: req.query.keyword,
-            $options: "i",
-          },
-        }
-      : {};
-    await db.connectDB();
-    const count = await Product.countDocuments({ ...keyword });
-    const products = await Product.find({ ...keyword })
-      .limit(pageSize)
-      .skip(pageSize * (page - 1));
-    res
-      .status(201)
-      .json({ products, pages: Math.ceil(count / pageSize), page: page });
+
+    const count = await prisma.products.findMany({
+      where: { name: req.query.keyword as string },
+    });
+    const products = await prisma.products.findMany({
+      where: {
+        name: { contains: req.query.keyword as string, mode: "insensitive" },
+      },
+      skip: pageSize * (page - 1),
+      take: pageSize as number,
+    });
+    await prisma.$disconnect();
+    res.status(201).json({
+      products,
+      pages: Math.ceil(count.length / pageSize),
+      page: page,
+    });
   } else if (req.method === "POST") {
     /**
      * @desc Create a  product
@@ -55,21 +55,31 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       res.status(401).json({ message: "Not Authorized" });
       return;
     }
-    const product = new Product({
-      name: "Sample Name",
-      price: 0,
-      user: userData._id,
-      image:
-        "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1625415632/blooms_hair_products/sample_wic9ml.jpg",
-      brand: "Sample brand",
-      category: "Sample Category",
-      countInStock: 0,
-      numReviews: 0,
-      description: "Sample description",
-    });
-
-    const createdProduct = await product.save();
-    res.status(201).json(createdProduct);
+    try {
+      await prisma.products.create({
+        data: {
+          name: "Sample Name",
+          price: 0,
+          user: { connect: { id: userData.id } },
+          image:
+            "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1625415632/blooms_hair_products/sample_wic9ml.jpg",
+          brand: "Sample brand",
+          category: "Sample Category",
+          countInStock: 0,
+          numReviews: 0,
+          description: "Sample description",
+        },
+      });
+      await prisma.$disconnect();
+      res
+        .status(201)
+        .json({ success: true, message: "Product created successfully" });
+    } catch (error: any) {
+      res.status(404).json({
+        success: false,
+        message: error.message ?? "Error creating product",
+      });
+    }
   } else {
     res.setHeader("Allow", ["GET"]);
     res.status(405).json({ message: `Method ${req.method} not allowed` });

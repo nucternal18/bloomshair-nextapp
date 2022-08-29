@@ -55,7 +55,7 @@ const ProductEditScreen = ({ product, productId, isLoading }): JSX.Element => {
 
   const submitHandler: SubmitHandler<Partial<IFormData>> = (data) => {
     updateProduct({
-      _id: productId,
+      id: productId,
       name: data.name,
       price: data.price,
       image: image ? image : product.image,
@@ -151,7 +151,9 @@ const ProductEditScreen = ({ product, productId, isLoading }): JSX.Element => {
                       </label>
                     </div>
                   )}
-                  {error && <div className="justify-center">{error}</div>}
+                  {error && (
+                    <div className="justify-center">{error as string}</div>
+                  )}
                   <div className="w-full">
                     <div className="flex flex-col w-full mb-2">
                       <FormRowInput
@@ -245,9 +247,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
-      product: data.product,
-      productId: data.product._id,
-      isLoading: data.product ? false : true,
+      product: data,
+      productId: data.id,
+      isLoading: data ? false : true,
     }, // will be passed to the page component as props
   };
 }

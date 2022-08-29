@@ -1,31 +1,38 @@
 /* eslint-disable import/no-anonymous-default-export */
+import bcrypt from "bcryptjs";
 import { NextApiRequest, NextApiResponse } from "next";
 import { withSentry } from "@sentry/nextjs";
-import User from "../../../models/userModel";
-import Token from "../../../models/tokenModel";
-import db from "../../../lib/db";
+
+import { prisma } from "../../../lib/prisma-db";
 import { sendMail } from "../../../lib/mail";
 import { resetPasswordVerificationEmail } from "../../../lib/emailServices";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "PUT") {
     const { token, password } = req.body;
-    await db.connectDB();
 
-    const deletedToken = await Token.findOne({ token: token });
+    const deletedToken = await prisma.tokens.findUnique({
+      where: { token: token },
+    });
 
     if (!deletedToken) {
       res.status(403).end();
+      await prisma.$disconnect();
       return;
     }
 
-    const user = await User.findOne({ _id: deletedToken.userId });
+    const user = await prisma.users.findUnique({
+      where: { id: deletedToken.userId },
+    });
     if (user) {
       if (password) {
-        user.password = password;
+        await prisma.users.update({
+          where: { id: user.id },
+          data: { password: bcrypt.hashSync(password, 10) },
+        });
       }
 
-      await user.save();
+      await prisma.$disconnect();
 
       const name = user.name;
       const subject = "Password reset";
@@ -37,9 +44,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         html: resetPasswordVerificationEmail(subject, name),
       });
 
-      res.status(204).json({ message: "Password reset successfully " });
+      res
+        .status(204)
+        .json({ success: true, message: "Password reset successfully " });
     } else {
-      res.status(404).json({ message: "User not found" });
+      res.status(404).json({ success: false, message: "User not found" });
     }
   } else {
     res.setHeader("Allow", ["PUT"]);

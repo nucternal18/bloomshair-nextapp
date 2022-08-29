@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import { SnipcartProvider } from "use-snipcart";
 import { ToastContainer } from "react-toastify";
+import { motion } from "framer-motion";
 
 import "../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -35,7 +36,7 @@ const AppProviders = composeProviders(
   GalleryContextProvider
 );
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps, router }: AppProps) {
   const queryClient = new QueryClient();
 
   return (
@@ -46,7 +47,23 @@ function MyApp({ Component, pageProps }: AppProps) {
             <SessionProvider session={pageProps.session}>
               <AppProviders>
                 <SnipcartProvider>
-                  <Component {...pageProps} />
+                  <motion.div
+                    key={router.route}
+                    initial="initial"
+                    animate="animate"
+                    // this is a simple animation that fades in the page. You can do all kind of fancy stuff here
+                    variants={{
+                      initial: {
+                        opacity: 0,
+                      },
+                      animate: {
+                        opacity: 1,
+                      },
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Component {...pageProps} />
+                  </motion.div>
                 </SnipcartProvider>
               </AppProviders>
             </SessionProvider>

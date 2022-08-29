@@ -6,6 +6,7 @@ import {
 } from "react-hook-form";
 import { UserInfoProps } from "../../lib/types";
 import Button from "../Button";
+import FormCheckbox from "./FormComponents/FormCheckbox";
 import FormRowInput from "./FormComponents/FormRowInput";
 import FormRowSelect from "./FormComponents/FormRowSelect";
 
@@ -66,11 +67,9 @@ const CreateAdminForm = ({
             },
           })}
         />
-        <FormRowInput
-          title="Is Admin"
+        <FormCheckbox
+          label="Is Admin"
           type="isAdmin"
-          inputType="checkbox"
-          errors={errors && errors?.isAdmin}
           {...register("isAdmin")}
         />
         <FormRowSelect

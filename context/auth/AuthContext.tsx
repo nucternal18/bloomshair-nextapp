@@ -68,6 +68,8 @@ export const authContext = createContext<{
   ) => void;
   uploadUserImage: (base64EncodedImage: string | ArrayBuffer) => void;
   resetPassword: (password: string, token: string) => void;
+  requestPasswordReset: (email: string) => void;
+  resetUserPassword: (password: string, newPassword: string) => void;
 }>({
   state: initialState,
   dispatch: () => null,
@@ -78,11 +80,13 @@ export const authContext = createContext<{
   editUser: () => {},
   uploadUserImage: () => {},
   resetPassword: () => {},
+  requestPasswordReset: () => {},
+  resetUserPassword: () => {},
 });
 
 const { Provider } = authContext;
 
-const authReducer = (state: InitialAuthState, action) => {
+const authReducer = (state: InitialAuthState, action: any) => {
   switch (action.type) {
     case ActionType.USER_ACTION_REQUEST:
       return { ...state, loading: true };
@@ -299,6 +303,43 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
   };
 
   /**
+   * @desc reset a Users password
+   * @route PUT /api/users/reset-password
+   * @param password
+   * @param newPassword
+   */
+  const resetUserPassword = async (password: string, newPassword: string) => {
+    try {
+      dispatch({
+        type: ActionType.USER_ACTION_REQUEST,
+      });
+
+      const res = await fetch(`${NEXT_URL}/api/users/reset-password`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password, newPassword }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        dispatch({
+          type: ActionType.USER_RESET_PASSWORD_SUCCESS,
+          payload: data.message,
+        });
+      }
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : "Unable to reset password. Please try again.";
+      dispatch({
+        type: ActionType.USER_ACTION_FAIL,
+        payload: err,
+      });
+    }
+  };
+
+  /**
    * @desc Update current logged in user profile details
    *
    * @param user
@@ -315,7 +356,7 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ user }),
+        body: JSON.stringify({ ...user }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -419,6 +460,45 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
   };
 
   /**
+   * @desc request a password reset link
+   * @route POST /api/auth/request-reset
+   * @access public
+   * @param email
+   */
+  const requestPasswordReset = async (email: string): Promise<void> => {
+    try {
+      dispatch({
+        type: ActionType.USER_ACTION_REQUEST,
+      });
+
+      const res = await fetch(`${NEXT_URL}/api/auth/request-reset`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        dispatch({
+          type: ActionType.USER_REQUEST_PASSWORD_RESET_SUCCESS,
+          payload: data.message,
+        });
+      }
+    } catch (error) {
+      const err =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : "Password reset request failed. Please try again.";
+      dispatch({
+        type: ActionType.USER_ACTION_FAIL,
+        payload: err,
+      });
+    }
+  };
+
+  /**
    * @desc Upload a base64EncodedImage to cloudinary
    *
    * @param base64EncodedImage
@@ -429,6 +509,10 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
         type: ActionType.USER_ACTION_REQUEST,
       });
       const data = await uploadImage(base64EncodedImage);
+      console.log(
+        "🚀 ~ file: AuthContext.tsx ~ line 513 ~ uploadUserImage ~ data",
+        data
+      );
 
       if (data) {
         dispatch({ type: ActionType.USER_IMAGE_UPLOAD_SUCCESS, payload: data });
@@ -457,6 +541,8 @@ const AuthProvider = ({ children }: { children: JSX.Element }) => {
         editUser,
         uploadUserImage,
         resetPassword,
+        requestPasswordReset,
+        resetUserPassword,
       }}
     >
       {children}

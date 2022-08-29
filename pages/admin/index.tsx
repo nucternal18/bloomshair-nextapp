@@ -1,5 +1,6 @@
 import { getSession } from "next-auth/react";
 import { NEXT_URL } from "@config/index";
+import dynamic from "next/dynamic";
 
 // Components
 import AdminLayout from "../../components/Layout/AdminLayout/AdminLayout";
@@ -8,7 +9,9 @@ import AdminLayout from "../../components/Layout/AdminLayout/AdminLayout";
 import { getUser } from "../../lib/getUser";
 import { GetServerSidePropsContext } from "next";
 import StatsContainer from "@components/StatsContainer";
-import ChartsContainer from "@components/ChartsContainer";
+const ChartsContainer = dynamic(() => import("@components/ChartsContainer"), {
+  ssr: false,
+});
 
 export default function Dashboard({ stats }) {
   return (

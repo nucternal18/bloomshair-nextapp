@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import Product from "../../../models/productModel";
-import db from "../../../lib/db";
+
+import { prisma } from "../../../lib/prisma-db";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
@@ -9,9 +9,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
      * @route GET /api/products/topProducts
      * @access Public
      */
-    await db.connectDB();
 
-    const products = await Product.find({});
+    const products = await prisma.products.findMany({});
+    await prisma.$disconnect();
     res.status(200).json(products);
   }
 }

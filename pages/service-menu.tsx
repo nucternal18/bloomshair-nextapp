@@ -1,14 +1,20 @@
 import Image from "next/image";
-import Layout from "../components/Layout/Layout/Layout";
 import { motion } from "framer-motion";
-import BottomPageContainer from "../components/BottomPageContainer";
 import { GetServerSidePropsContext } from "next";
+
+import Layout from "../components/Layout/Layout/Layout";
+import BottomPageContainer from "../components/BottomPageContainer";
 import { NEXT_URL } from "../config";
+import { ServiceCategory, ServiceProps } from "@lib/types";
 
 const url =
   "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1621805398/blooms_hair_products/AdobeStock_290145313_mbpudc.webp";
 
 function ServiceMenu({ services }): JSX.Element {
+  console.log(
+    "🚀 ~ file: service-menu.tsx ~ line 14 ~ ServiceMenu ~ services",
+    services
+  );
   return (
     <Layout
       title="Service Menu"
@@ -83,10 +89,13 @@ function ServiceMenu({ services }): JSX.Element {
                   Gents Hair
                 </div>
                 {services
-                  .filter((service) => service.category === "Gents Hair")
-                  .map((service, index) => (
+                  .filter(
+                    (service: ServiceProps) =>
+                      service.category === ServiceCategory.Gents_Hair
+                  )
+                  .map((service: ServiceProps) => (
                     <div
-                      key={`${service.name}` + `${index}`}
+                      key={`${service.id}`}
                       className="grid grid-cols-2 text-sm sm:text-base pl-3 w-full"
                     >
                       <div className="sm:px-4 py-2">{service.name}</div>
@@ -99,10 +108,13 @@ function ServiceMenu({ services }): JSX.Element {
                   Ladies Hair
                 </div>
                 {services
-                  .filter((service) => service.category === "Ladies Hair")
-                  .map((service, index) => (
+                  .filter(
+                    (service: ServiceProps) =>
+                      service.category === ServiceCategory.Ladies_Hair
+                  )
+                  .map((service: ServiceProps) => (
                     <div
-                      key={`${service.name}` + `${index}`}
+                      key={`${service.id}`}
                       className="grid grid-cols-2 text-sm sm:text-base pl-3 w-full"
                     >
                       <div className=" sm:px-4 py-2">{service.name}</div>
@@ -116,10 +128,13 @@ function ServiceMenu({ services }): JSX.Element {
                   Technical
                 </div>
                 {services
-                  .filter((service) => service.category === "Technical")
-                  .map((service, index) => (
+                  .filter(
+                    (service: ServiceProps) =>
+                      service.category === ServiceCategory.Technical
+                  )
+                  .map((service: ServiceProps) => (
                     <div
-                      key={`${service.name}` + `${index}`}
+                      key={`${service.id}`}
                       className="grid grid-cols-2 text-sm sm:text-base pl-3 w-full"
                     >
                       <div className="sm:px-4 py-2">{service.name}</div>
@@ -135,10 +150,13 @@ function ServiceMenu({ services }): JSX.Element {
                   Hair Treatments
                 </div>
                 {services
-                  .filter((service) => service.category === "Hair Treatments")
-                  .map((service, index) => (
+                  .filter(
+                    (service: ServiceProps) =>
+                      service.category === ServiceCategory.Hair_Treatments
+                  )
+                  .map((service: ServiceProps) => (
                     <div
-                      key={`${service.name}` + `${index}`}
+                      key={`${service.id}`}
                       className="grid grid-cols-2 text-sm sm:text-base pl-3 w-full"
                     >
                       <div className="sm:px-4 py-2">{service.name}</div>

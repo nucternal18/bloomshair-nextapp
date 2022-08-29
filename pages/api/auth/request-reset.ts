@@ -2,9 +2,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { nanoid } from "nanoid";
 import { withSentry } from "@sentry/nextjs";
-import User from "../../../models/userModel";
-import Token from "../../../models/tokenModel";
-import db from "../../../lib/db";
+
+import { prisma } from "../../../lib/prisma-db";
 import { NEXT_URL } from "../../../config";
 import { sendMail } from "../../../lib/mail";
 import { resetPasswordRequestEmail } from "../../../lib/emailServices";
@@ -12,25 +11,29 @@ import { resetPasswordRequestEmail } from "../../../lib/emailServices";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     const { email } = req.body;
-    await db.connectDB();
-    const user = await User.findOne({ email });
+    const user = await prisma.users.findUnique({ where: { email } });
 
     if (!user) {
       res.status(403).json({ message: "User does not exist" });
+      await prisma.$disconnect();
       return;
     }
-    const token = await Token.findOne({ userId: user._id });
-    if (token) await token.deleteOne();
+    const token = await prisma.tokens.findUnique({
+      where: { userId: user.id },
+    });
+    if (token) await prisma.tokens.delete({ where: { id: token.id } });
 
     const securedTokenId = nanoid(32); // create a secure reset password token
 
-    await new Token({
-      userId: user._id,
-      token: securedTokenId,
-      type: "passwordReset",
-      createdAt: Date.now(),
-    }).save();
+    await prisma.tokens.create({
+      data: {
+        userId: user.id,
+        token: securedTokenId,
+        type: "passwordReset",
+      },
+    });
 
+    await prisma.$disconnect();
     const url = `${NEXT_URL}/account/forgot-password/${securedTokenId}`;
     const name = user.name;
     const subject = "Password reset";
@@ -41,7 +44,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       subject: "Reset your password.",
       html: resetPasswordRequestEmail(subject, name, url),
     });
-    res.status(204).end();
+    res
+      .status(204)
+      .json({
+        success: true,
+        message: "Password change request sent. Please check you email inbox",
+      });
   } else {
     res.setHeader("Allow", ["POST"]);
     res.status(405).json({ message: `Method ${req.method} not allowed` });

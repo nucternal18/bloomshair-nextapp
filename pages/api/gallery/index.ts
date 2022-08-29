@@ -1,9 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import db from "../../../lib/db";
+
+import { prisma } from "../../../lib/prisma-db";
 import { getUser } from "../../../lib/getUser";
-import Picture from "../../../models/galleryModel";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
@@ -33,28 +33,36 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    await db.connectDB();
-
     const { imageUrl } = req.body;
 
     if (!imageUrl) {
       return res.status(400).send({ message: "Missing fields" });
     }
-    const picture = new Picture({
-      image: imageUrl,
-    });
-    const createdPicture = await picture.save();
-    res.status(201).json(createdPicture);
+    try {
+      await prisma.pictures.create({
+        data: {
+          image: imageUrl,
+          admin: { connect: { id: userData.id } },
+        },
+      });
+      await prisma.$disconnect();
+      res
+        .status(201)
+        .json({ success: true, message: "Picture uploaded successfully" });
+    } catch (error: any) {
+      res
+        .status(500)
+        .json({ success: false, message: "Unable to upload picture", error });
+    }
   } else if (req.method === "GET") {
     /**
      * @desc GET all pictures.
      * @route GET /api/gallery
      * @access Public
      */
-    await db.connectDB();
 
-    const pictures = await Picture.find({});
-
+    const pictures = await prisma.pictures.findMany({});
+    await prisma.$disconnect();
     res.status(200).json(pictures);
   } else {
     res.setHeader("Allow", ["GET"]);

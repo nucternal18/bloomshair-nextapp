@@ -1,9 +1,9 @@
+import bcrypt from "bcryptjs";
 import NextAuth from "next-auth/next";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest } from "next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import User from "../../../models/userModel";
 
-import db from "../../../lib/db";
+import { prisma } from "../../../lib/prisma-db";
 
 type CredentialsProps = {
   email: string;
@@ -24,15 +24,14 @@ export default NextAuth({
   providers: [
     CredentialsProvider({
       async authorize(credentials: CredentialsProps, req: NextApiRequest) {
-        await db.connectDB();
+        const user = await prisma.users.findUnique({
+          where: { email: credentials.email },
+        });
+        await prisma.$disconnect();
 
-        const user = await User.findOne({ email: credentials.email });
-
-        await db.disconnect();
-
-        if (user && (await user.matchPassword(credentials.password))) {
+        if (user && bcrypt.compareSync(credentials.password, user.password)) {
           return {
-            _id: user._id,
+            id: user.id,
             image: user.image,
             name: user.name,
             email: user.email,

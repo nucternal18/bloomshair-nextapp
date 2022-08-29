@@ -53,7 +53,7 @@ const CustomerListScreen = ({ users, loading }) => {
   return (
     <AdminLayout>
       <main className="w-full h-screen p-2 mx-auto overflow-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
-        <section className="container max-w-screen-lg px-2 pt-6 pb-8 mt-6 mb-4 md:mx-auto ">
+        <section className="px-2 sm:px-4 p-2 ">
           <div className="flex items-center justify-between mb-4 border-b-2 border-current border-gray-200">
             <div>
               <h1 className="p-5 mt-6 text-3xl md:text-5xl font-thin font-mono">

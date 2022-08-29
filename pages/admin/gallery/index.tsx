@@ -102,14 +102,19 @@ const GalleryAdminPage = ({ pictures, isLoading }) => {
 
   return (
     <AdminLayout>
-      <main className="w-full p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
-        <section className="container max-w-screen-lg flex flex-col sm:mx-auto">
-          <div className=" px-2 pt-6 pb-8 mt-6 mb-4 shadow-2xl w-full">
-            <div className="my-6 ">
-              <h1 className="p-5 mt-6 mb-4 text-5xl font-thin text-center">
+      <main className="w-full mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+        <div className="flex items-center justify-between px-4 py-2 mb-4 border-b-2 border-current border-gray-200">
+          <div>
+            <h1 className="p-2 text-4xl font-thin">Pictures</h1>
+          </div>
+        </div>
+        <section className="px-2 sm:px-4 grid grid-cols-1 xl:grid-cols-3">
+          <div className="col-span-1 p-2 shadow-xl w-full">
+            <div className="my-2 ">
+              <h1 className="p-2 mb-2 text-4xl font-thin text-center">
                 Upload Pictures
               </h1>
-              <p className="mb-2 text-center">Load your latest Pictures</p>
+              <p className=" text-center">Load your latest Pictures</p>
             </div>
             <div>
               <ImageUploadForm
@@ -121,31 +126,23 @@ const GalleryAdminPage = ({ pictures, isLoading }) => {
                 errors={errors}
                 handleSubmit={handleSubmit}
               />
-              <div className="flex items-center justify-center px-4 pt-4 mb-4 border-t-2 border-current border-gray-200">
+              <div className="flex items-center justify-center p-2 border-t-2 border-current border-gray-200">
                 <Button type="button" color="dark" onClick={addImageHandler}>
                   Add Picture
                 </Button>
               </div>
             </div>
           </div>
-          <div className="px-2 pt-6 pb-8 mt-6 mb-4   w-full">
-            <div className="flex items-center justify-between px-4 mb-4 border-b-2 border-current border-gray-200">
-              <div>
-                <h1 className="p-5 mt-6 text-4xl font-thin">Pictures</h1>
+          <div className="col-span-2 p-2  w-full">
+            {isRefreshing ? (
+              <Spinner message="refreshing..." />
+            ) : error ? (
+              <ErrorMessage variant="danger">{error}</ErrorMessage>
+            ) : (
+              <div className="w-full shadow-2xl mx-auto overscroll-auto">
+                <Table tableData={pictures} deleteHandler={deleteHandler} />
               </div>
-            </div>
-            <div>
-              {isLoading && <Spinner message="Loading pictures..." />}
-              {isRefreshing ? (
-                <Spinner message="refreshing..." />
-              ) : error ? (
-                <ErrorMessage variant="danger">{error}</ErrorMessage>
-              ) : (
-                <div className="w-full shadow-2xl mx-auto overscroll-auto">
-                  <Table tableData={pictures} deleteHandler={deleteHandler} />
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </section>
       </main>

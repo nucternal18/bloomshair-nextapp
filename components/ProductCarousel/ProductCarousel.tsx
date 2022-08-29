@@ -25,7 +25,7 @@ const ProductCarousel = ({ products }: Products) => {
         >
           {products.map((product) => (
             <motion.div
-              key={product._id}
+              key={product.id}
               className="min-h-[30rem] min-w-[20rem] sm:min-h-[35rem] sm:min-w-[25rem] p-5"
             >
               {/* <img

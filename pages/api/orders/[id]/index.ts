@@ -1,8 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import Order from "@models/orderModel";
-import db from "@lib/db";
+
+import { prisma } from "../../../../lib/prisma-db";
 import { getUser } from "@lib/getUser";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -34,17 +34,41 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      * @route Get /api/order/myOrders/:id
      * @access Private
      */
-    await db.connectDB();
 
-    const order = await Order.findOne({ _id: id }).populate(
-      "user",
-      "name email"
-    );
-
-    if (order) {
+    try {
+      const order = await prisma.orders.findUnique({
+        where: { id: id as string },
+        select: {
+          id: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          deliveredAt: true,
+          isDelivered: true,
+          isPaid: true,
+          itemsPrice: true,
+          orderItems: true,
+          paidAt: true,
+          paymentMethod: true,
+          paymentResult: true,
+          shippingAddress: true,
+          shippingPrice: true,
+          taxPrice: true,
+          totalPrice: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+      await prisma.$disconnect();
       res.status(200).json(order);
-    } else {
-      res.status(404).json({ message: "Order not found" });
+    } catch (error: any) {
+      res
+        .status(404)
+        .json({ success: false, message: "Order not found", error });
     }
   } else {
     res.setHeader("Allow", ["PUT"]);

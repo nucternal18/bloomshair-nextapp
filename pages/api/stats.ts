@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import moment from "moment";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
@@ -36,57 +37,67 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     await db.connectDB();
 
-    const productStats = await Product.countDocuments({});
-    const userStats = await User.where({ isAdmin: false }).countDocuments();
-    const orderStats = await Order.countDocuments({});
-    const ordersDelivered = await Order.where({
-      isDelivered: true,
-    }).countDocuments();
-    const ordersPaid = await Order.where({ isPaid: true }).countDocuments();
-    const totalSalesStats = await Order.aggregate([
-      { $group: { _id: null, total: { $sum: "$totalPrice" } } },
-    ]);
-
-    const monthlySales = await Order.aggregate([
-      {
-        $project: {
-          month: { $month: "$createdAt" },
-          year: { $year: "$createdAt" },
-          totalPrice: 1,
-        },
+    const productStats = await prisma.products.count();
+    const userStats = await prisma.users.findMany({
+      where: {
+        isAdmin: false,
       },
-      {
-        $group: {
-          _id: {
-            month: "$month",
-            year: "$year",
-          },
-          totalPrice: { $sum: "$totalPrice" },
-        },
-      },
-      { $sort: { "_id.year": 1, "_id.month": 1 } },
-    ]);
-
-    const monthlySalesStats = monthlySales.map((item) => {
-      const {
-        _id: { year, month },
-        totalPrice,
-      } = item;
-      const date = moment()
-        .month(month - 1)
-        .year(year)
-        .format("MMM YYYY");
-      return { date, totalPrice };
     });
+    const orderStats = await prisma.orders.count();
+    const ordersDelivered = await prisma.orders.count({
+      select: { isDelivered: true },
+    });
+    const ordersPaid = await prisma.orders.count({ select: { isPaid: true } });
+    const totalSalesStats = await prisma.orders.aggregate({
+      _sum: {
+        totalPrice: true,
+      },
+    });
+
+    const monthlySales = (await prisma.orders.aggregateRaw({
+      pipeline: [
+        {
+          $project: {
+            month: { $month: "$createdAt" },
+            year: { $year: "$createdAt" },
+            totalPrice: 1,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              month: "$month",
+              year: "$year",
+            },
+            totalPrice: { $sum: "$totalPrice" },
+          },
+        },
+        { $sort: { "_id.year": 1, "_id.month": 1 } },
+      ],
+    })) as unknown as Prisma.JsonArray;
+
+    const monthlySalesStats = monthlySales.map(
+      (item: { _id: any; totalPrice: any }) => {
+        const {
+          _id: { year, month },
+          totalPrice,
+        } = item;
+        const date = moment()
+          .month(month - 1)
+          .year(year)
+          .format("MMM YYYY");
+        return { date, totalPrice };
+      }
+    );
 
     await db.disconnect();
     res.status(200).json({
       productStats,
-      userStats,
+      userStats: userStats.length,
       orderStats,
-      ordersDelivered,
-      ordersPaid,
-      totalSalesStats,
+      ordersDelivered: ordersDelivered.isDelivered,
+      ordersPaid: ordersPaid.isPaid,
+      totalSalesStats: totalSalesStats._sum.totalPrice,
       monthlySalesStats,
     });
   } else {

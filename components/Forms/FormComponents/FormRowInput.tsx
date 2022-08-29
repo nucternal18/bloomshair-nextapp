@@ -1,7 +1,7 @@
 import { type } from "os";
 import React from "react";
 import { UseFormRegister } from "react-hook-form";
-import { IFormData } from "../../../../lib/types";
+import { IFormData } from "../../../lib/types";
 
 export type Ref = HTMLInputElement;
 
@@ -9,6 +9,7 @@ type InputProps = {
   title: string;
   errors: any;
   type: string;
+  classes?: string;
   inputType: string;
 };
 
@@ -19,13 +20,13 @@ const FormRowInput: React.FunctionComponent<
   > &
     InputProps
 > = React.forwardRef<Ref, InputProps>(
-  ({ title, errors, type, inputType, ...props }: InputProps, ref) => (
+  ({ title, errors, type, classes, inputType, ...props }: InputProps, ref) => (
     <div className="mb-4 w-full">
       <label htmlFor="position" className="block mb-2 text-base font-bold ">
         {title}
       </label>
       <input
-        className="w-full px-3 py-2 leading-tight text-gray-900 border rounded shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-white"
+        className={`${classes} w-full px-3 py-2 leading-tight text-gray-900 border rounded shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-white`}
         id={`${type}`}
         ref={ref}
         type={`${inputType}`}

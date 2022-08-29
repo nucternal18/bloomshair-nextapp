@@ -56,7 +56,7 @@ const Products = ({ products, pages }) => {
 
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      toast.error(error as string);
       dispatch({ type: ActionType.PRODUCT_ACTION_RESET });
     }
   }, [error]);
@@ -98,7 +98,7 @@ const Products = ({ products, pages }) => {
   return (
     <AdminLayout>
       <main className="w-full h-screen p-2 mx-auto overflow-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
-        <section className="container max-w-screen-lg px-2 pt-6 pb-8 mt-6 mb-4  md:mx-auto ">
+        <section className="px-2 sm:px-4 pt-6 pb-8 mt-6 mb-4  md:mx-auto ">
           <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
             <div>
               <h1 className="p-3 text-4xl font-thin md:p-5 md:text-5xl">
@@ -117,7 +117,7 @@ const Products = ({ products, pages }) => {
                 <Spinner />
               </div>
             ) : (
-              <div className="w-full overscroll-auto sm:drop-shadow-2xl sm:rounded-2xl">
+              <div className="w-full overscroll-auto sm:shadow-sm sm:rounded-2xl">
                 <Table tableData={data} deleteHandler={deleteHandler} />
               </div>
             )}

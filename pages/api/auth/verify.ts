@@ -2,8 +2,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { nanoid } from "nanoid";
 import { withSentry } from "@sentry/nextjs";
-import Token from "../../../models/tokenModel";
-import db from "../../../lib/db";
+
+import { prisma } from "../../../lib/prisma-db";
 import { NEXT_URL } from "../../../config";
 import { sendMail } from "../../../lib/mail";
 import { verifyEmail } from "../../../lib/emailServices";
@@ -11,20 +11,21 @@ import { verifyEmail } from "../../../lib/emailServices";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     const { id, name, email } = req.body;
-    await db.connectDB();
 
     const securedTokenId = nanoid(32); // create a secure reset password token
 
-    const token = await new Token({
-      userId: id,
-      token: securedTokenId,
-      type: "emailVerify",
-      createdAt: Date.now(),
-    }).save();
+    const token = await prisma.tokens.create({
+      data: {
+        user: { connect: { id } },
+        token: securedTokenId,
+        type: "emailVerify",
+      },
+    });
+    await prisma.$disconnect();
 
     const url = `${NEXT_URL}/account/verify-email/${securedTokenId}`;
-
     const subject = "Verification Email for Blooms Hair";
+
     if (token) {
       await sendMail({
         to: email,

@@ -1,6 +1,6 @@
 import { NEXT_URL } from "../config";
 type SessionProps = {
-  _id: string;
+  id: string;
   image: string;
   name: string;
   email: string;

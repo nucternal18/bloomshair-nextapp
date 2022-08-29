@@ -117,7 +117,7 @@ const Table = ({ tableData }: ITable) => {
       <tbody className=" block px-1 md:px-0  md:table-row-group">
         {tableData?.map((item) => (
           <tr
-            key={item._id}
+            key={item.id}
             className="bg-white text-gray-900 dark:text-gray-100 shadow-2xl md:shadow-none dark:bg-gray-700 rounded md:rounded-none overflow-hidden  mb-2 md:mb-0 md:border-none block md:table-row"
           >
             <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
@@ -126,7 +126,7 @@ const Table = ({ tableData }: ITable) => {
               </span>
               <div className="flex items-center">
                 <div className="text-sm font-medium text-ellipsis overflow-hidden">
-                  {item._id}
+                  {item.id}
                 </div>
               </div>
             </td>
@@ -192,7 +192,7 @@ const Table = ({ tableData }: ITable) => {
                   "
               >
                 <Button type="button" color="dark">
-                  <Link href={`/orders/${item._id}`}>
+                  <Link href={`/orders/${item.id}`}>
                     <a>Details</a>
                   </Link>
                 </Button>

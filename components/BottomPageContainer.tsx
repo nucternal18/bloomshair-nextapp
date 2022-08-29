@@ -29,23 +29,23 @@ const toBase64 = (str) =>
 function BottomPageContainer() {
   return (
     <>
-      <section className="grid grid-cols-1 sm:grid-cols-3">
+      {/* <section className="grid grid-cols-1 gap-0 sm:grid-cols-3">
         <div className="relative">
           <div
             className="relative flex items-center justify-center"
-            style={{ height: "400px" }}
+            style={{ height: "300px" }}
           >
             <Image
               src={buildImage(
                 "blooms_hair_products/AdobeStock_278832769_qrecru"
               )
-                .resize(Resize.scale().width(400).height(400))
+                .resize(Resize.scale().width(450).height(300))
                 .toURL()}
               alt="home background image"
               layout="fill"
-              objectFit="cover"
+              objectFit="contain"
               objectPosition="center"
-              quality={75}
+              quality={50}
               placeholder="blur"
               blurDataURL={`data:image/svg+xml;base64,${toBase64(
                 shimmer(700, 475)
@@ -75,17 +75,17 @@ function BottomPageContainer() {
         <div className="relative">
           <div
             className="relative flex items-center justify-center "
-            style={{ height: "400px" }}
+            style={{ height: "300px" }}
           >
             <Image
               src={buildImage(
                 "blooms_hair_products/AdobeStock_192477796_vtn3n4"
               )
-                .resize(Resize.scale().width(400).height(400))
+                .resize(Resize.scale().width(450).height(300))
                 .toURL()}
               alt="home background image"
               layout="fill"
-              objectFit="cover"
+              objectFit="contain"
               quality={50}
               placeholder="blur"
               blurDataURL={`data:image/svg+xml;base64,${toBase64(
@@ -116,18 +116,18 @@ function BottomPageContainer() {
         <div className="relative">
           <div
             className="relative flex items-center justify-center "
-            style={{ height: "400px" }}
+            style={{ height: "300px" }}
           >
             <Image
               src={buildImage(
                 "blooms_hair_products/AdobeStock_208497707_gpctl8"
               )
-                .resize(Resize.scale().width(400).height(400))
+                .resize(Resize.scale().width(450).height(300))
                 .toURL()}
               alt="home background image"
               layout="fill"
-              objectFit="cover"
-              quality={75}
+              objectFit="contain"
+              quality={50}
               placeholder="blur"
               blurDataURL={`data:image/svg+xml;base64,${toBase64(
                 shimmer(700, 475)
@@ -156,7 +156,7 @@ function BottomPageContainer() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
       <section className="relative">
         <div className="relative" style={{ height: "500px" }}>
           <Image

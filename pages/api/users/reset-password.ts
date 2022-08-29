@@ -24,14 +24,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      */
     const userData = await getUser(req);
 
+    const existingUser = await prisma.users.findUnique({
+      where: { id: userData.id },
+    });
+
+    if (!bcrypt.compareSync(req.body.password, existingUser.password)) {
+      res.status(403).json({ message: "Incorrect password" });
+      return;
+    }
+
     try {
       await prisma.users.update({
         where: { id: userData.id },
         data: {
-          name: req.body.displayName && req.body.displayName,
-          image: req.body.image && req.body.image,
-          email: req.body.email && req.body.email,
-          shippingAddress: req.body.shippingAddress && req.body.shippingAddress,
+          password:
+            req.body.newPassword && bcrypt.hashSync(req.body.newPassword, 10),
         },
       });
       await prisma.$disconnect();

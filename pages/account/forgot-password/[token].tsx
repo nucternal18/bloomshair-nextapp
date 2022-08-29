@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { GetServerSideProps } from "next";
 import { toast } from "react-toastify";
-import Token from "../../../models/tokenModel";
 
 // Components
 import Spinner from "../../../components/Spinner";
@@ -14,7 +13,9 @@ import Layout from "../../../components/Layout/Layout/Layout";
 
 import { useAuth } from "../../../context/auth/AuthContext";
 import ChangePasswordForm from "../../../components/Forms/ChangePasswordForm";
+import Token from "../../../models/tokenModel";
 import db from "../../../lib/db";
+import { prisma } from "../../../lib/prisma-db";
 
 const url =
   "https://res.cloudinary.com/dtkjg8f0n/image/upload/ar_16:9,c_fill,e_sharpen,g_auto,w_1000/v1625089267/blooms_hair_products/shari-sirotnak-oM5YoMhTf8E-unsplash_rcpxsj.webp";
@@ -128,10 +129,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   await db.connectDB();
-
-  const tokenDoc = await Token.findOne({
-    token: context.params?.token,
-    type: "passwordReset",
+  // await Token.findOne({
+  //   token: context.params?.token,
+  //   type: "passwordReset",
+  // });
+  const tokenDoc = await prisma.tokens.findUnique({
+    where: { token: context.params.token as string },
   });
   await db.disconnect();
   if (!tokenDoc) return { props: { valid: false } };

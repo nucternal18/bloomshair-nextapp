@@ -103,7 +103,7 @@ const Table = ({ tableData, handleDelete, handleUpdateDrawerOpen }: ITable) => {
       <tbody className=" block px-1 md:px-0 pb-4  md:table-row-group">
         {tableData?.map((item) => (
           <tr
-            key={item._id}
+            key={item.id}
             className="bg-white text-gray-900 dark:text-gray-100 shadow-2xl md:shadow-none dark:bg-gray-700 rounded md:rounded-none overflow-hidden  mb-2 md:mb-0 md:border-none block md:table-row"
           >
             <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
@@ -161,7 +161,7 @@ const Table = ({ tableData, handleDelete, handleUpdateDrawerOpen }: ITable) => {
                 <button
                   type="button"
                   className="text-blue-600 text-md"
-                  onClick={() => handleUpdateDrawerOpen(item._id)}
+                  onClick={() => handleUpdateDrawerOpen(item.id)}
                 >
                   <FaEdit
                     fontSize={18}
@@ -181,7 +181,7 @@ const Table = ({ tableData, handleDelete, handleUpdateDrawerOpen }: ITable) => {
                 <button
                   type="button"
                   className="text-red-600 text-md"
-                  onClick={() => handleDelete(item._id)}
+                  onClick={() => handleDelete(item.id)}
                 >
                   <FaTrash
                     fontSize={18}

@@ -69,9 +69,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       return "Message sent: " + info.response;
     });
-    res.status(201).json({
-      message: "Message sent successfully",
-    });
+    console.log("Message sent");
+    res
+      .status(201)
+      .json({ success: true, message: "Message sent successfully" });
   } else {
     res.status(405).json({
       success: false,

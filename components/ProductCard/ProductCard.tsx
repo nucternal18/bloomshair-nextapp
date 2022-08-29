@@ -91,9 +91,10 @@ const ProductCard = ({ product, isAvailable }: IProductCard) => {
               type="button"
               color="dark"
               className="snipcart-add-item rounded-lg"
-              data-item-id={product._id}
+              data-item-id={product.id}
               data-item-price={product.price}
               data-item-url={`/products/${product.slug}`}
+              data-item-description={product.description}
               data-item-image={productImageUrl}
               data-item-name={product.name}
               disabled={product.countInStock === 0}

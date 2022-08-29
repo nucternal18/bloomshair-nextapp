@@ -40,7 +40,7 @@ const OrderListScreen = ({ orders, token }) => {
   return (
     <AdminLayout>
       <main className="w-full h-screen p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
-        <section className="container px-2 pt-6 pb-8 mx-2 mt-6 mb-4 sm:max-w-screen-lg  md:mx-auto ">
+        <section className=" px-2 sm:px-4 pt-6 pb-8">
           <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
             <div>
               <h1 className="p-3 text-4xl font-thin md:p-5 md:text-5xl">
@@ -63,13 +63,13 @@ const OrderListScreen = ({ orders, token }) => {
           </div>
 
           {isRefreshing ? (
-            <div className="w-100 flex items-center justify-center">
+            <div className="w-full flex items-center justify-center h-[500px]">
               <Spinner message="loading..." />
             </div>
           ) : (
-            <div className="w-100 sm:shadow-2xl sm:rounded-2xl">
+            <div className="w-full sm:shadow-2xl sm:rounded-2xl">
               <Table
-                tableData={orders}
+                tableData={orders.length > 0 ? orders : []}
                 show={show}
                 handleClose={handleClose}
                 handleShow={handleShow}
@@ -120,6 +120,10 @@ export async function getServerSideProps(context) {
     },
   });
   const data = await res.json();
+  console.log(
+    "🚀 ~ file: index.tsx ~ line 123 ~ getServerSideProps ~ data",
+    data
+  );
 
   return {
     props: { orders: data, token: context.req.headers.cookie }, // will be passed to the page component as props

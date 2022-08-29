@@ -30,6 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const uploadedResponse = await cloudinary.uploader.upload(fileStr, {
         upload_preset: "blooms_hair_products",
       });
+
       res.status(201).json(uploadedResponse);
     } catch (error) {
       console.error(error);

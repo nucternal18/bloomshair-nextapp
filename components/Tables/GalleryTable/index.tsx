@@ -68,7 +68,7 @@ const Table = ({ tableData, deleteHandler }: IGalleryTable) => {
       <tbody className=" block px-1 md:px-0 pb-4  md:table-row-group">
         {tableData?.map((item) => (
           <tr
-            key={item._id}
+            key={item.id}
             className="bg-white text-gray-900 dark:text-gray-100 shadow-2xl md:shadow-none dark:bg-gray-700 rounded md:rounded-none overflow-hidden  mb-2 md:mb-0 md:border-none block md:table-row"
           >
             <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
@@ -114,7 +114,7 @@ const Table = ({ tableData, deleteHandler }: IGalleryTable) => {
                 <button
                   type="button"
                   className="text-red-600 text-md"
-                  onClick={() => deleteHandler(item._id)}
+                  onClick={() => deleteHandler(item.id)}
                 >
                   <FaTrash
                     fontSize={18}

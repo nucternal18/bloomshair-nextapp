@@ -1,13 +1,20 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import db from "../../../lib/db";
-import { getUser } from "../../../lib/getUser";
-import Service from "../../../models/serviceModel";
 
-type QueryObjProps = {
-  category?: string | string[];
-  position?: { $regex: string | string[]; $options: string };
+import { prisma } from "../../../lib/prisma-db";
+import { getUser } from "../../../lib/getUser";
+
+type ServiceDataProps = {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  user?: {
+    id: string;
+  };
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -38,50 +45,56 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    await db.connectDB();
-
     const { service } = req.body;
 
     if (!service) {
       return res.status(400).send({ message: "Missing fields" });
     }
-    const serviceItem = new Service({
-      name: service.serviceName,
-      price: parseFloat(service.price),
-      category: service.category,
-      createdBy: userData._id,
-    });
-    const createdServiceItem = await serviceItem.save();
-    res.status(201).json(createdServiceItem);
+    try {
+      await prisma.services.create({
+        data: {
+          name: service.serviceName,
+          price: parseFloat(service.price),
+          category: service.category,
+          user: { connect: { id: userData.id } },
+        },
+      });
+      await prisma.$disconnect();
+      res
+        .status(201)
+        .json({ success: true, message: "Service created successfully" });
+    } catch (error) {
+      res
+        .status(404)
+        .json({ success: false, message: "Unable to create service" });
+    }
   } else if (req.method === "GET") {
     /**
      * @desc GET all services.
      * @route GET /api/hair-services
      * @access Public
      */
-    const { search, category, sortBy } = req.query;
-    const queryObj: QueryObjProps = {};
+    const { sortBy } = req.query;
 
-    if (category && category !== "all") {
-      queryObj.category = category;
-    }
-    if (search) {
-      queryObj.position = { $regex: search, $options: "i" };
-    }
-    await db.connectDB();
-
-    let result = Service.find(queryObj);
+    let result: ServiceDataProps[];
 
     // Chain sort conditions
     if (sortBy === "latest") {
-      result = result.sort("-createdAt");
+      result = await prisma.services.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    } else if (sortBy === "oldest") {
+      result = await prisma.services.findMany({
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+    } else {
+      result = await prisma.services.findMany({});
     }
-    if (sortBy === "oldest") {
-      result = result.sort("createdAt");
-    }
-    const services = await result;
-    await db.disconnect();
-    res.status(200).json(services);
+    res.status(200).json(result);
   } else {
     res.setHeader("Allow", ["GET"]);
     res.status(405).json({ message: `Method ${req.method} not allowed` });

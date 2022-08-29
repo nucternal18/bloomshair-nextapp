@@ -1,9 +1,10 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import Product from "../../../../models/productModel";
-import db from "../../../../lib/db";
-import { getUser } from "../../../../lib/getUser";
+
+import { getUser } from "@lib/getUser";
+import { prisma } from "@lib/prisma-db";
+import { nanoid } from "nanoid";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug } = req.query;
@@ -18,18 +19,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(401).json({ message: "Not Authorized" });
       return;
     }
-    await db.connectDB();
 
     const { review } = req.body;
     const { rating, comment } = review;
     const userData = await getUser(req);
 
     try {
-      const product = await Product.findById(slug);
+      const product = await prisma.products.findUnique({
+        where: { slug: slug as string },
+      });
 
       if (product) {
         const alreadyReviewed = product.reviews.find(
-          (r) => r.user.toString() === userData._id.toString()
+          (review) => review.user.toString() === userData.id.toString()
         );
 
         if (alreadyReviewed) {
@@ -37,26 +39,41 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             .status(400)
             .json({ message: "You have already reviewed this product" });
         }
-
+        const reviewId = nanoid(24);
+        const reviewRating =
+          product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+          product.reviews.length;
         const review = {
+          id: reviewId,
           name: userData.name,
           rating: Number(rating),
           comment,
-          user: userData._id,
+          user: userData.id,
         };
 
-        product.reviews.push(review);
-        product.numReviews = product.reviews.length;
-        product.rating =
-          product.reviews.reduce((acc, item) => item.rating + acc, 0) /
-          product.reviews.length;
-        await product.save();
-        res.status(201).json({ message: "Review created successfully" });
+        await prisma.products.update({
+          where: { id: product.id },
+          data: {
+            reviews: {
+              ...review,
+            },
+            numReviews: product.reviews.length,
+            rating: Number(reviewRating),
+          },
+        });
+
+        await prisma.$disconnect();
+        res
+          .status(201)
+          .json({ success: true, message: "Review created successfully" });
       }
     } catch (error) {
       res
         .status(404)
-        .json({ message: "Review not created. Product not found" });
+        .json({
+          success: false,
+          message: "Review not created. Product not found",
+        });
     }
   } else {
     res.status(405).json({ message: `Method ${req.method} not allowed` });

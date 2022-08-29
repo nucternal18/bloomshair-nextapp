@@ -1,9 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import db from "../../../lib/db";
+
+import { prisma } from "../../../lib/prisma-db";
 import { getUser } from "../../../lib/getUser";
-import Picture from "../../../models/galleryModel";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
@@ -34,18 +34,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    await db.connectDB();
-
     try {
-      const picture = await Picture.findById(id);
+      await prisma.pictures.delete({ where: { id: id as string } });
 
-      if (picture) {
-        await picture.remove();
-        res.json({ message: "Picture removed" });
-      }
-    } catch (error) {
-      res.status(404).json({ message: "Unable to delete picture" });
-      throw new Error("Product not found");
+      await prisma.$disconnect();
+      res.json({ success: true, message: "Picture deleted successfully" });
+    } catch (error: any) {
+      res
+        .status(404)
+        .json({ success: false, message: "Unable to delete picture", error });
     }
   } else {
     res.status(405).json({ message: `Method ${req.method} not allowed` });

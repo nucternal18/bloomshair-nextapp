@@ -10,7 +10,7 @@ export async function uploadImage(base64EncodedImage) {
       body: JSON.stringify({ data: base64EncodedImage }),
     });
     const data = await response.json();
-    const imageUrl = data.url;
+    const imageUrl = data.secure_url;
     return imageUrl;
   } catch (error) {
     console.error(error);

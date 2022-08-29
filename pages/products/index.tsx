@@ -18,12 +18,23 @@ import useOutsideClick from "../../hooks/useOutsideClick";
 
 // context: productContext
 import { useProduct, ActionType } from "../../context/product/productContext";
+import { ProductProps } from "@lib/types";
 
 interface IFormData {
   search: string;
 }
 
-function Products({ products, pages, isLoading }): JSX.Element {
+type ProductPageProps = {
+  products: ProductProps[];
+  pages: number;
+  isLoading: boolean;
+};
+
+function Products({
+  products,
+  pages,
+  isLoading,
+}: ProductPageProps): JSX.Element {
   const router = useRouter();
   const { ref, isVisible, setIsVisible } = useOutsideClick();
   const { state, dispatch } = useProduct();
@@ -128,7 +139,7 @@ function Products({ products, pages, isLoading }): JSX.Element {
             <div className="grid grid-cols-1 gap-2 my-8 md:mx-auto md:grid-cols-3 sm:mx-0">
               {products.map((product) => {
                 return (
-                  <div key={product._id}>
+                  <div key={product.id}>
                     <ProductCard
                       product={product}
                       isAvailable={product.countInStock > 0}
