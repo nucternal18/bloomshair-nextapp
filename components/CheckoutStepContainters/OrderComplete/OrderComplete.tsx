@@ -17,7 +17,7 @@ const OrderComplete = () => {
         </h2>
       </div>
       <div className="px-2 mb-4">
-        <h3>your order # is: {state?.order?._id}</h3>
+        <h3>your order # is: {state?.order?.id}</h3>
       </div>
       <div className="px-2 mb-4">
         <p>
