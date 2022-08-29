@@ -5,6 +5,7 @@ import Layout from "../../../components/Layout/Layout/Layout";
 import db from "../../../lib/db";
 import Token from "../../../models/tokenModel";
 import User from "../../../models/userModel";
+import { prisma } from "../../../lib/prisma-db";
 
 export default function EmailVerifyPage({ valid }) {
   return (
@@ -46,8 +47,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (!deletedToken) return { props: { valid: false } };
 
-  await User.findByIdAndUpdate(deletedToken.userId, {
-    emailVerified: true,
+  await prisma.users.update({
+    where: { id: deletedToken.userId },
+    data: { emailVerified: true },
   });
 
   await db.disconnect();
