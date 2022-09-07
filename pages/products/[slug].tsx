@@ -300,7 +300,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       props: {
         product: productData.product,
-        productId: productData.product._id,
+        productId: productData.product.id,
       },
     };
   }

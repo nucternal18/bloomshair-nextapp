@@ -1,4 +1,5 @@
 import type { AppProps } from "next/app";
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider, Hydrate } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { SessionProvider } from "next-auth/react";
@@ -38,6 +39,13 @@ const AppProviders = composeProviders(
 
 function MyApp({ Component, pageProps, router }: AppProps) {
   const queryClient = new QueryClient();
+
+  // useEffect(() => {
+  //   const unsubscribe = snipcart.events.on('item.added', (cartItem) => {
+  //     console.log(cartItem);
+  //   })
+  //   return () => unsubscribe();
+  // },[])
 
   return (
     <>

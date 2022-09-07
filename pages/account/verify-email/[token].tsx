@@ -1,11 +1,10 @@
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
-import Head from "next/head";
+import { PrismaClient } from "@prisma/client";
+
 import Layout from "../../../components/Layout/Layout/Layout";
-import db from "../../../lib/db";
-import Token from "../../../models/tokenModel";
-import User from "../../../models/userModel";
-import { prisma } from "../../../lib/prisma-db";
+
+const prisma = new PrismaClient();
 
 export default function EmailVerifyPage({ valid }) {
   return (
@@ -38,11 +37,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  await db.connectDB();
-
-  const deletedToken = await Token.findOneAndDelete({
-    token: context.params?.token,
-    type: "emailVerify",
+  const deletedToken = await prisma.tokens.delete({
+    where: {
+      token: context.params?.token as string,
+    },
   });
 
   if (!deletedToken) return { props: { valid: false } };
@@ -52,7 +50,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     data: { emailVerified: true },
   });
 
-  await db.disconnect();
+  await prisma.$disconnect();
 
   return { props: { token: context.params?.token, valid: true } };
 };

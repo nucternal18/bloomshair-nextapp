@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Image from "next/image";

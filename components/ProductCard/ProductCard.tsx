@@ -28,6 +28,9 @@ const cld = new Cloudinary({
   },
 });
 
+const dev = process.env.NODE_ENV !== "production";
+const NGROK_URL = "https://385e-77-100-6-97.eu.ngrok.io";
+
 const ProductCard = ({ product, isAvailable }: IProductCard) => {
   const url = product.image.substring(61, product.image.lastIndexOf("."));
   const productImageUrl = cld.image(url).quality("auto").format("auto").toURL();
@@ -93,7 +96,11 @@ const ProductCard = ({ product, isAvailable }: IProductCard) => {
               className="snipcart-add-item rounded-lg"
               data-item-id={product.id}
               data-item-price={product.price}
-              data-item-url={`/products/${product.slug}`}
+              data-item-url={
+                dev
+                  ? `${NGROK_URL}/api/products/${product.slug}`
+                  : `/api/products/${product.slug}`
+              }
               data-item-description={product.description}
               data-item-image={productImageUrl}
               data-item-name={product.name}
