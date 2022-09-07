@@ -13,7 +13,6 @@ import Layout from "../../../components/Layout/Layout/Layout";
 
 import { useAuth } from "../../../context/auth/AuthContext";
 import ChangePasswordForm from "../../../components/Forms/ChangePasswordForm";
-import Token from "../../../models/tokenModel";
 import db from "../../../lib/db";
 import { prisma } from "../../../lib/prisma-db";
 
@@ -128,7 +127,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  await db.connectDB();
   // await Token.findOne({
   //   token: context.params?.token,
   //   type: "passwordReset",
@@ -136,7 +134,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const tokenDoc = await prisma.tokens.findUnique({
     where: { token: context.params.token as string },
   });
-  await db.disconnect();
+  await prisma.$disconnect();
   if (!tokenDoc) return { props: { valid: false } };
 
   return { props: { token: context.params?.token, valid: true } };
