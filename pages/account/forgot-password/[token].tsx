@@ -10,10 +10,9 @@ import { toast } from "react-toastify";
 // Components
 import Spinner from "../../../components/Spinner";
 import Layout from "../../../components/Layout/Layout/Layout";
+import ChangePasswordForm from "../../../components/Forms/ChangePasswordForm";
 
 import { useAuth } from "../../../context/auth/AuthContext";
-import ChangePasswordForm from "../../../components/Forms/ChangePasswordForm";
-import db from "../../../lib/db";
 import { prisma } from "../../../lib/prisma-db";
 
 const url =
@@ -131,7 +130,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   //   token: context.params?.token,
   //   type: "passwordReset",
   // });
-  const tokenDoc = await prisma.tokens.findUnique({
+  const tokenDoc = await prisma.token.findUnique({
     where: { token: context.params.token as string },
   });
   await prisma.$disconnect();

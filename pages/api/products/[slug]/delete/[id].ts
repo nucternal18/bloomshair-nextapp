@@ -2,6 +2,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
+import { Session } from "next-auth";
 
 import { getUser } from "@lib/getUser";
 
@@ -9,7 +10,20 @@ const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
+
+  if (!session) {
+    res.status(401).json({ message: "Not Authorized" });
+    return;
+  }
+  const userData = await getUser(req);
+  /**
+   * @desc check to see if logged in user is admin
+   */
+  if (!session.user?.isAdmin) {
+    res.status(401).json({ message: "Not Authorized" });
+    return;
+  }
 
   if (req.method === "DELETE") {
     /**
@@ -18,21 +32,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      * @access Private/Admin
      */
 
-    if (!session) {
-      res.status(401).json({ message: "Not Authorized" });
-      return;
-    }
-    const userData = await getUser(req);
-    /**
-     * @desc check to see if logged in user is admin
-     */
-    if (!userData.isAdmin) {
-      res.status(401).json({ message: "Not Authorized" });
-      return;
-    }
-
     try {
-      await prisma.products.delete({ where: { id: id as string } });
+      await prisma.product.delete({ where: { id: id as string } });
 
       res.status(201).json({ success: true, message: "Product removed" });
     } catch (error: any) {
@@ -46,23 +47,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      * @route PUT /api/products/:slug/:id
      * @access Private/Admin
      */
-    if (!session) {
-      res.status(401).json({ message: "Not Authorized" });
-      return;
-    }
-    const userData = await getUser(req);
-    /**
-     * @desc check to see if logged in user is admin
-     */
-    if (!userData.isAdmin) {
-      res.status(401).json({ message: "Not Authorized" });
-      return;
-    }
-    const { name, price, description, image, brand, category, countInStock } =
-      req.body;
+
+    const {
+      name,
+      price,
+      description,
+      image,
+      brand,
+      category,
+      countInStock,
+      slug,
+    } = req.body;
 
     try {
-      await prisma.products.update({
+      await prisma.product.update({
         where: { id: id as string },
         data: {
           name,
@@ -72,6 +70,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           brand,
           category,
           countInStock,
+          slug,
         },
       });
 

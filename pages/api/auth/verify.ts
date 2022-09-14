@@ -16,7 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const securedTokenId = nanoid(32); // create a secure reset password token
 
-    const token = await prisma.tokens.create({
+    const token = await prisma.token.create({
       data: {
         user: { connect: { id } },
         token: securedTokenId,

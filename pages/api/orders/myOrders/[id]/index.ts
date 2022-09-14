@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { withSentry } from "@sentry/nextjs";
 import { PrismaClient } from "@prisma/client";
+import { Session } from "next-auth";
 
 const prisma = new PrismaClient();
 
@@ -11,7 +12,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
    * @desc Get user session
    */
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
   /**
    * @desc check to see if their is a user session
    */
@@ -28,7 +29,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      */
 
     try {
-      const order = await prisma.orders.findUnique({
+      const order = await prisma.order.findUnique({
         where: { id: id as string },
         select: {
           id: true,

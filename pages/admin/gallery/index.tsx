@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { Session } from "next-auth";
 
 // Components
 import Table from "../../../components/Tables/GalleryTable";
@@ -152,7 +153,7 @@ const GalleryAdminPage = ({ pictures, isLoading }) => {
 
 export async function getServerSideProps(context) {
   const req = context.req;
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
 
   if (!session) {
     // If no token is present redirect user to the login page
@@ -163,9 +164,8 @@ export async function getServerSideProps(context) {
       },
     };
   }
-  const userData = await getUser(req);
 
-  if (!userData?.isAdmin) {
+  if (!session.user?.isAdmin) {
     return {
       redirect: {
         destination: "/not-authorized",

@@ -1,13 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
+import { Session } from "next-auth";
 
 import { getUser } from "@lib/getUser";
 
 const prisma = new PrismaClient();
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getSession({ req });
   if (req.method === "GET") {
     /**
      * @desc Fetch all products
@@ -23,10 +23,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       page = 1;
     }
 
-    const count = await prisma.products.findMany({
+    const count = await prisma.product.findMany({
       where: { name: req.query.keyword as string },
     });
-    const products = await prisma.products.findMany({
+    const products = await prisma.product.findMany({
       where: {
         name: { contains: req.query.keyword as string, mode: "insensitive" },
       },
@@ -40,6 +40,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       page: page,
     });
   } else if (req.method === "POST") {
+    const session: Session = await getSession({ req });
     /**
      * @desc Create a  product
      * @route POST /api/products
@@ -53,12 +54,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     /**
      * @desc check to see if logged in user is admin
      */
-    if (!userData.isAdmin) {
+    if (!session.user?.isAdmin) {
       res.status(401).json({ message: "Not Authorized" });
       return;
     }
     try {
-      await prisma.products.create({
+      await prisma.product.create({
         data: {
           name: "Sample Name",
           price: 0,
@@ -70,6 +71,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           countInStock: 0,
           numReviews: 0,
           description: "Sample description",
+          slug: "sample-slug",
         },
       });
       await prisma.$disconnect();

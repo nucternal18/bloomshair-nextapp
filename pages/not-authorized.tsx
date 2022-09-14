@@ -22,7 +22,7 @@ function NotAuthorized() {
             height={300}
           />
           <h1 className="my-5 text-6xl">Whoops!</h1>
-          <h2 className="mb-5 text-4xl text-gray-500">
+          <h2 className="mb-5 text-4xl text-gray-500 text-center">
             Not authorized to access this page. Login as an administrator or go
             back to the home page.
           </h2>

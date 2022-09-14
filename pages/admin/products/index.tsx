@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getSession } from "next-auth/react";
 import { FaPlus } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { GetServerSidePropsContext } from "next";
+import { useQuery } from "@tanstack/react-query";
+import { Session } from "next-auth";
 
 // Components
 import Spinner from "../../../components/Spinner";
@@ -23,43 +25,36 @@ import { getUser } from "../../../lib/getUser";
 import { NEXT_URL } from "../../../config";
 import { ProductProps } from "../../../lib/types";
 
-const Products = ({ products, pages }) => {
+interface IProductPageProps {
+  products: ProductProps[];
+  pages: number;
+}
+
+const fetchProducts = async (page: number): Promise<ProductProps[]> => {
+  const res = await fetch(`${NEXT_URL}/admin/products?page=${page}`);
+  return await res.json();
+};
+
+const Products = (props: IProductPageProps) => {
   const router = useRouter();
-  const { state, dispatch, deleteProduct, createProduct } = useProduct();
-  const { success, error, message } = state;
-  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
-  const page = state?.page;
+  const {
+    state,
+    dispatch,
+    deleteProduct,
+    createProduct,
+    state: { loading, page },
+  } = useProduct();
+  const {
+    isLoading,
+    error,
+    data: products,
+  } = useQuery(["productData"], () => fetchProducts(page), {
+    initialData: props.products,
+  });
 
   const refreshData = () => {
-    router.replace(router.asPath);
-    setIsRefreshing(true);
+    router.push(router.asPath);
   };
-
-  useEffect(() => {
-    setIsRefreshing(false);
-  }, [products]);
-
-  useEffect(() => {
-    const subscribe = () => {
-      const url = `${NEXT_URL}/admin/products?page=${page}`;
-      router.replace(url);
-    };
-    subscribe();
-  }, [page]);
-
-  useEffect(() => {
-    if (success) {
-      toast.success(message);
-      dispatch({ type: ActionType.PRODUCT_ACTION_RESET });
-    }
-  }, [success]);
-
-  useEffect(() => {
-    if (error) {
-      toast.error(error as string);
-      dispatch({ type: ActionType.PRODUCT_ACTION_RESET });
-    }
-  }, [error]);
 
   /**
    * @description - map through the products and return the required data
@@ -67,7 +62,7 @@ const Products = ({ products, pages }) => {
    */
   const data = products.map((row: Partial<ProductProps>) => {
     return {
-      _id: row["_id"],
+      id: row["id"],
       image: row["image"],
       name: row["name"],
       price: row["price"],
@@ -82,18 +77,28 @@ const Products = ({ products, pages }) => {
    * @description - function to delete a product
    * @param id
    */
-  const deleteHandler = (slug: string, id: string) => {
-    if (window.confirm("Are you sure?")) {
-      // DELETE Products
-      deleteProduct(slug, id);
+  const deleteHandler = useCallback(async (slug: string, id: string) => {
+    // if (window.confirm("Are you sure?")) {
+    //   // DELETE Products
+    //   deleteProduct(slug, id);
+    //   refreshData();
+    // }
+    try {
+      await deleteProduct(slug, id);
       refreshData();
+    } catch (error) {
+      toast.error((error as string) ?? "Something went wrong");
     }
-  };
+  }, []);
 
-  const createProductHandler = () => {
-    createProduct();
-    refreshData();
-  };
+  const createProductHandler = useCallback(async () => {
+    try {
+      await createProduct();
+      refreshData();
+    } catch (error) {
+      toast.error((error as string) ?? "Something went wrong");
+    }
+  }, []);
 
   return (
     <AdminLayout>
@@ -112,7 +117,7 @@ const Products = ({ products, pages }) => {
             </div>
           </div>
           <div className="mb-4">
-            {isRefreshing ? (
+            {isLoading ? (
               <div className="w-full h-full flex items-center justify-center">
                 <Spinner />
               </div>
@@ -122,7 +127,7 @@ const Products = ({ products, pages }) => {
               </div>
             )}
           </div>
-          <Paginate numberOfPages={pages} />
+          <Paginate numberOfPages={props.pages} />
         </section>
       </main>
     </AdminLayout>
@@ -131,7 +136,7 @@ const Products = ({ products, pages }) => {
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const req = ctx.req;
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
   const { page, keyword } = ctx.query;
   let url = `products?page=${page || 1}`;
   if (keyword) {
@@ -146,9 +151,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       },
     };
   }
-  const userData = await getUser(req);
 
-  if (!userData?.isAdmin) {
+  if (!session.user?.isAdmin) {
     return {
       redirect: {
         destination: "/not-authorized",

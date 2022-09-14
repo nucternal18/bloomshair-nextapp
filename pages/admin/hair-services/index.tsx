@@ -4,6 +4,7 @@ import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { GetServerSidePropsContext } from "next";
+import { Session } from "next-auth";
 
 // utils
 import { getUser } from "../../../lib/getUser";
@@ -150,7 +151,7 @@ export const getServerSideProps = async (
 ) => {
   const req = context.req;
   const { sortBy, category, search } = context.query;
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
 
   if (!session) {
     // If no token is present redirect user to the login page
@@ -161,9 +162,8 @@ export const getServerSideProps = async (
       },
     };
   }
-  const userData = await getUser(req);
 
-  if (!userData?.isAdmin) {
+  if (!session.user?.isAdmin) {
     return {
       redirect: {
         destination: "/not-authorized",

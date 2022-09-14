@@ -48,7 +48,7 @@ export type ProductProps = {
   brand: string;
   category: string;
   countInStock: number;
-  description: string;
+  description?: string;
   rating?: number;
   numReviews?: number;
   slug?: string;

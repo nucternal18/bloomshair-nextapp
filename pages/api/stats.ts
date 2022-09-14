@@ -3,6 +3,7 @@ import moment from "moment";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
+import { Session } from "next-auth";
 
 // utils
 import { getUser } from "@lib/getUser";
@@ -13,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
    * @desc Get user session
    */
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
   /**
    * @desc check to see if their is a user session
    */
@@ -22,34 +23,33 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const userData = await getUser(req);
   /**
    * @desc check to see if logged in user is admin
    */
-  if (!userData.isAdmin) {
+  if (!session.user?.isAdmin) {
     res.status(401).json({ message: "Not Authorized" });
     return;
   }
 
   if (req.method === "GET") {
-    const productStats = await prisma.products.count();
-    const userStats = await prisma.users.findMany({
+    const productStats = await prisma.product.count();
+    const userStats = await prisma.user.findMany({
       where: {
         isAdmin: false,
       },
     });
-    const orderStats = await prisma.orders.count();
-    const ordersDelivered = await prisma.orders.count({
+    const orderStats = await prisma.order.count();
+    const ordersDelivered = await prisma.order.count({
       select: { isDelivered: true },
     });
-    const ordersPaid = await prisma.orders.count({ select: { isPaid: true } });
-    const totalSalesStats = await prisma.orders.aggregate({
+    const ordersPaid = await prisma.order.count({ select: { isPaid: true } });
+    const totalSalesStats = await prisma.order.aggregate({
       _sum: {
         totalPrice: true,
       },
     });
 
-    const monthlySales = (await prisma.orders.aggregateRaw({
+    const monthlySales = (await prisma.order.aggregateRaw({
       pipeline: [
         {
           $project: {

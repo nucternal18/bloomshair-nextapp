@@ -34,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    const userExist = await prisma.users.findUnique({ where: { email } });
+    const userExist = await prisma.user.findUnique({ where: { email } });
 
     if (userExist) {
       res.status(422).json({ success: false, message: "User already exists" });
@@ -44,7 +44,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     try {
       const hashedPassword = bcrypt.hashSync(password, 10);
-      const user = await prisma.users.create({
+      const user = await prisma.user.create({
         data: {
           name: displayName,
           email,

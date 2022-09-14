@@ -6,6 +6,7 @@ import { FaPlusCircle } from "react-icons/fa";
 import dynamic from "next/dynamic";
 import { toast } from "react-toastify";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { Session } from "next-auth";
 
 //components
 import Spinner from "../../../components/Spinner";
@@ -220,7 +221,7 @@ const ProductEditScreen = ({ product, productId, isLoading }): JSX.Element => {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { slug } = context.params;
   const req = context.req;
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
 
   if (!session) {
     // If no token is present redirect user to the login page
@@ -231,9 +232,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
-  const userData = await getUser(req);
 
-  if (!userData?.isAdmin) {
+  if (!session.user?.isAdmin) {
     return {
       redirect: {
         destination: "/not-authorized",

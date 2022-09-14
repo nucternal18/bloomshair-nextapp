@@ -1,7 +1,11 @@
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
-import { QueryClient, QueryClientProvider, Hydrate } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
+import {
+  QueryClient,
+  QueryClientProvider,
+  Hydrate,
+} from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import { SnipcartProvider } from "use-snipcart";
@@ -52,7 +56,12 @@ function MyApp({ Component, pageProps, router }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps.dehydratedState}>
           <ThemeProvider attribute="class">
-            <SessionProvider session={pageProps.session}>
+            <SessionProvider
+              session={pageProps.session}
+              refetchInterval={5 * 60}
+              // Re-fetches session when window is focused
+              refetchOnWindowFocus={true}
+            >
               <AppProviders>
                 <SnipcartProvider>
                   <motion.div
@@ -68,7 +77,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
                         opacity: 1,
                       },
                     }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.1 }}
                   >
                     <Component {...pageProps} />
                   </motion.div>

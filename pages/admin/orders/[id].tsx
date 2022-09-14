@@ -2,6 +2,7 @@ import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
+import { Session } from "next-auth";
 
 // context
 import { useOrder } from "../../../context/order/OrderContext";
@@ -238,7 +239,7 @@ function OrderScreen(props): JSX.Element {
 export async function getServerSideProps(context) {
   const { id } = context.params;
   const req = context.req;
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
 
   if (!session) {
     // If no token is present redirect user to the login page
@@ -251,7 +252,7 @@ export async function getServerSideProps(context) {
   }
   const userData = await getUser(req);
 
-  if (!userData?.isAdmin) {
+  if (!session.user?.isAdmin) {
     return {
       redirect: {
         destination: "/not-authorized",

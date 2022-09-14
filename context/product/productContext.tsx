@@ -205,9 +205,12 @@ const ProductContextProvider = ({ children }) => {
         type: ActionType.PRODUCT_ACTION_REQUEST,
       });
 
-      const res = await fetch(`${NEXT_URL}/api/products/${productSlug}/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${NEXT_URL}/api/products/${productSlug}/delete/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (res.ok) {
         dispatch({

@@ -37,7 +37,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const deletedToken = await prisma.tokens.delete({
+  const deletedToken = await prisma.token.delete({
     where: {
       token: context.params?.token as string,
     },
@@ -45,7 +45,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (!deletedToken) return { props: { valid: false } };
 
-  await prisma.users.update({
+  await prisma.user.update({
     where: { id: deletedToken.userId },
     data: { emailVerified: true },
   });

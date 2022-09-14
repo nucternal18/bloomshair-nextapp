@@ -1,3 +1,6 @@
+import { NextApiRequest } from "next";
+import { NextApiRequestCookies } from "next/dist/server/api-utils";
+import { NextIncomingMessage } from "next/dist/server/request-meta";
 import { NEXT_URL } from "../config";
 type SessionProps = {
   id: string;
@@ -6,7 +9,11 @@ type SessionProps = {
   email: string;
   isAdmin: boolean;
 };
-export async function getUser(req): Promise<SessionProps> {
+export async function getUser(
+  req: NextIncomingMessage & {
+    cookies: NextApiRequestCookies;
+  }
+): Promise<SessionProps> {
   try {
     const userRes = await fetch(`${NEXT_URL}/api/users/user`, {
       method: "GET",

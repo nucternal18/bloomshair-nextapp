@@ -2,6 +2,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
+import { Session } from "next-auth";
 
 import { getUser } from "../../../lib/getUser";
 
@@ -12,7 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     /**
      * @desc Get user session
      */
-    const session = await getSession({ req });
+    const session: Session = await getSession({ req });
     /**
      * @desc check to see if their is a user session
      */
@@ -23,11 +24,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     /**
      * @desc Get current user session
      */
-    const userData = await getUser(req);
 
     try {
-      await prisma.users.update({
-        where: { id: userData.id },
+      await prisma.user.update({
+        where: { id: session.user?.id },
         data: {
           name: req.body.displayName && req.body.displayName,
           image: req.body.image && req.body.image,

@@ -13,7 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "PUT") {
     const { token, password } = req.body;
 
-    const deletedToken = await prisma.tokens.findUnique({
+    const deletedToken = await prisma.token.findUnique({
       where: { token: token },
     });
 
@@ -23,12 +23,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    const user = await prisma.users.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: deletedToken.userId },
     });
     if (user) {
       if (password) {
-        await prisma.users.update({
+        await prisma.user.update({
           where: { id: user.id },
           data: { password: bcrypt.hashSync(password, 10) },
         });

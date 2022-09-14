@@ -1,6 +1,7 @@
 import { getSession } from "next-auth/react";
 import { NEXT_URL } from "@config/index";
 import dynamic from "next/dynamic";
+import { Session } from "next-auth";
 
 // Components
 import AdminLayout from "../../components/Layout/AdminLayout/AdminLayout";
@@ -18,7 +19,7 @@ export default function Dashboard({ stats }) {
     <AdminLayout title="Admin">
       <section className=" w-full h-screen px-4 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 md:px-10">
         <StatsContainer stats={stats} />
-        {stats.monthlySalesStats.length > 0 && (
+        {stats.monthlySalesStats?.length > 0 && (
           <ChartsContainer monthlyStats={stats.monthlySalesStats} />
         )}
       </section>
@@ -27,7 +28,7 @@ export default function Dashboard({ stats }) {
 }
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const req = context.req;
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
 
   if (!session) {
     // If no token is present redirect user to the login page
@@ -38,9 +39,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
-  const userData = await getUser(req);
 
-  if (!userData?.isAdmin) {
+  if (!session.user?.isAdmin) {
     return {
       redirect: {
         destination: "/not-authorized",

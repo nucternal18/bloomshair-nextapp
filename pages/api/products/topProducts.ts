@@ -11,7 +11,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
      * @access Public
      */
 
-    const products = await prisma.products.findMany({
+    const products = await prisma.product.findMany({
       orderBy: {
         rating: "desc",
       },

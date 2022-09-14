@@ -1,8 +1,12 @@
 import bcrypt from "bcryptjs";
 import NextAuth from "next-auth/next";
+import type NextAuthOptions from "next-auth/next";
+import { Session } from "next-auth";
 import { NextApiRequest } from "next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import GoogleProvider from "next-auth/providers/google";
 
 const prisma = new PrismaClient();
 
@@ -23,9 +27,13 @@ export default NextAuth({
   },
   debug: true,
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     CredentialsProvider({
       async authorize(credentials: CredentialsProps, req: NextApiRequest) {
-        const user = await prisma.users.findUnique({
+        const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
         await prisma.$disconnect();
@@ -47,6 +55,7 @@ export default NextAuth({
       credentials: undefined,
     }),
   ],
+  adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     /**
@@ -56,7 +65,7 @@ export default NextAuth({
      * @param  {object}  user      User object      (only available on sign in)
      * @return {object}              Session that will be returned to the client
      */
-    async session({ session, token, user }) {
+    async session({ session, token, user }): Promise<Session> {
       // Add property to session, like an access_token from a provider.
       session.user = token.user;
       return session;

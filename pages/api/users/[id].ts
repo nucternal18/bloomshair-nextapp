@@ -2,6 +2,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
+import { Session } from "next-auth";
 
 import { getUser } from "@lib/getUser";
 
@@ -12,7 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
    * @desc Get user session
    */
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
   /**
    * @desc check to see if their is a user session
    */
@@ -25,7 +26,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
    * @desc check to see if logged in user is admin
    */
-  if (!userData.isAdmin) {
+  if (!session.user?.isAdmin) {
     res.status(401).json({ message: "Not Authorized" });
     return;
   }
@@ -38,7 +39,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      */
 
     try {
-      const user = await prisma.users.findUnique({
+      const user = await prisma.user.findUnique({
         where: { id: id as string },
       });
       await prisma.$disconnect();
@@ -55,7 +56,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { displayName, image, email, isAdmin, category } = req.body;
 
     try {
-      await prisma.users.update({
+      await prisma.user.update({
         where: { id: id as string },
         data: {
           name: displayName,
@@ -79,7 +80,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      * @access Private/admin
      */
     try {
-      await prisma.users.delete({ where: { id: id as string } });
+      await prisma.user.delete({ where: { id: id as string } });
       await prisma.$disconnect();
       res.json({ success: true, message: "User removed successfully" });
     } catch (error) {

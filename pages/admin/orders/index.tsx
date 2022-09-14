@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { FaPlus } from "react-icons/fa";
 import { getSession } from "next-auth/react";
+import { Session } from "next-auth";
 
 // context
 import { useOrder } from "@context/order/OrderContext";
@@ -90,7 +91,7 @@ const OrderListScreen = ({ orders, token }) => {
 
 export async function getServerSideProps(context) {
   const req = context.req;
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
 
   if (!session) {
     // If no token is present redirect user to the login page
@@ -101,9 +102,8 @@ export async function getServerSideProps(context) {
       },
     };
   }
-  const userData = await getUser(req);
 
-  if (!userData?.isAdmin) {
+  if (!session.user?.isAdmin) {
     return {
       redirect: {
         destination: "/not-authorized",

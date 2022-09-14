@@ -13,21 +13,21 @@ const prisma = new PrismaClient();
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     const { email } = req.body;
-    const user = await prisma.users.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
       res.status(403).json({ message: "User does not exist" });
       await prisma.$disconnect();
       return;
     }
-    const token = await prisma.tokens.findUnique({
+    const token = await prisma.token.findUnique({
       where: { userId: user.id },
     });
-    if (token) await prisma.tokens.delete({ where: { id: token.id } });
+    if (token) await prisma.token.delete({ where: { id: token.id } });
 
     const securedTokenId = nanoid(32); // create a secure reset password token
 
-    await prisma.tokens.create({
+    await prisma.token.create({
       data: {
         userId: user.id,
         token: securedTokenId,

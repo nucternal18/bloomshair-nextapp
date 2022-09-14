@@ -2,6 +2,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
+import { Session } from "next-auth";
 
 import { getUser } from "@lib/getUser";
 
@@ -12,7 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
    * @desc Get user session
    */
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
   /**
    * @desc check to see if their is a user session
    */
@@ -25,7 +26,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
    * @desc check to see if logged in user is admin
    */
-  if (!userData.isAdmin) {
+  if (!session.user.isAdmin) {
     res.status(401).json({ message: "Not Authorized" });
     return;
   }
@@ -38,7 +39,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      */
 
     try {
-      const order = await prisma.orders.findUnique({
+      const order = await prisma.order.findUnique({
         where: { id: id as string },
         select: {
           id: true,

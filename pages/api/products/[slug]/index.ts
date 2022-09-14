@@ -12,7 +12,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      * @access Public
      */
     try {
-      const product = await prisma.products.findUnique({
+      const product = await prisma.product.findUnique({
         where: { slug: req.query.slug as string },
       });
       if (product) res.status(200).json(product);

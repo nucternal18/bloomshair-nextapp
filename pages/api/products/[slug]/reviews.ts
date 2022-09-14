@@ -2,6 +2,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
+import { Session } from "next-auth";
 
 import { getUser } from "@lib/getUser";
 import { nanoid } from "nanoid";
@@ -10,7 +11,7 @@ const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug } = req.query;
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
   if (req.method === "POST") {
     /**
      * @desc Create new review
@@ -24,16 +25,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const { review } = req.body;
     const { rating, comment } = review;
-    const userData = await getUser(req);
 
     try {
-      const product = await prisma.products.findUnique({
+      const product = await prisma.product.findUnique({
         where: { slug: slug as string },
       });
 
       if (product) {
         const alreadyReviewed = product.reviews.find(
-          (review) => review.user.toString() === userData.id.toString()
+          (review) => review.user.toString() === session.user?.id.toString()
         );
 
         if (alreadyReviewed) {
@@ -47,13 +47,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           product.reviews.length;
         const review = {
           id: reviewId,
-          name: userData.name,
+          name: session.user?.name,
           rating: Number(rating),
           comment,
-          user: userData.id,
+          user: session.user?.id,
         };
 
-        await prisma.products.update({
+        await prisma.product.update({
           where: { id: product.id },
           data: {
             reviews: {

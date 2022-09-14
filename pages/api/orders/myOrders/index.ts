@@ -2,6 +2,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
+import { Session } from "next-auth";
 
 import { getUser } from "../../../../lib/getUser";
 import { sendMail } from "../../../../lib/mail";
@@ -13,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
    * @desc Get user session
    */
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
   /**
    * @desc check to see if their is a user session
    */
@@ -47,10 +48,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(400).json({ message: "No order items" });
     }
     try {
-      const order = await prisma.orders.create({
+      const order = await prisma.order.create({
         data: {
           orderItems,
-          user: { connect: { id: userData.id } },
+          user: { connect: { id: session.user?.id } },
           shippingAddress,
           paymentMethod,
           itemsPrice,
@@ -85,8 +86,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      */
 
     try {
-      const orders = await prisma.orders.findUnique({
-        where: { userId: userData.id },
+      const orders = await prisma.order.findUnique({
+        where: { userId: session.user.id },
       });
       await prisma.$disconnect();
       if (orders) {

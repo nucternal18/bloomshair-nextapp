@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import { Session } from "next-auth";
 
 // Components
 import Layout from "../../components/Layout/Layout/Layout";
@@ -52,7 +53,7 @@ function Profile({ userData, isLoading }: ProfileProps): JSX.Element {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const req = context.req;
-  const session = await getSession({ req });
+  const session: Session = await getSession({ req });
 
   if (!session) {
     // If no token is present redirect user to the login page
@@ -66,7 +67,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   // If user has logged in and there is a JWT token present,
   // Fetch user data and order data
-  const userRes = await fetch(`${NEXT_URL}/api/users/user`, {
+  const userRes = await fetch(`${NEXT_URL}/api/users/${session.user.id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
