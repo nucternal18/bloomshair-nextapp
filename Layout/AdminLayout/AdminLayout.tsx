@@ -1,7 +1,7 @@
 import AdminNavbar from "@components/navigation/AdminNavbar";
 import Head from "next/head";
 import { ToastContainer } from "react-toastify";
-import Sidebar from "../../navigation/Sidebar/Sidebar";
+import Sidebar from "../../components/navigation/Sidebar/Sidebar";
 
 const AdminLayout = ({ children, title }) => {
   return (

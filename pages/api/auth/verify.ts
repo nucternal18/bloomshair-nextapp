@@ -25,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
     await prisma.$disconnect();
 
-    const url = `${NEXT_URL}/account/verify-email/${securedTokenId}`;
+    const url = `${NEXT_URL}/auth/verify-email/${securedTokenId}`;
     const subject = "Verification Email for Blooms Hair";
 
     if (token) {

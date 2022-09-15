@@ -9,7 +9,7 @@ import { Session } from "next-auth";
 import Table from "../../../components/Tables/GalleryTable";
 import Spinner from "../../../components/Spinner";
 import ErrorMessage from "../../../components/ErrorMessage";
-import AdminLayout from "../../../components/Layout/AdminLayout/AdminLayout";
+import AdminLayout from "../../../Layout/AdminLayout/AdminLayout";
 import { ImageUploadForm } from "../../../components/Forms";
 
 // Context
@@ -159,7 +159,7 @@ export async function getServerSideProps(context) {
     // If no token is present redirect user to the login page
     return {
       redirect: {
-        destination: "/account/login",
+        destination: "/auth/signin",
         permanent: false,
       },
     };

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 
 // Component
-import Layout from "../../components/Layout/Layout/Layout";
+import Layout from "../../Layout/Layout/Layout";
 import Button from "../../components/Button";
 import ErrorMessage from "../../components/ErrorMessage";
 import CheckoutItem from "../../components/CheckoutItem";
@@ -36,7 +36,7 @@ function Cart({ session }) {
 
   const checkoutHandler = () => {
     if (!session) {
-      router.push("/account/login?redirect=/checkout");
+      router.push("/auth/signin?redirect=/checkout");
     } else {
       router.push("/checkout");
     }

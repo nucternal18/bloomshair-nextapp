@@ -4,7 +4,7 @@ import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 
 // Components
-import Layout from "../../components/Layout/Layout/Layout";
+import Layout from "../../Layout/Layout/Layout";
 import CheckoutSteps from "../../components/navigation/CheckoutStepsNav/CheckoutStepsNav";
 const CheckoutContainer = dynamic(
   import("../../components/CheckoutStepContainters/CheckoutContainer"),
@@ -70,7 +70,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (!session) {
     return {
       redirect: {
-        destination: "/account/login",
+        destination: "/auth/signin",
         permanent: false,
       },
     };

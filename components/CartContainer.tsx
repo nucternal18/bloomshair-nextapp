@@ -44,7 +44,7 @@ function CartContainer({ cartIsOpen, toggleCartDrawer }) {
 
   // const checkoutHandler = () => {
   //   if (!loadedSession) {
-  //     router.push('/account/login?redirect=/checkout/shipping');
+  //     router.push('/auth/signin?redirect=/checkout/shipping');
   //   }
   //   router.push('/checkout/shipping');
   // };

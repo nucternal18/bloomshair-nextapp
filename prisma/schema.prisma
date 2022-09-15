@@ -128,27 +128,28 @@ model Token {
 }
 
 model User {
-  id              String                @id @default(auto()) @map("_id") @db.ObjectId
-  category        String
-  email           String                @unique
-  emailVerified   Boolean @default(false)
-  image           String
-  isAdmin         Boolean @default(false)
-  name            String
-  password        String
-  shippingAddress UsersShippingAddress?
-  services        Service?
-  tokens          Token?
-  orders          Order[]
-  picture         Picture?
-  products        Product?
-  refresh_token   String?  @db.String
-  access_token    String?  @db.String
-  id_token        String?  @db.String
-  accounts      Account[]
-  sessions      Session[]
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
+  id                String          @id @default(auto()) @map("_id") @db.ObjectId
+  category          UserCategory    @default(Customer)
+  email             String          @unique
+  isEmailVerified   Boolean         @default(false)
+  emailVerified     DateTime?       @db.Date
+  image             String
+  isAdmin           Boolean         @default(false)
+  name              String
+  password          String?
+  shippingAddress   UsersShippingAddress?
+  services          Service?
+  tokens            Token?
+  orders            Order[]
+  picture           Picture?
+  products          Product?
+  refresh_token     String?         @db.String
+  access_token      String?         @db.String
+  id_token          String?         @db.String
+  accounts          Account[]
+  sessions          Session[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   @@map("users")
 }
@@ -193,6 +194,11 @@ model VerificationToken {
   @@map("verificationtokens")
 }
 
+enum UserCategory {
+  Customer
+  Admin
+  SuperAdmin
+}
 
 enum Category {
   Gents_Hair

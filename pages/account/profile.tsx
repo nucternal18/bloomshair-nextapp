@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { Session } from "next-auth";
 
 // Components
-import Layout from "../../components/Layout/Layout/Layout";
+import Layout from "../../Layout/Layout/Layout";
 import Table from "../../components/OrdersTable/OrdersTable";
 
 // utils
@@ -59,7 +59,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // If no token is present redirect user to the login page
     return {
       redirect: {
-        destination: "/account/login",
+        destination: "/auth/signin",
         permanent: false,
       },
     };

@@ -36,7 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     await prisma.$disconnect();
-    const url = `${NEXT_URL}/account/forgot-password/${securedTokenId}`;
+    const url = `${NEXT_URL}/auth/forgot-password/${securedTokenId}`;
     const name = user.name;
     const subject = "Password reset";
 

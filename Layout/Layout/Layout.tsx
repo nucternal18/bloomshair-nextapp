@@ -2,8 +2,8 @@ import React from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import Navbar from "../../navigation/Navbar/Navbar";
-import Footer from "../../Footer";
+import Navbar from "../../components/navigation/Navbar/Navbar";
+import Footer from "../../components/Footer";
 
 interface ILayout {
   title?: string;

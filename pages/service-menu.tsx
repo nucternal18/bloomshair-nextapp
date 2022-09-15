@@ -2,7 +2,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { GetServerSidePropsContext } from "next";
 
-import Layout from "../components/Layout/Layout/Layout";
+import Layout from "../Layout/Layout/Layout";
 import BottomPageContainer from "../components/BottomPageContainer";
 import { NEXT_URL } from "../config";
 import { ServiceCategory, ServiceProps } from "@lib/types";

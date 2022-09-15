@@ -10,7 +10,7 @@ import { useOrder } from "../../context/order/OrderContext";
 // components
 import ErrorMessage from "../../components/ErrorMessage";
 import Button from "../../components/Button";
-import Layout from "../../components/Layout/Layout/";
+import Layout from "../../Layout/Layout";
 
 import { NEXT_URL } from "../../config";
 import { Card } from "../../components/Card";
@@ -210,7 +210,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // If no token is present redirect user to the login page
     return {
       redirect: {
-        destination: "/account/login",
+        destination: "/auth/signin",
         permanent: false,
       },
     };
@@ -241,7 +241,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (!userData) {
     return {
       redirect: {
-        destination: "/account/login",
+        destination: "/auth/signin",
         permanent: false,
       },
     };

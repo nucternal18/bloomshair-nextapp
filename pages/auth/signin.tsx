@@ -1,18 +1,20 @@
-import { signIn, getSession } from "next-auth/react";
+import { signIn, getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import { GetServerSideProps } from "next";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
+import { BsGoogle } from "react-icons/bs";
 
 // Components
-import Layout from "../../components/Layout/Layout/Layout";
+import Layout from "../../Layout/Layout/Layout";
 
 // Context
 import { useAuth, ActionType } from "../../context/auth/AuthContext";
 
 import LoginForm from "../../components/Forms/LoginForm";
+import { Button, Loader } from "@mantine/core";
 const url =
   "https://res.cloudinary.com/dtkjg8f0n/image/upload/ar_16:9,c_fill,e_sharpen,g_auto,w_1000/v1625089267/blooms_hair_products/shari-sirotnak-oM5YoMhTf8E-unsplash_rcpxsj.webp";
 
@@ -21,9 +23,14 @@ type Inputs = {
   password: string;
 };
 
-export default function Login() {
+const provider = [{ name: "google", Icon: BsGoogle }];
+
+export default function SignIn() {
   const router = useRouter();
-  const { redirect } = router.query; // login?redirect=/checkout/shipping
+  const { redirect } = router.query;
+  const { status } = useSession();
+  const loading = status === "loading";
+  // login?redirect=/checkout/shipping
 
   const {
     handleSubmit,
@@ -32,19 +39,21 @@ export default function Login() {
   } = useForm<Inputs>();
   const { dispatch } = useAuth();
 
+  const handleOAuthSignIn = async (provider: string) =>
+    await signIn(provider, { redirect: false });
+
   const submitHandler: SubmitHandler<Inputs> = async (data) => {
     const result = await signIn("credentials", {
-      redirect: false,
       email: data.email,
       password: data.password,
     });
-    if (result.error) {
+    if (result?.error) {
       toast.error("Invalid email or password");
     }
-    if (result.ok && redirect === "/checkout") {
+    if (result?.ok && redirect === "/checkout") {
       router.replace("/checkout");
     }
-    if (result.ok) {
+    if (result?.ok) {
       const session = await getSession();
       dispatch({
         type: ActionType.USER_PROFILE_LOAD_SUCCESS,
@@ -53,6 +62,16 @@ export default function Login() {
       router.replace("/");
     }
   };
+
+  if (loading) {
+    return (
+      <Layout title="Sign In">
+        <div className="flex items-center justify-center h-screen">
+          <Loader size="xl" variant="bars" />
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout title="Login Page">
@@ -77,9 +96,31 @@ export default function Login() {
                 register={register}
                 errors={errors}
               />
+              <div>
+                <span className=""></span>
+                <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+                  OR
+                </p>
+              </div>
+              <div className="flex items-center justify-center mt-4">
+                {provider.map(({ name, Icon }) => (
+                  <Button
+                    key={name}
+                    leftIcon={<Icon />}
+                    onClick={() => handleOAuthSignIn(name)}
+                    variant="outline"
+                    color="gray"
+                    size="lg"
+                    className="mx-2 uppercase"
+                    fullWidth
+                  >
+                    SIGN IN WITH {name}
+                  </Button>
+                ))}
+              </div>
               <div className="flex flex-row justify-center py-3 text-lg">
                 <p className="mr-2">New Customer?</p>{" "}
-                <Link href={"/account/register"}>
+                <Link href={"/auth/register"}>
                   <a className="text-blue-500">Register</a>
                 </Link>
               </div>

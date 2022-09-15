@@ -12,7 +12,7 @@ import { Session } from "next-auth";
 import Spinner from "../../../components/Spinner";
 import FormContainer from "../../../components/FormContainer";
 import Button from "../../../components/Button";
-import AdminLayout from "../../../components/Layout/AdminLayout/AdminLayout";
+import AdminLayout from "../../../Layout/AdminLayout/AdminLayout";
 const TextEditor = dynamic(() => import("../../../components/Editor"), {
   ssr: false,
 });
@@ -227,7 +227,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // If no token is present redirect user to the login page
     return {
       redirect: {
-        destination: "/account/login",
+        destination: "/auth/signin",
         permanent: false,
       },
     };

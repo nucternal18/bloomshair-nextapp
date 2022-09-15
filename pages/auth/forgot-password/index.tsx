@@ -3,7 +3,7 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Layout from "../../../components/Layout/Layout/Layout";
+import Layout from "../../../Layout/Layout/Layout";
 import { NEXT_URL } from "../../../config";
 import RequestPasswordResetForm from "../../../components/Forms/RequestPasswordResetForm";
 
@@ -28,7 +28,7 @@ function RequestResetPassword() {
           email: data.email,
         }),
       });
-      router.replace("/account/login");
+      router.replace("/auth/signin");
     } catch (e) {
       toast.error(e.message);
     }
@@ -52,7 +52,7 @@ function RequestResetPassword() {
           />
           <div className="flex flex-row justify-center py-3 text-lg">
             <p className="mr-2">Return to</p>{" "}
-            <Link href={"/account/login"}>
+            <Link href={"/auth/signin"}>
               <a className="text-blue-500">Login</a>
             </Link>
           </div>

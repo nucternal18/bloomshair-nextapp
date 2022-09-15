@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 
 // Components
 import Spinner from "../../components/Spinner";
-import Layout from "../../components/Layout/Layout/Layout";
+import Layout from "../../Layout/Layout/Layout";
 
 import { useAuth } from "../../context/auth/AuthContext";
 import RegisterForm from "../../components/Forms/RegisterForm";
@@ -35,7 +35,7 @@ export default function Register() {
 
   useEffect(() => {
     if (state.success) {
-      router.replace("/account/login");
+      router.replace("/auth/signin");
     }
   }, [state.success]);
 
@@ -84,7 +84,7 @@ export default function Register() {
               )}
               <div className="flex flex-row justify-center py-3 text-lg">
                 <p className="mr-2">Have account?</p>{" "}
-                <Link href={"/account/login"}>
+                <Link href={"/auth/signin"}>
                   <a className="text-blue-500">Login</a>
                 </Link>
               </div>

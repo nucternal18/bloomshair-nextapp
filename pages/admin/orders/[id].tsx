@@ -11,7 +11,7 @@ import { useOrder } from "../../../context/order/OrderContext";
 import Spinner from "../../../components/Spinner";
 import ErrorMessage from "../../../components/ErrorMessage";
 import Button from "../../../components/Button";
-import AdminLayout from "../../../components/Layout/AdminLayout/AdminLayout";
+import AdminLayout from "../../../Layout/AdminLayout/AdminLayout";
 
 import { NEXT_URL } from "../../../config";
 import { getUser } from "../../../lib/getUser";
@@ -245,7 +245,7 @@ export async function getServerSideProps(context) {
     // If no token is present redirect user to the login page
     return {
       redirect: {
-        destination: "/account/login",
+        destination: "/auth/signin",
         permanent: false,
       },
     };

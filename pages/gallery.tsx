@@ -2,7 +2,7 @@ import { useState } from "react";
 import { GetServerSideProps } from "next";
 
 // Components
-import Layout from "../components/Layout/Layout/Layout";
+import Layout from "../Layout/Layout/Layout";
 import ImageCard from "../components/pictures/ImageCard";
 import Modal from "../components/Modal";
 // Server Url

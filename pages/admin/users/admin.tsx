@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { Session } from "next-auth";
 
 // Components
-import AdminLayout from "../../../components/Layout/AdminLayout/AdminLayout";
+import AdminLayout from "../../../Layout/AdminLayout/AdminLayout";
 import Button from "../../../components/Button";
 import Table from "../../../components/Tables/UserTable";
 import Spinner from "../../../components/Spinner";
@@ -104,7 +104,7 @@ export async function getServerSideProps(context) {
     // If no token is present redirect user to the login page
     return {
       redirect: {
-        destination: "/account/login",
+        destination: "/auth/signin",
         permanent: false,
       },
     };

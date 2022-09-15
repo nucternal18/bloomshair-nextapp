@@ -16,7 +16,7 @@ import {
   CreateService,
   UpdateService,
 } from "../../../components/DrawerContainers";
-import AdminLayout from "../../../components/Layout/AdminLayout";
+import AdminLayout from "../../../Layout/AdminLayout";
 import Table from "../../../components/Tables/ServiceTable";
 import Spinner from "../../../components/Spinner";
 
@@ -157,7 +157,7 @@ export const getServerSideProps = async (
     // If no token is present redirect user to the login page
     return {
       redirect: {
-        destination: "/account/login",
+        destination: "/auth/signin",
         permanent: false,
       },
     };

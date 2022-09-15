@@ -3,29 +3,31 @@ const withTm = require("next-transpile-modules")([
   "@square/web-sdk",
   "react-square-web-payments-sdk",
 ]);
-const withPWA = require("next-pwa");
 const runtimeCaching = require("next-pwa/cache");
+const withPWA = require("next-pwa")({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === "development",
+  runtimeCaching,
+  buildExcludes: [/middleware-manifest\.json$/, /_middleware\.js$/],
+});
 
-const moduleExports = withTm(
-  withPWA({
-    reactStrictMode: true,
-    experimental: {
-      esmExternals: true,
-    },
-    images: {
-      domains: ["firebasestorage.googleapis.com", "res.cloudinary.com"],
-    },
-    pwa: {
-      dest: "public",
-      register: true,
-      skipWaiting: true,
-      disable: process.env.NODE_ENV === "development",
-      runtimeCaching,
-      buildExcludes: [/middleware-manifest\.json$/, /_middleware\.js$/],
-    },
-    swcMinify: true,
-  })
-);
+/** @type {import('next').NextConfig} */
+const nextConfig = withTm({
+  reactStrictMode: true,
+  experimental: {
+    esmExternals: true,
+  },
+  images: {
+    domains: [
+      "firebasestorage.googleapis.com",
+      "res.cloudinary.com",
+      "lh3.googleusercontent.com",
+    ],
+  },
+  swcMinify: true,
+});
 
 const sentryWebpackPluginOptions = {
   // Additional config options for the Sentry Webpack plugin. Keep in mind that
@@ -41,4 +43,7 @@ const sentryWebpackPluginOptions = {
 
 // Make sure adding Sentry options is the last code to run before exporting, to
 // ensure that your source maps include changes from all other Webpack plugins
-module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions);
+module.exports = withSentryConfig(
+  withPWA(nextConfig),
+  sentryWebpackPluginOptions
+);

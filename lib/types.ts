@@ -61,7 +61,8 @@ export type UserInfoProps = {
   token?: string;
   isAdmin?: boolean;
   email?: string;
-  emailVerified?: boolean;
+  isEmailVerified?: boolean;
+  emailVerified?: string;
   category?: string;
   shippingAddress?: ShippingAddressProps;
   orders?: OrderProps[];

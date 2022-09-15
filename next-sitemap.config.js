@@ -9,7 +9,7 @@ module.exports = {
   robotsTxtOptions: {
     policies: [
       { userAgent: "*", disallow: "/admin/*" },
-      { userAgent: "*", disallow: "/account/*" },
+      { userAgent: "*", disallow: "/auth/*" },
       { userAgent: "*", disallow: "/not-authorized" },
       { userAgent: "*", disallow: "/cart" },
       { userAgent: "*", disallow: "/checkout" },

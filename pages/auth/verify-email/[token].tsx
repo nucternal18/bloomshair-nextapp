@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
 
-import Layout from "../../../components/Layout/Layout/Layout";
+import Layout from "../../../Layout/Layout/Layout";
 
 const prisma = new PrismaClient();
 
@@ -47,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   await prisma.user.update({
     where: { id: deletedToken.userId },
-    data: { emailVerified: true },
+    data: { isEmailVerified: true },
   });
 
   await prisma.$disconnect();

@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "../components/Layout/Layout/Layout";
+import Layout from "../Layout/Layout/Layout";
 
 const TermsAndConditions = () => {
   return <div>TermsAndConditions</div>;

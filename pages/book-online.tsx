@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 // Components
-import Layout from "../components/Layout/Layout/Layout";
+import Layout from "../Layout/Layout/Layout";
 import Spinner from "../components/Spinner";
 
 const url: string =

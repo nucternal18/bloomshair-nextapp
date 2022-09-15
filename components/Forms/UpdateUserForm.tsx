@@ -25,8 +25,8 @@ const UpdateUserForm = ({
     country: user?.shippingAddress?.country
       ? user?.shippingAddress?.country
       : "",
-    emailVerified: user?.emailVerified
-      ? (user?.emailVerified as boolean)
+    emailVerified: user?.isEmailVerified
+      ? (user?.isEmailVerified as boolean)
       : false,
   };
 

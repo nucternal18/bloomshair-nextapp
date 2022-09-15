@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 // Components
 import Paginate from "../../components/Paginate";
-import Layout from "../../components/Layout/Layout/Layout";
+import Layout from "../../Layout/Layout/Layout";
 import ProductCard from "../../components/ProductCard";
 import SearchBox from "../../components/SearchBox";
 import Spinner from "../../components/Spinner";

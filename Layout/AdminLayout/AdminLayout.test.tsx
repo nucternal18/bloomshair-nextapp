@@ -1,8 +1,8 @@
 /* eslint-disable jest/no-commented-out-tests */
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import About from "../../../pages/about";
-import AdminLayout from "../AdminLayout";
-import Sidebar from "../../navigation/Sidebar/Sidebar";
+import About from "../../pages/about";
+import AdminLayout from ".";
+import Sidebar from "../../components/navigation/Sidebar/Sidebar";
 
 jest.mock("../../../pages/about");
 

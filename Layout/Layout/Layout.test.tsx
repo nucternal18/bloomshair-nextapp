@@ -1,6 +1,6 @@
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 import { mocked } from "ts-jest/utils";
-import About from "../../../pages/about";
+import About from "../../pages/about";
 import Layout from "./Layout";
 
 const children = jest.fn();

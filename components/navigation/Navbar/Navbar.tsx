@@ -263,7 +263,7 @@ const Navbar = () => {
                     <Link href={"/account/profile"}>
                       <a
                         className={`${
-                          router.asPath === "/account/login"
+                          router.asPath === "/auth/signin"
                             ? "text-yellow-500"
                             : ""
                         } block text-lg font-medium space-x-2  list-none cursor-pointer hover:text-yellow-400`}
@@ -281,7 +281,7 @@ const Navbar = () => {
                       <Link href={"/admin"}>
                         <a
                           className={`${
-                            router.asPath === "/account/login"
+                            router.asPath === "/auth/signin"
                               ? "text-yellow-500"
                               : ""
                           } block text-lg font-medium   list-none cursor-pointer hover:text-yellow-400`}
@@ -309,13 +309,13 @@ const Navbar = () => {
                 className={`${
                   router.asPath === "/" && pos === "top"
                     ? "text-gray-200"
-                    : router.asPath === "/account/login"
+                    : router.asPath === "/auth/signin"
                     ? "text-yellow-500"
                     : ""
                 } flex items-center px-1`}
               >
                 <FiLogIn fontSize={18} />
-                <Link href={"/account/login"}>
+                <Link href={"/auth/signin"}>
                   <a className="flex items-center md:block ml-2 mb-2 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1  text-xs font-medium list-none uppercase">
                     Sign In
                   </a>
@@ -414,7 +414,7 @@ const Navbar = () => {
                       <Link href={"/account/profile"}>
                         <a
                           className={`${
-                            router.asPath === "/account/login"
+                            router.asPath === "/auth/signin"
                               ? "text-yellow-500"
                               : ""
                           }flex items-center text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
@@ -434,7 +434,7 @@ const Navbar = () => {
                         <Link href={"/admin"}>
                           <a
                             className={`${
-                              router.asPath === "/account/login"
+                              router.asPath === "/auth/signin"
                                 ? "text-yellow-500"
                                 : ""
                             } block text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
@@ -463,10 +463,10 @@ const Navbar = () => {
                     className="flex items-center"
                   >
                     <FiLogIn fontSize={18} className="ml-5 mr-1 " />
-                    <Link href={"/account/login"}>
+                    <Link href={"/auth/signin"}>
                       <a
                         className={`${
-                          router.asPath === "/account/login"
+                          router.asPath === "/auth/signin"
                             ? "text-yellow-500"
                             : ""
                         }py-1 text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}

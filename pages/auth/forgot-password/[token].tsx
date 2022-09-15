@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 
 // Components
 import Spinner from "../../../components/Spinner";
-import Layout from "../../../components/Layout/Layout/Layout";
+import Layout from "../../../Layout/Layout/Layout";
 import ChangePasswordForm from "../../../components/Forms/ChangePasswordForm";
 
 import { useAuth } from "../../../context/auth/AuthContext";
@@ -44,7 +44,7 @@ export default function ResetPassword({ valid, token }) {
         toast.error("Passwords do not match. please check your password");
       }
       resetPassword(password, token);
-      router.replace("/account/login");
+      router.replace("/auth/signin");
     },
     []
   );
@@ -62,7 +62,7 @@ export default function ResetPassword({ valid, token }) {
 
             <div className="flex flex-row justify-center py-3 text-lg">
               <p className="mr-2">Return to</p>{" "}
-              <Link href={"/account/login"}>
+              <Link href={"/auth/signin"}>
                 <a className="text-blue-500">Login</a>
               </Link>
             </div>
@@ -100,7 +100,7 @@ export default function ResetPassword({ valid, token }) {
                 )}
                 <div className="flex flex-row justify-center py-3 text-lg">
                   <p className="mr-2">Return to</p>{" "}
-                  <Link href={"/account/login"}>
+                  <Link href={"/auth/signin"}>
                     <a className="text-blue-500">Login</a>
                   </Link>
                 </div>

@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { Session } from "next-auth";
 
 // Components
-import AdminLayout from "../../components/Layout/AdminLayout/AdminLayout";
+import AdminLayout from "../../Layout/AdminLayout/AdminLayout";
 
 // utils
 import { getUser } from "../../lib/getUser";
@@ -34,7 +34,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // If no token is present redirect user to the login page
     return {
       redirect: {
-        destination: "/account/login",
+        destination: "/auth/signin",
         permanent: false,
       },
     };

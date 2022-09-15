@@ -23,13 +23,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const userData = await getUser(req);
-  /**
-   * @desc check to see if logged in user is admin
-   */
-  if (!session.user?.isAdmin) {
-    res.status(401).json({ message: "Not Authorized" });
-    return;
-  }
 
   if (req.method === "GET") {
     /**
@@ -53,6 +46,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      * @route PUT /api/users/:id
      * @access Private/Admin
      */
+    /**
+     * @desc check to see if logged in user is admin
+     */
+    if (!session.user?.isAdmin) {
+      res.status(401).json({ message: "Not Authorized" });
+      return;
+    }
     const { displayName, image, email, isAdmin, category } = req.body;
 
     try {
@@ -79,6 +79,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      * @route DELETE /api/users/:id
      * @access Private/admin
      */
+    /**
+     * @desc check to see if logged in user is admin
+     */
+    if (!session.user?.isAdmin) {
+      res.status(401).json({ message: "Not Authorized" });
+      return;
+    }
     try {
       await prisma.user.delete({ where: { id: id as string } });
       await prisma.$disconnect();

@@ -10,7 +10,7 @@ import { GetServerSideProps } from "next";
 import styles from "../../styles/Home.module.css";
 
 //Components
-import Layout from "../../components/Layout/Layout/Layout";
+import Layout from "../../Layout/Layout/Layout";
 import Button from "../../components/Button";
 import Rating from "../../components/Rating";
 import ErrorMessage from "../../components/ErrorMessage";
@@ -270,7 +270,7 @@ function ProductDetails({ product, productId, userInfo }) {
                         <p>
                           Please{" "}
                           <strong>
-                            <Link href="/account/login">
+                            <Link href="/auth/signin">
                               <a>sign in</a>
                             </Link>
                           </strong>{" "}

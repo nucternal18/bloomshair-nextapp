@@ -1,5 +1,5 @@
 import { NextPageContext } from "next";
-import Layout from "./Layout/Layout/Layout";
+import Layout from "../Layout/Layout/Layout";
 
 export default function NextErrorComponent({
   statusCode,
