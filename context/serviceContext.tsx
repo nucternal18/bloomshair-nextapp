@@ -1,4 +1,10 @@
-import { useState, createContext, useReducer, useContext } from "react";
+import {
+  useState,
+  createContext,
+  useReducer,
+  useContext,
+  ReactElement,
+} from "react";
 
 import { NEXT_URL } from "../config";
 import { ServiceCategory, ServiceProps } from "../lib/types";
@@ -111,7 +117,7 @@ const serviceReducer = (state: IServiceState, action: any) => {
 };
 
 // ***** Provider *****
-export const ServiceProvider = ({ children }) => {
+export const ServiceProvider = ({ children }: { children: ReactElement }) => {
   const [state, dispatch] = useReducer(serviceReducer, initialServiceState);
 
   // ***** Fetch Service Item *****
@@ -151,7 +157,7 @@ export const ServiceProvider = ({ children }) => {
         type: ServiceActionTypes.ADD_SERVICE,
         payload: data,
       });
-    } catch (error) {
+    } catch (error: any) {
       dispatch({
         type: ServiceActionTypes.ACTION_FAILURE,
         payload: error.message,
@@ -190,7 +196,7 @@ export const ServiceProvider = ({ children }) => {
         type: ServiceActionTypes.UPDATE_SERVICE,
         payload: data.message,
       });
-    } catch (error) {
+    } catch (error: any) {
       dispatch({
         type: ServiceActionTypes.ACTION_FAILURE,
         payload: error.message,
@@ -219,7 +225,7 @@ export const ServiceProvider = ({ children }) => {
         type: ServiceActionTypes.DELETE_SERVICE,
         payload: data.message,
       });
-    } catch (error) {
+    } catch (error: any) {
       dispatch({
         type: ServiceActionTypes.ACTION_FAILURE,
         payload: error.message,
