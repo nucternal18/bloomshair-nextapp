@@ -1,4 +1,12 @@
-const BloomsLogo = ({ fill, width, height }) => (
+const BloomsLogo = ({
+  fill,
+  width,
+  height,
+}: {
+  fill: string;
+  width: string;
+  height: string;
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 3508 1374"
