@@ -22,6 +22,11 @@ import { useService } from "@context/serviceContext";
 import { IFormData, ServiceProps } from "@lib/types";
 import { SearchForm } from "@components/Forms";
 
+type Inputs = {
+  category: string;
+  sortBy: string;
+};
+
 const HairServices = ({
   services,
   token,
@@ -40,15 +45,16 @@ const HairServices = ({
     register,
     reset,
     watch,
+    handleSubmit,
     formState: { errors },
-  } = useForm<IFormData>({
+  } = useForm<Inputs>({
     defaultValues: {
-      search: "",
       category: state.service?.category,
       sortBy: state.service?.sortBy,
     },
   });
 
+  const onSubmit: SubmitHandler<Inputs> = (data) => {};
   const refreshData = () => {
     router.replace(router.asPath);
     setIsRefreshing(true);
@@ -60,11 +66,8 @@ const HairServices = ({
 
   useEffect(() => {
     const subscribe = watch((data) => {
-      const { search, sortBy, category } = data;
-      let url = `${NEXT_URL}/admin/hair-services?sortBy=${sortBy}&category=${category}`;
-      if (search) {
-        url += `&search=${search}`;
-      }
+      const { sortBy, category } = data;
+      const url = `${NEXT_URL}/admin/hair-services?sortBy=${sortBy}&category=${category}`;
       router.replace(url);
     });
     return () => subscribe.unsubscribe();
@@ -118,9 +121,11 @@ const HairServices = ({
           <SearchForm
             register={register}
             categoryOptions={["all", ...(state.service.categoryOptions || [])]}
-            sortByOptions={state?.service?.sortByOptions}
+            sortByOptions={state?.service?.sortByOptions as string[]}
             errors={errors}
             reset={reset}
+            handleSubmit={handleSubmit}
+            submitHandler={onSubmit}
           />
         </section>
         <section className="flex flex-col w-full mx-auto max-w-screen-lg drop-shadow-md rounded bg-white dark:bg-gray-900 ">
