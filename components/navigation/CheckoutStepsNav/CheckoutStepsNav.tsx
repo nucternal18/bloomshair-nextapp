@@ -7,12 +7,19 @@ interface ICheckout {
   currentStep: number;
 }
 
-const CheckoutSteps: FC<ICheckout> = ({ steps, currentStep }): JSX.Element => {
-  const [newStep, setNewStep] = useState([]);
-  const stepRef = useRef(null);
+type StepsState = {
+  description: string;
+  completed: boolean;
+  highlighted: boolean;
+  selected: boolean;
+}[];
 
-  const updateStep = (stepCount: number, steps) => {
-    const newSteps = [...steps];
+const CheckoutSteps: FC<ICheckout> = ({ steps, currentStep }): JSX.Element => {
+  const [newStep, setNewStep] = useState<StepsState[]>([]);
+  const stepRef = useRef<any>(null);
+
+  const updateStep = (stepCount: number, stepsArray: any) => {
+    const newSteps = [...stepsArray];
     let count = 0;
     while (count < newSteps.length) {
       if (count === stepCount) {
@@ -53,11 +60,14 @@ const CheckoutSteps: FC<ICheckout> = ({ steps, currentStep }): JSX.Element => {
       };
     });
     stepRef.current = stepState;
-    const current = updateStep(currentStep - 1, stepRef.current);
+    const current = updateStep(
+      currentStep - 1,
+      stepRef.current
+    ) as unknown as StepsState[];
     setNewStep(current);
   }, [steps, currentStep]);
 
-  const displaySteps = newStep.map((step, index) => {
+  const displaySteps = newStep.map((step: any, index) => {
     return (
       <div
         key={index}

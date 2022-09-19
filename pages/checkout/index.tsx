@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import dynamic from "next/dynamic";
 
 // Components
@@ -20,7 +20,10 @@ import OrderComplete from "../../components/CheckoutStepContainters/OrderComplet
 import { getUser } from "../../lib/getUser";
 import { NEXT_URL } from "../../config";
 
-function Checkout({ userData, PAYPAL_CLIENT_ID }) {
+function Checkout({
+  userData,
+  PAYPAL_CLIENT_ID,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [mounted, setMounted] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
 
@@ -83,7 +86,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     headers: {
       "Content-Type": "application/json",
       cookie: context.req.headers.cookie,
-    },
+    } as HeadersInit,
   });
 
   const paypalData = await payPalRes.json();
