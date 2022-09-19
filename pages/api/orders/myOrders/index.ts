@@ -4,10 +4,6 @@ import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
 import { Session } from "next-auth";
 
-import { getUser } from "../../../../lib/getUser";
-import { sendMail } from "../../../../lib/mail";
-import { orderConfirmationEmail } from "../../../../lib/emailServices";
-
 const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -22,8 +18,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(401).json({ message: "Not Authorized" });
     return;
   }
-
-  const userData = await getUser(req);
 
   if (req.method === "POST") {
     /**
@@ -87,7 +81,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     try {
       const orders = await prisma.order.findUnique({
-        where: { userId: session.user.id },
+        where: { userId: session.user.id as string },
       });
       await prisma.$disconnect();
       if (orders) {
