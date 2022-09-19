@@ -3,7 +3,7 @@ import { FaEdit, FaTimes } from "react-icons/fa";
 
 import OrderModal from "@components/OrderModal";
 import { NEXT_URL } from "@config/index";
-import { OrderProps } from "@lib/types";
+import { CartItemsProps, OrderProps } from "@lib/types";
 
 interface IOrdersTable {
   handleShow: () => void;
@@ -71,7 +71,7 @@ const Table = ({ tableData, handleShow, handleClose, show }: IOrdersTable) => {
                 </span>
                 <div className="flex items-center justify-center">
                   <div className="text-sm font-medium text-ellipsis overflow-hidden border px-2 py-1 shadow-md shadow-teal-500/50 rounded-2xl text-gray-200 bg-teal-500 border-teal-500">
-                    {new Date(item.createdAt).toLocaleDateString()}
+                    {new Date(item.createdAt as Date).toLocaleDateString()}
                   </div>
                 </div>
               </td>
@@ -89,7 +89,7 @@ const Table = ({ tableData, handleShow, handleClose, show }: IOrdersTable) => {
                   <OrderModal
                     show={show}
                     handleClose={handleClose}
-                    tableData={item.orderItems}
+                    tableData={item.orderItems as CartItemsProps[]}
                   />
                 </div>
               </td>
@@ -110,7 +110,7 @@ const Table = ({ tableData, handleShow, handleClose, show }: IOrdersTable) => {
                 <div className="flex items-center justify-center">
                   {item.isPaid ? (
                     <div className="text-sm font-medium text-ellipsis overflow-hidden border px-2 py-1 shadow-md shadow-teal-500 rounded-2xl text-gray-200 bg-teal-500 border-teal-500">
-                      {new Date(item.paidAt).toLocaleDateString()}
+                      {new Date(item.paidAt as Date).toLocaleDateString()}
                     </div>
                   ) : (
                     <FaTimes fontSize={18} className="text-red-500" />
@@ -125,7 +125,9 @@ const Table = ({ tableData, handleShow, handleClose, show }: IOrdersTable) => {
                   <div className="text-sm font-medium text-ellipsis overflow-hidden">
                     {item.isDelivered ? (
                       <div className="border px-2 py-1 shadow-md rounded-2xl text-gray-200 bg-teal-500 border-teal-500">
-                        {new Date(item.deliveredAt).toLocaleDateString()}
+                        {new Date(
+                          item.deliveredAt as Date
+                        ).toLocaleDateString()}
                       </div>
                     ) : (
                       <FaTimes fontSize={18} className="text-red-500" />

@@ -133,7 +133,7 @@ const Table = ({ tableData, deleteHandler }: IUserTable) => {
               </span>
               <div className="flex items-center">
                 <Image
-                  src={item.image}
+                  src={item.image as string}
                   alt={item.name}
                   width={50}
                   height={50}
@@ -223,7 +223,7 @@ const Table = ({ tableData, deleteHandler }: IUserTable) => {
                   <button
                     type="button"
                     className="text-red-600 text-md"
-                    onClick={() => deleteHandler(item.id)}
+                    onClick={() => deleteHandler(item.id as string)}
                   >
                     <FaTrash
                       fontSize={18}
