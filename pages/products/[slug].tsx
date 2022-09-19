@@ -1,11 +1,11 @@
-import { useState, FormEvent, useEffect } from "react";
+import { useState, FormEvent, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import parse from "html-react-parser";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import styles from "../../styles/Home.module.css";
 
@@ -19,14 +19,18 @@ import ErrorMessage from "../../components/ErrorMessage";
 import { NEXT_URL } from "../../config";
 
 // Context
-import { useProduct } from "../../context/product/productContext";
 import { useCart } from "../../context/cart/cartContext";
 import { addToCart, saveQty } from "../../context/cart/cartActions";
 import { toast } from "react-toastify";
-import { CartItemsProps } from "@lib/types";
+import { CartItemsProps, ReviewProps } from "@lib/types";
 import { buildImage } from "@lib/cloudinaryUrl";
+import { useCreateProductReviewMutation } from "../../features/products/productApiSlice";
 
-function ProductDetails({ product, productId, userInfo }) {
+function ProductDetails({
+  product,
+  productId,
+  userInfo,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const url = product.image.substring(61, product.image.lastIndexOf("."));
   const productImageUrl = buildImage(url).toURL();
   const router = useRouter();
@@ -34,7 +38,8 @@ function ProductDetails({ product, productId, userInfo }) {
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
   const [mounted, setMounted] = useState(false);
-  const { createProductReview } = useProduct();
+
+  const [createProductReview] = useCreateProductReviewMutation();
 
   useEffect(() => {
     setMounted(true);
@@ -53,11 +58,29 @@ function ProductDetails({ product, productId, userInfo }) {
   //   dispatch(addToCart(items));
   // };
 
-  const submitHandler = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    createProductReview(productId, { rating, comment });
-    toast.success("Review created successfully");
-  };
+  const submitHandler = useCallback(
+    async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      try {
+        const response = await createProductReview({
+          slug: product?.slug,
+          review: {
+            rating,
+            comment,
+          },
+        }).unwrap();
+        if (response.success)
+          toast.success(response.message ?? "Review created successfully", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+      } catch (error: any) {
+        toast.error(error.message ?? "Unable to create review", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      }
+    },
+    [rating, comment]
+  );
   return (
     mounted && (
       <Layout title={product.name}>
@@ -175,8 +198,8 @@ function ProductDetails({ product, productId, userInfo }) {
                   <ErrorMessage variant="default">No Reviews</ErrorMessage>
                 )}
                 <div className="flex flex-col">
-                  {product.reviews.map((review) => (
-                    <div key={review._id}>
+                  {product.reviews.map((review: any) => (
+                    <div key={review.id}>
                       <p className="mb-2 text-3xl font-semibold">
                         {review.name}
                       </p>
@@ -292,10 +315,11 @@ function ProductDetails({ product, productId, userInfo }) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const req = context.req;
   const session = await getSession({ req });
-  const { slug } = context.params;
 
   if (!session) {
-    const productRes = await fetch(`${NEXT_URL}/api/products/${slug}`);
+    const productRes = await fetch(
+      `${NEXT_URL}/api/products/${context.params?.slug}`
+    );
     const productData = await productRes.json();
     return {
       props: {
@@ -311,9 +335,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       headers: {
         "Content-Type": "application/json",
         cookie: context.req.headers.cookie,
-      },
+      } as HeadersInit,
     }),
-    fetch(`${NEXT_URL}/api/products/${slug}`),
+    fetch(`${NEXT_URL}/api/products/${context.params?.slug}`),
   ]);
 
   const [userData, productData] = await Promise.all([

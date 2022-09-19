@@ -8,7 +8,7 @@ const Rating = ({
   color,
 }: {
   value: number;
-  text: string;
+  text?: string;
   color: string;
 }) => {
   return (

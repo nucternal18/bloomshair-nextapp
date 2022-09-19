@@ -19,10 +19,10 @@ function BookOnline(): JSX.Element {
     script.type = "text/javascript";
     script.src = url;
     script.async = true;
-    current.appendChild(script);
+    current?.appendChild(script);
     setLoading(false);
     return () => {
-      current.removeChild(script);
+      current?.removeChild(script);
     };
   }, []);
   return (

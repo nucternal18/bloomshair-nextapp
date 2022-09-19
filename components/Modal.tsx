@@ -7,10 +7,10 @@ const Modal = ({
   setSelectedImg,
 }: {
   selectedImg: string;
-  setSelectedImg: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedImg: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const handleClick = () => {
-    setSelectedImg(null);
+    setSelectedImg("");
   };
   return (
     <motion.div

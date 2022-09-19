@@ -231,7 +231,7 @@ function OrderScreen(props: IOrderScreenProps): JSX.Element {
                     {state.loading && <Spinner message="loading..." />}
                     {state.error && (
                       <ErrorMessage variant="danger">
-                        {state.error}
+                        {state.error as string}
                       </ErrorMessage>
                     )}
                     {userInfo &&

@@ -14,12 +14,13 @@ import Layout from "../../Layout/MainLayout";
 
 import { NEXT_URL } from "../../config";
 import { Card } from "../../components/Card";
+import { OrderProps } from "@lib/types";
 
-const OrderDetails = ({ order }) => {
+const OrderDetails = ({ order }: { order: OrderProps }) => {
   const router = useRouter();
 
   return (
-    <Layout title={`Order Details: ${order?._id}`}>
+    <Layout title={`Order Details: ${order?.id}`}>
       <main className="w-full p-2 text-gray-900 dark:text-gray-200  bg-white dark:bg-gray-900 md:p-4">
         <section className="container max-w-screen-lg  md:mx-auto ">
           <Card className="flex flex-col items-center justify-between mb-4 bg-white dark:bg-gray-900  sm:p-4 sm:flex-row">
@@ -35,7 +36,7 @@ const OrderDetails = ({ order }) => {
               </Button>
             </div>
             <div>
-              <h1 className="font-thin md:text-3xl">Order: {order?._id}</h1>
+              <h1 className="font-thin md:text-3xl">Order: {order?.id}</h1>
             </div>
           </Card>
 
@@ -57,7 +58,7 @@ const OrderDetails = ({ order }) => {
                   <p className="text-xl font-thin mb-1">
                     {order?.shippingAddress?.address}{" "}
                     {order?.shippingAddress?.city}{" "}
-                    {order?.hippingAddress?.postalCode}{" "}
+                    {order?.shippingAddress?.postalCode}{" "}
                     {order?.shippingAddress?.country}
                   </p>
                 </div>
@@ -65,7 +66,10 @@ const OrderDetails = ({ order }) => {
                   <p className="mr-2 font-thin">status:</p>
                   {order?.isDelivered ? (
                     <p className="text-green-600">
-                      Delivered on {order?.deliveredAt?.slice(0, 10)}
+                      Delivered on{" "}
+                      {new Date(
+                        order?.deliveredAt as Date
+                      ).toLocaleDateString()}
                     </p>
                   ) : (
                     <p className="text-red-500">Not Delivered</p>
@@ -87,7 +91,8 @@ const OrderDetails = ({ order }) => {
                   <p className="mr-2 font-thin">status:</p>
                   {order.isPaid ? (
                     <p className="text-green-600">
-                      Paid on {order?.paidAt?.slice(0, 10)}
+                      Paid on{" "}
+                      {new Date(order?.paidAt as Date).toLocaleDateString()}
                     </p>
                   ) : (
                     <p className="text-red-500">Not Paid</p>
@@ -202,7 +207,6 @@ const OrderDetails = ({ order }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.params;
   const req = context.req;
   const session = await getSession({ req });
 
@@ -222,14 +226,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       headers: {
         "Content-Type": "application/json",
         cookie: context.req.headers.cookie,
-      },
+      } as HeadersInit,
     }),
-    fetch(`${NEXT_URL}/api/orders/myOrders/${id}`, {
+    fetch(`${NEXT_URL}/api/orders/myOrders/${context.params?.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         cookie: context.req.headers.cookie,
-      },
+      } as HeadersInit,
     }),
   ]);
 
@@ -251,7 +255,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       userInfo: userData,
       order: orderData,
-      orderId: id,
+      orderId: context.params?.id,
     }, // will be passed to the page component as props
   };
 };
