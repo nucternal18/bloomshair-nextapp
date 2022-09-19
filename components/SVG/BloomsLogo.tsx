@@ -4,8 +4,8 @@ const BloomsLogo = ({
   height,
 }: {
   fill: string;
-  width: string;
-  height: string;
+  width: number;
+  height: number;
 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
