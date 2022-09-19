@@ -1,12 +1,16 @@
 import Image from "next/image";
+import { ReactElement, ReactHTMLElement } from "react";
 import { AiOutlineShopping } from "react-icons/ai";
 
-function CartIcon({ itemCount, ...props }) {
+function CartIcon({
+  itemCount,
+  classNames,
+}: {
+  itemCount: number;
+  classNames: string;
+}) {
   return (
-    <div
-      className="relative flex items-center justify-center w-12 h-12"
-      {...props}
-    >
+    <div className={classNames}>
       <div className="">
         <AiOutlineShopping fontSize={30} />
       </div>

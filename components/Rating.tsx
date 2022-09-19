@@ -2,7 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
-const Rating = ({ value, text, color }) => {
+const Rating = ({
+  value,
+  text,
+  color,
+}: {
+  value: number;
+  text: string;
+  color: string;
+}) => {
   return (
     <div className="flex items-center">
       <span>

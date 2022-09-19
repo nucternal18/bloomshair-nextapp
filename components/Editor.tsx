@@ -1,5 +1,6 @@
 /* eslint-disable react/display-name */
 import dynamic from "next/dynamic";
+import React from "react";
 const QuillNoSSRWrapper = dynamic(import("react-quill"), {
   ssr: false,
 });
@@ -49,7 +50,13 @@ const formats = [
   "video",
 ];
 
-const TextEditor = ({ value, setValue }) => {
+const TextEditor = ({
+  value,
+  setValue,
+}: {
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   return (
     <div>
       <QuillNoSSRWrapper

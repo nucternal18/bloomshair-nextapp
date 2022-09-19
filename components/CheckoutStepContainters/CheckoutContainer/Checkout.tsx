@@ -18,8 +18,17 @@ import {
   savePaymentMethod,
 } from "../../../context/cart/cartActions";
 import { useOrder } from "../../../context/order/OrderContext";
+import { CartItemsProps, UserInfoProps } from "@lib/types";
 
-const CheckOutContainer = ({ userInfo, paypalClientID, handleStepChange }) => {
+const CheckOutContainer = ({
+  userInfo,
+  paypalClientID,
+  handleStepChange,
+}: {
+  userInfo: Partial<UserInfoProps>;
+  paypalClientID: string;
+  handleStepChange(arg0: string): void;
+}) => {
   const router = useRouter();
   const { state: cartState, dispatch } = useCart();
   const {
@@ -28,13 +37,17 @@ const CheckOutContainer = ({ userInfo, paypalClientID, handleStepChange }) => {
 
   const { state: orderState, createOrder } = useOrder();
   const { success, error, order } = orderState;
-  const wrapper = useRef<HTMLDivElement>();
+  const wrapper = useRef<HTMLDivElement>(null);
 
   /**
    * @desc Calculate total item price
    */
   const itemsPrice = addDecimals(
-    cartItems.reduce((acc, item) => acc + Number(item.price) * item.qty, 0)
+    cartItems?.reduce(
+      (acc: number, item: CartItemsProps) =>
+        acc + Number(item.price) * Number(item.qty),
+      0
+    ) as number
   );
   /**
    * @desc Calculate shipping price
@@ -42,7 +55,7 @@ const CheckOutContainer = ({ userInfo, paypalClientID, handleStepChange }) => {
   const shippingPrice = addDecimals(
     +itemsPrice > 100
       ? 0
-      : shippingAddress.deliveryMethod === "nextDay"
+      : shippingAddress?.deliveryMethod === "nextDay"
       ? 6.95
       : 4.95
   );
@@ -53,19 +66,19 @@ const CheckOutContainer = ({ userInfo, paypalClientID, handleStepChange }) => {
   /**
    * @desc Calculate total price of all items inc. shipping
    */
-  const totalPrice = addDecimals(Number(itemsPrice) + Number(shippingPrice));
+  const totalPrice = addDecimals(Number(+itemsPrice) + Number(+shippingPrice));
 
   /**
    * @desc helper function to create number to 2 decimal points
    * @param num
    * @returns number to 2 decimal points
    */
-  function addDecimals(num) {
+  function addDecimals(num: number) {
     return (Math.round(num * 100) / 100).toFixed(2);
   }
 
   useEffect(() => {
-    if (cartItems.length === 0) {
+    if (cartItems?.length === 0) {
       router.push("/cart");
     }
   }, [cartItems]);
@@ -82,25 +95,35 @@ const CheckOutContainer = ({ userInfo, paypalClientID, handleStepChange }) => {
    * @param actions
    * @returns
    */
-  const createPaypalOrder = (data, actions) => {
-    return actions.order
-      .create({
-        purchase_units: [
-          {
-            amount: {
-              currency_code: "GBP",
-              value: totalPrice,
-            },
+  const createPaypalOrder = async (
+    data: any,
+    actions: {
+      order: {
+        create: (arg0: {
+          purchase_units: {
+            amount: { currency_code: string; value: string };
+          }[];
+          // remove the application_context object if you need your users to add a shipping address
+          application_context: { shipping_preference: string };
+        }) => Promise<string>;
+      };
+    }
+  ) => {
+    const orderID = await actions.order.create({
+      purchase_units: [
+        {
+          amount: {
+            currency_code: "GBP",
+            value: totalPrice,
           },
-        ],
-        // remove the application_context object if you need your users to add a shipping address
-        application_context: {
-          shipping_preference: "NO_SHIPPING",
         },
-      })
-      .then((orderID) => {
-        return orderID;
-      });
+      ],
+      // remove the application_context object if you need your users to add a shipping address
+      application_context: {
+        shipping_preference: "NO_SHIPPING",
+      },
+    });
+    return orderID;
   };
 
   /**
@@ -109,7 +132,10 @@ const CheckOutContainer = ({ userInfo, paypalClientID, handleStepChange }) => {
    * @param actions
    * @returns
    */
-  const onApprove = (data, actions) => {
+  const onApprove = (
+    data: any,
+    actions: { order: { capture: () => Promise<any> } }
+  ) => {
     return actions.order
       .capture()
       .then(function async(details) {
@@ -122,6 +148,12 @@ const CheckOutContainer = ({ userInfo, paypalClientID, handleStepChange }) => {
             shippingPrice: +shippingPrice,
             taxPrice: +taxPrice,
             totalPrice: +totalPrice,
+            product: "",
+            name: "",
+            image: "",
+            price: 0,
+            countInStock: 0,
+            qty: 0,
           },
           details
         );
@@ -132,13 +164,13 @@ const CheckOutContainer = ({ userInfo, paypalClientID, handleStepChange }) => {
       .catch((err) => toast.error("Something went wrong." + err));
   };
 
-  const onSquarePayment = (data) => {
+  const onSquarePayment = (data: any) => {
     const paymentResult = {
       id: data.id,
       status: data.status,
       update_time: data.updatedAt,
       orderId: data.orderId,
-      email_address: userInfo.email,
+      email_address: userInfo.email as string,
     };
 
     createOrder(
@@ -150,6 +182,12 @@ const CheckOutContainer = ({ userInfo, paypalClientID, handleStepChange }) => {
         shippingPrice: +shippingPrice,
         taxPrice: +taxPrice,
         totalPrice: +totalPrice,
+        product: "",
+        name: "",
+        image: "",
+        price: 0,
+        countInStock: 0,
+        qty: 0,
       },
       paymentResult
     );

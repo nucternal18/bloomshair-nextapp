@@ -3,9 +3,16 @@ import React, { useCallback, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Button, Loader, Modal } from "@mantine/core";
 import { toast } from "react-toastify";
-import { ActionType, useAuth } from "@context/auth/AuthContext";
+
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import Image from "next/image";
+
+import {
+  useUpdateUserMutation,
+  useUploadUserImageMutation,
+} from "features/users/userApiSlice";
+import { useAppSelector } from "app/hooks";
+import { userSelector } from "features/users/userSlice";
 
 type EditImageProps = {
   imageFile: FileList;
@@ -23,7 +30,12 @@ const EditImageModal = ({
   user: Partial<UserInfoProps>;
 }) => {
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
-  const { state, dispatch, uploadUserImage, updateUserProfile } = useAuth();
+
+  const [updateUser, { isLoading: isLoadingUpdate }] = useUpdateUserMutation();
+  const [uploadUserImage, { isLoading: isLoadingUpload }] =
+    useUploadUserImageMutation();
+  const { image } = useAppSelector(userSelector);
+
   const {
     register,
     handleSubmit,
@@ -32,7 +44,7 @@ const EditImageModal = ({
   } = useForm<EditImageProps>();
 
   const uploadFileHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0] as File;
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
@@ -47,19 +59,26 @@ const EditImageModal = ({
     async (data) => {
       const updatedImg = {
         id: user?.id,
-        image: state?.image,
+        image: image,
       };
       try {
-        updateUserProfile(updatedImg);
+        const response = await updateUser(updatedImg).unwrap();
+        if (response.success)
+          toast.success(
+            response.message ?? "Profile image updated successfully",
+            {
+              position: toast.POSITION.TOP_CENTER,
+            }
+          );
         setOpened(false);
         refetch();
       } catch (error) {
         toast.error("Something went wrong! Unable to upload Image", {
-          position: toast.POSITION.TOP_RIGHT,
+          position: toast.POSITION.TOP_CENTER,
         });
       }
     },
-    [state?.image]
+    [image]
   );
   return (
     <Modal opened={opened} onClose={() => setOpened(false)} title="Edit Image">
@@ -70,11 +89,11 @@ const EditImageModal = ({
         <div className="flex w-full flex-col items-center justify-center bg-slate-50 p-3 lg:flex-row  ">
           <div className="flex h-full w-full cursor-pointer items-center justify-center border-2 border-gray-200 p-2">
             <div className="flex h-full w-full cursor-pointer flex-col border-4 border-dashed hover:border-gray-300 hover:bg-gray-100">
-              {state.loading ? (
+              {isLoadingUpload ? (
                 <div className="flex h-[200px] items-center justify-center">
                   <Loader size="xl" variant="bars" />
                 </div>
-              ) : !state.image ? (
+              ) : !image ? (
                 <label htmlFor="main-image" className="cursor-pointer">
                   <div className="flex h-full flex-col items-center justify-center px-6 py-8">
                     <div className="flex flex-col items-center justify-center ">
@@ -100,7 +119,7 @@ const EditImageModal = ({
               ) : (
                 <div className="flex items-center justify-center">
                   <Image
-                    src={state.image}
+                    src={image}
                     alt="Image preview"
                     className="rounded-t-lg"
                     width={400}
@@ -122,9 +141,9 @@ const EditImageModal = ({
           <Button
             type="submit"
             fullWidth
-            disabled={state.loading}
+            disabled={isLoadingUpdate}
             className="w-full bg-blue-500"
-            loading={state.loading}
+            loading={isLoadingUpdate}
           >
             Submit
           </Button>
@@ -133,10 +152,6 @@ const EditImageModal = ({
             fullWidth
             className="w-full bg-red-500 capitalize hover:bg-red-600"
             onClick={() => {
-              dispatch({
-                type: ActionType.USER_IMAGE_UPLOAD_SUCCESS,
-                payload: null,
-              });
               setOpened(false);
             }}
           >

@@ -1,6 +1,16 @@
 import { NEXT_URL } from "../config";
 
-export async function sendMail({ from, to, subject, html }) {
+export async function sendMail({
+  from,
+  to,
+  subject,
+  html,
+}: {
+  from: string;
+  to: string;
+  subject: string;
+  html: string;
+}) {
   try {
     const response = await fetch(`${NEXT_URL}/api/send-mail`, {
       method: "POST",
@@ -13,7 +23,7 @@ export async function sendMail({ from, to, subject, html }) {
     if (response.ok) {
       return data.message;
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error(e);
     throw new Error(`Could not send email: ${e.message}`);
   }

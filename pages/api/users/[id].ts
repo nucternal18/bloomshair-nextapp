@@ -4,8 +4,6 @@ import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
 import { Session } from "next-auth";
 
-import { getUser } from "@lib/getUser";
-
 const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -13,7 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
    * @desc Get user session
    */
-  const session: Session = await getSession({ req });
+  const session: Session = (await getSession({ req })) as Session;
   /**
    * @desc check to see if their is a user session
    */
@@ -21,8 +19,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(401).json({ message: "Not Authorized" });
     return;
   }
-
-  const userData = await getUser(req);
 
   if (req.method === "GET") {
     /**
@@ -34,11 +30,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const user = await prisma.user.findUnique({
         where: { id: id as string },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          isAdmin: true,
+          isEmailVerified: true,
+          emailVerified: true,
+          shippingAddress: true,
+          category: true,
+          createdAt: true,
+          updatedAt: true,
+        },
       });
+
       await prisma.$disconnect();
       res.status(200).json(user);
     } catch (error: any) {
-      res.status(404).json({ success: false, message: "User not found" });
+      res.status(409).json({ success: false, message: "User not found" });
     }
   } else if (req.method === "PUT") {
     /**
@@ -53,24 +62,40 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(401).json({ message: "Not Authorized" });
       return;
     }
-    const { displayName, image, email, isAdmin, category } = req.body;
+    const { displayName, image, email, isAdmin, category, shippingAddress } =
+      req.body;
+
+    const existingUser = await prisma.user.findUnique({
+      where: { id: id as string },
+    });
+
+    if (!existingUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
 
     try {
       await prisma.user.update({
         where: { id: id as string },
         data: {
-          name: displayName,
-          image: image,
-          email: email,
-          isAdmin: isAdmin,
-          category: category,
+          name: displayName ? displayName : existingUser.name,
+          image: image ? image : existingUser.image,
+          email: email ? email : existingUser.email,
+          isAdmin: isAdmin ? isAdmin : existingUser.isAdmin,
+          category: category ? category : existingUser.category,
+          shippingAddress: shippingAddress
+            ? shippingAddress
+            : existingUser.shippingAddress,
         },
       });
       await prisma.$disconnect();
-      res.status(204).json({ success: true, message: "User updated" });
+      res
+        .status(204)
+        .json({ success: true, message: "User updated successfully" });
     } catch (error: any) {
       res
-        .status(404)
+        .status(409)
         .json({ success: false, message: "User not found", error });
     }
   } else if (req.method === "DELETE") {
@@ -91,7 +116,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       await prisma.$disconnect();
       res.json({ success: true, message: "User removed successfully" });
     } catch (error) {
-      res.status(404).json({ success: false, message: "Error removing user" });
+      res.status(409).json({ success: false, message: "Error removing user" });
     }
   } else {
     res.setHeader("Allow", ["GET"]);

@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { UserInfoProps, IFormData } from "@lib/types";
 import { Button, Checkbox, TextInput } from "@mantine/core";
 import { toast } from "react-toastify";
-import { useAuth } from "@context/auth/AuthContext";
+import { useUpdateUserMutation } from "features/users/userApiSlice";
 
 const UpdateUserForm = ({
   refetch,
@@ -29,8 +29,7 @@ const UpdateUserForm = ({
       ? (user?.isEmailVerified as boolean)
       : false,
   };
-
-  const { state, uploadUserImage, updateUserProfile } = useAuth();
+  const [updateUser, { isLoading: isLoadingUpdate }] = useUpdateUserMutation();
   const {
     register,
     handleSubmit,
@@ -48,21 +47,22 @@ const UpdateUserForm = ({
   const submitHandler: SubmitHandler<Partial<IFormData>> = useCallback(
     async (data) => {
       const newData = {
-        id: user?.id,
-        name: data.name,
-        email: data.email,
+        id: user?.id as string,
+        name: data.name as string,
+        email: data.email as string,
         shippingAddress: {
-          address: data.address,
-          city: data.city,
-          postalCode: data.postalCode,
-          country: data.country,
+          address: data.address as string,
+          city: data.city as string,
+          postalCode: data.postalCode as string,
+          country: data.country as string,
         },
       };
       try {
-        updateUserProfile(newData);
-        toast.success("Profile updated successfully.", {
-          position: toast.POSITION.TOP_CENTER,
-        });
+        const response = await updateUser(newData).unwrap();
+        if (response.success)
+          toast.success("Profile updated successfully.", {
+            position: toast.POSITION.TOP_CENTER,
+          });
         refetch();
       } catch (error) {
         toast.error("Something went wrong! Please try again", {
@@ -244,8 +244,8 @@ const UpdateUserForm = ({
       <div>
         <Button
           type="submit"
-          disabled={state.loading}
-          loading={state.loading}
+          disabled={isLoadingUpdate}
+          loading={isLoadingUpdate}
           variant="outline"
           className="rounded-md px-4 py-2 text-center font-semibold text-blue-700 border-blue-700 hover:text-white shadow-xl transition delay-150 
                 duration-300 ease-in-out hover:-translate-y-1 hover:scale-100 hover:bg-blue-700 md:text-lg"

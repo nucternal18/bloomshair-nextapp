@@ -3,7 +3,7 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Layout from "../../../Layout/Layout/Layout";
+import Layout from "../../../Layout/MainLayout/Layout";
 import { NEXT_URL } from "../../../config";
 import RequestPasswordResetForm from "../../../components/Forms/RequestPasswordResetForm";
 
@@ -29,7 +29,7 @@ function RequestResetPassword() {
         }),
       });
       router.replace("/auth/signin");
-    } catch (e) {
+    } catch (e: any) {
       toast.error(e.message);
     }
   }, []);

@@ -53,7 +53,7 @@ const CreateService = ({
           register={register}
           errors={errors}
           submitHandler={submitHandler}
-          list={state?.service?.categoryOptions}
+          list={state?.service?.categoryOptions as string[]}
           buttonName="Add Service"
         />
       </Drawer>

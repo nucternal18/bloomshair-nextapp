@@ -1,7 +1,14 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
+import React from "react";
 
-const ImageCards = ({ image, setSelectedImg }) => {
+const ImageCards = ({
+  image,
+  setSelectedImg,
+}: {
+  image: string;
+  setSelectedImg: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   return (
     <motion.div
       aria-label="image-card"

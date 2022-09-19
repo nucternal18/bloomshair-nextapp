@@ -1,14 +1,21 @@
 import AdminNavbar from "@components/navigation/AdminNavbar";
 import Head from "next/head";
+import { ReactElement } from "react";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "../../components/navigation/Sidebar/Sidebar";
 
-const AdminLayout = ({ children, title }) => {
+const AdminLayout = ({
+  children,
+  title,
+}: {
+  children: ReactElement;
+  title: string;
+}) => {
   return (
     <div
       aria-label="admin-layout"
       data-testid="admin-layout"
-      className="flex flex-col justify-between h-screen"
+      className="flex flex-col justify-between h-screen dark:bg-gray-900"
     >
       <Head>
         <title>{title}</title>
@@ -38,7 +45,7 @@ const AdminLayout = ({ children, title }) => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Sidebar />
-      <main className="relative md:ml-64 bg-white dark:bg-gray-900">
+      <main className="relative  bg-white dark:bg-gray-900">
         <AdminNavbar />
         <div className="w-full">{children}</div>
       </main>

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Layout from "../Layout/Layout/Layout";
+import Layout from "../Layout/MainLayout/Layout";
 import { motion } from "framer-motion";
 
 import BottomPageContainer from "../components/BottomPageContainer";

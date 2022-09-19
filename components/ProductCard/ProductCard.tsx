@@ -71,7 +71,7 @@ const ProductCard = ({ product, isAvailable }: IProductCard) => {
         </CardTitle>
         <div className="flex flex-row items-center justify-between">
           <Rating
-            value={product.rating}
+            value={product.rating as number}
             text={`${product.numReviews} reviews`}
           />
           <CardText className="text-xl">

@@ -3,22 +3,14 @@ import {
   UseFormHandleSubmit,
   UseFormRegister,
 } from "react-hook-form";
-import { IFormData, ServiceProps } from "../../lib/types";
+import { IForm, IFormData, ServiceProps } from "../../lib/types";
 import Button from "../Button";
 
 import FormRowInput from "./FormComponents/FormRowInput";
 import FormRowSelect from "./FormComponents/FormRowSelect";
 
-interface IServiceForm {
-  handleSubmit: UseFormHandleSubmit<Partial<ServiceProps>>;
-  submitHandler: (data: Partial<ServiceProps>) => void;
+interface IServiceForm extends IForm<Partial<ServiceProps>> {
   list: string[];
-  register: UseFormRegister<Partial<ServiceProps>>;
-  errors: {
-    name?: FieldError;
-    price?: FieldError;
-    category?: FieldError;
-  };
   buttonName: string;
   loading?: boolean;
 }
@@ -50,7 +42,8 @@ const ServiceForm = ({
           {...register("price")}
         />
         <FormRowSelect
-          name="Category"
+          placeHolder="Select Category"
+          label="Category"
           type="category"
           errors={errors && errors?.category}
           list={list}

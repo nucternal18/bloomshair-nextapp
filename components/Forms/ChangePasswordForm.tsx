@@ -1,9 +1,23 @@
 /* eslint-disable no-useless-escape */
+import { IForm } from "@lib/types";
 import React from "react";
 import Button from "../Button";
 import ErrorMessage from "../ErrorMessage";
 
-function ChangePasswordForm({ submitHandler, errors, handleSubmit, register }) {
+type Inputs = {
+  password: string;
+  confirmPassword: string;
+};
+interface IChangePasswordForm extends IForm<Inputs> {
+  isLoading?: boolean;
+}
+
+function ChangePasswordForm({
+  submitHandler,
+  errors,
+  handleSubmit,
+  register,
+}: IChangePasswordForm) {
   return (
     <form
       aria-label="change-password-form"

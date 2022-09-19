@@ -26,7 +26,9 @@ const Maps: FC<MapProps> = ({ containerStyle, zoom }): JSX.Element => {
   const [selected, setSelected] = useState(false);
 
   return (
-    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
+    <LoadScript
+      googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
+    >
       <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
         <Marker
           position={{ lat: center.lat, lng: center.lng }}

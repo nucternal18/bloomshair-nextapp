@@ -40,5 +40,6 @@ module.exports = {
     "@typescript-eslint/no-unsafe-argument": "off",
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-unnecessary-type-assertion": "off",
   },
 };

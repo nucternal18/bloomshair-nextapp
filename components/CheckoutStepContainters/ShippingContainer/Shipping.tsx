@@ -10,7 +10,9 @@ import ShippingAddressForm from "../../Forms/ShippingAddressForm";
 // Context
 import { useCart } from "../../../context/cart/cartContext";
 import { saveShippingAddress } from "../../../context/cart/cartActions";
-import { useAuth } from "../../../context/auth/AuthContext";
+
+import { useUpdateUserMutation } from "../../../features/users/userApiSlice";
+import { ShippingAddressProps, UserInfoProps } from "@lib/types";
 
 type Inputs = {
   address: string;
@@ -19,10 +21,15 @@ type Inputs = {
   country: string;
 };
 
-function ShippingContainer({ userData, handleStepChange }) {
+function ShippingContainer({
+  userData,
+  handleStepChange,
+}: {
+  userData: UserInfoProps;
+  handleStepChange(arg0: string): void;
+}) {
   const router = useRouter();
   const { state, dispatch } = useCart();
-  const { updateUserProfile } = useAuth();
   const {
     handleSubmit,
     register,
@@ -33,14 +40,15 @@ function ShippingContainer({ userData, handleStepChange }) {
   const [isAddress, setIsAddress] = useState<boolean>(false);
   const [checkedOne, setCheckedOne] = useState<boolean>(false);
   const [checkedTwo, setCheckedTwo] = useState<boolean>(false);
+  const [updateUser] = useUpdateUserMutation();
 
   useEffect(() => {
-    if (userData.shippingAddress.address !== "") {
+    if (userData.shippingAddress?.address !== "") {
       setIsAddress(true);
     }
   }, []);
 
-  const submitHandler: SubmitHandler<Inputs> = ({
+  const submitHandler: SubmitHandler<Inputs> = async ({
     address,
     city,
     postalCode,
@@ -52,7 +60,7 @@ function ShippingContainer({ userData, handleStepChange }) {
       postalCode: postalCode,
       country: country,
     };
-    updateUserProfile({ ...userData, shippingAddress: data });
+    await updateUser({ ...userData, shippingAddress: data }).unwrap();
     dispatch(saveShippingAddress(data));
     setShow(false);
   };
@@ -69,7 +77,7 @@ function ShippingContainer({ userData, handleStepChange }) {
 
   const proceedToPayment = () => {
     const shippingAddress =
-      userData.shippingAddress.address !== ""
+      (userData.shippingAddress?.address as string) !== ""
         ? userData.shippingAddress
         : state.cart.shippingAddress;
     if (!deliveryMethod) {
@@ -77,7 +85,7 @@ function ShippingContainer({ userData, handleStepChange }) {
       return;
     }
     const data = { ...shippingAddress, deliveryMethod };
-    dispatch(saveShippingAddress(data));
+    dispatch(saveShippingAddress(data as ShippingAddressProps));
     handleStepChange("next");
   };
   const handleOpen = () => {
@@ -123,10 +131,10 @@ function ShippingContainer({ userData, handleStepChange }) {
               <div className="">
                 <h1 className="text-lg mb-4">Address</h1>
                 <div>
-                  <p>{state.cart.shippingAddress.address}</p>
-                  <p>{state.cart.shippingAddress.city}</p>
-                  <p>{state.cart.shippingAddress.postalCode}</p>
-                  <p>{state.cart.shippingAddress.country}</p>
+                  <p>{state.cart.shippingAddress?.address}</p>
+                  <p>{state.cart.shippingAddress?.city}</p>
+                  <p>{state.cart.shippingAddress?.postalCode}</p>
+                  <p>{state.cart.shippingAddress?.country}</p>
                 </div>
               </div>
             )}

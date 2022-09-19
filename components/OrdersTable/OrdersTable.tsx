@@ -7,7 +7,7 @@ import Button from "../Button";
 // types
 import { OrderProps } from "@lib/types";
 interface ITable {
-  tableData: Partial<OrderProps>[];
+  tableData: OrderProps[];
 }
 
 const Table = ({ tableData }: ITable) => {
@@ -136,7 +136,7 @@ const Table = ({ tableData }: ITable) => {
               </span>
               <div className="flex items-center">
                 <div className="text-sm font-medium text-ellipsis overflow-hidden">
-                  {new Date(item.createdAt).toLocaleDateString()}
+                  {new Date(item.createdAt as Date).toLocaleDateString()}
                 </div>
               </div>
             </td>
@@ -157,7 +157,7 @@ const Table = ({ tableData }: ITable) => {
               <div className="flex items-center">
                 <div className="text-sm font-medium text-ellipsis overflow-hidden">
                   {item.isPaid ? (
-                    new Date(item.paidAt).toLocaleDateString()
+                    new Date(item.paidAt as Date).toLocaleDateString()
                   ) : (
                     <FaTimes className="text-red-500" />
                   )}
@@ -171,7 +171,7 @@ const Table = ({ tableData }: ITable) => {
               <div className="flex items-center">
                 <div className="text-sm font-medium text-ellipsis overflow-hidden">
                   {item.isDelivered ? (
-                    new Date(item.deliveredAt).toLocaleDateString()
+                    new Date(item.deliveredAt as Date).toLocaleDateString()
                   ) : (
                     <FaTimes className="text-red-500 " />
                   )}

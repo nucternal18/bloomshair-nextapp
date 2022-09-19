@@ -1,19 +1,21 @@
-import { Modal, Button, Divider } from "@mantine/core";
+import { Modal, Button } from "@mantine/core";
+
+interface IHandleDeleteModalProps {
+  open: boolean;
+  data: any;
+  isLoading: boolean;
+  deleteHandler: (data: any) => void;
+  handleClose(): void;
+  setOpenModal?: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 const HandleDeleteModal = ({
   open,
   data,
   isLoading,
   deleteHandler,
-  setOpenModal,
-}: {
-  open: boolean;
-  data: any;
-  isLoading: boolean;
-  type?: string;
-  deleteHandler: (id: string, type?: string) => void;
-  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+  handleClose,
+}: IHandleDeleteModalProps) => {
   return (
     <Modal
       centered
@@ -22,7 +24,7 @@ const HandleDeleteModal = ({
       overlayBlur={3}
       size="sm"
       opened={open}
-      onClose={() => setOpenModal(false)}
+      onClose={handleClose}
       title="Confirm Delete"
       closeOnClickOutside={false}
     >
@@ -35,7 +37,7 @@ const HandleDeleteModal = ({
             type="button"
             variant="outline"
             className="font-medium hover:bg-blue-500 hover:text-white "
-            onClick={() => setOpenModal(false)}
+            onClick={handleClose}
           >
             Cancel
           </Button>
@@ -45,7 +47,7 @@ const HandleDeleteModal = ({
             color="red"
             loading={isLoading}
             className="font-medium  hover:bg-red-500 hover:text-white "
-            onClick={() => deleteHandler(data?.id, data?.type)}
+            onClick={() => deleteHandler(data)}
           >
             Delete
           </Button>

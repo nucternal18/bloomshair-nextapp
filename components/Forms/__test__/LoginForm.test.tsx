@@ -1,12 +1,16 @@
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import { mocked } from "ts-jest/utils";
+
 import LoginForm from "../LoginForm";
 
 describe("LoginForm", () => {
   it("Should render", () => {
     const submitHandler = jest.fn();
     const handleSubmit = jest.fn();
-    const error = "";
+    const error = {
+      email: { type: "", message: "password is required" },
+      password: { type: "", message: "confirm password is required" },
+    };
+    const crsfToken = "123";
     const register = jest.fn();
     render(
       <LoginForm
@@ -14,6 +18,7 @@ describe("LoginForm", () => {
         handleSubmit={handleSubmit}
         errors={error}
         register={register}
+        csrfToken={crsfToken}
       />
     );
     const view = screen.getByLabelText("login-form");

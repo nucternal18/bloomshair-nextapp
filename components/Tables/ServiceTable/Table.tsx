@@ -7,19 +7,29 @@ import Button from "../../Button";
 import { UpdateService } from "../../DrawerContainers";
 
 interface ITable {
-  tableData: Partial<ServiceProps>[];
+  tableData: ServiceProps[];
   handleDelete: (id: string) => void;
   handleUpdateDrawerOpen: (id: string) => void;
 }
+
+const tableHeaders = [
+  "Service Name",
+  "Price",
+  "Category",
+  "Created At",
+  "Actions",
+];
 
 const Table = ({ tableData, handleDelete, handleUpdateDrawerOpen }: ITable) => {
   return (
     <table className="w-full sm:rounded-2xl md:table">
       <thead className="bg-gray-50 dark:bg-teal-500  hidden md:table-header-group">
         <tr className="md:table-row absolute  -top-full font-mono md:top-auto gap-2 -left-full md:left-auto  md:relative">
-          <th
-            scope="col"
-            className="
+          {tableHeaders.map((header, index) => (
+            <th
+              key={`table-header-${index}`}
+              scope="col"
+              className="
                   px-3
                   py-3
                   text-left 
@@ -30,74 +40,10 @@ const Table = ({ tableData, handleDelete, handleUpdateDrawerOpen }: ITable) => {
                   tracking-wider
                   md:table-cell
                 "
-          >
-            Name
-          </th>
-
-          <th
-            scope="col"
-            className="
-                  px-2
-                  py-3
-                  text-left 
-                  font-medium
-                  text-gray-800
-                  dark:text-gray-100
-                  uppercase
-                  tracking-wider
-                  md:table-cell
-                "
-          >
-            Price
-          </th>
-          <th
-            scope="col"
-            className="
-                  px-2
-                  py-3
-                  text-left 
-                  font-medium
-                  text-gray-800
-                  dark:text-gray-100
-                  uppercase
-                  tracking-wider
-                  md:table-cell
-                "
-          >
-            Category
-          </th>
-          <th
-            scope="col"
-            className="
-                  px-2
-                  py-3
-                  text-left 
-                  font-medium
-                  text-gray-800
-                  dark:text-gray-100
-                  uppercase
-                  tracking-wider
-                  md:table-cell
-                "
-          >
-            Created At
-          </th>
-          <th
-            scope="col"
-            className="
-                  px-2
-                  py-3
-                  text-left 
-                  font-medium
-                  text-gray-800
-                  dark:text-gray-100
-                  uppercase
-                  tracking-wider
-                  md:table-cell
-                "
-          >
-            Actions
-          </th>
+            >
+              {header}
+            </th>
+          ))}
         </tr>
       </thead>
       <tbody className=" block px-1 md:px-0 pb-4  md:table-row-group">
@@ -122,7 +68,7 @@ const Table = ({ tableData, handleDelete, handleUpdateDrawerOpen }: ITable) => {
               </span>
               <div className="flex items-center">
                 <div className="text-sm font-medium text-ellipsis overflow-hidden">
-                  {item.price.toFixed(2)}
+                  {item?.price?.toFixed(2)}
                 </div>
               </div>
             </td>
@@ -142,7 +88,7 @@ const Table = ({ tableData, handleDelete, handleUpdateDrawerOpen }: ITable) => {
               </span>
               <div className="flex items-center">
                 <div className="text-sm font-medium text-ellipsis overflow-hidden border px-2 drop-shadow-lg rounded-xl text-gray-200 bg-teal-500 border-teal-500">
-                  {new Date(item.createdAt).toLocaleDateString()}
+                  {new Date(item?.createdAt as string).toLocaleDateString()}
                 </div>
               </div>
             </td>
@@ -161,7 +107,7 @@ const Table = ({ tableData, handleDelete, handleUpdateDrawerOpen }: ITable) => {
                 <button
                   type="button"
                   className="text-blue-600 text-md"
-                  onClick={() => handleUpdateDrawerOpen(item.id)}
+                  onClick={() => handleUpdateDrawerOpen(item.id as string)}
                 >
                   <FaEdit
                     fontSize={18}
@@ -181,7 +127,7 @@ const Table = ({ tableData, handleDelete, handleUpdateDrawerOpen }: ITable) => {
                 <button
                   type="button"
                   className="text-red-600 text-md"
-                  onClick={() => handleDelete(item.id)}
+                  onClick={() => handleDelete(item.id as string)}
                 >
                   <FaTrash
                     fontSize={18}

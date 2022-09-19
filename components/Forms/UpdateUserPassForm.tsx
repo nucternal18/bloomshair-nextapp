@@ -3,7 +3,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { Button, PasswordInput, TextInput } from "@mantine/core";
 import { UserInfoProps } from "@lib/types";
 import { toast } from "react-toastify";
-import { useAuth } from "../../context/auth/AuthContext";
+
+import { useResetCredentialsMutation } from "features/users/userApiSlice";
 
 interface FormDataProps {
   password: string;
@@ -24,24 +25,32 @@ const UpdateUserPassForm = ({
     reset,
     formState: { errors },
   } = useForm<FormDataProps>();
-  const { state, resetUserPassword } = useAuth();
+  const [resetCredentials, { isLoading: isLoadingReset }] =
+    useResetCredentialsMutation();
 
   const submitHandler: SubmitHandler<FormDataProps> = useCallback(
     async (data) => {
       if (data.newPassword !== data.confirmPassword) {
         toast.error("Passwords do not match. Please try again.", {
-          position: toast.POSITION.TOP_RIGHT,
+          position: toast.POSITION.TOP_CENTER,
         });
       }
       try {
-        resetUserPassword(data.password, data.newPassword);
+        const response = await resetCredentials({
+          password: data.password,
+          newPassword: data.newPassword,
+        }).unwrap();
+        if (response)
+          toast.success("Password updated successfully.", {
+            position: toast.POSITION.TOP_CENTER,
+          });
         refetch();
         reset();
-      } catch (error) {
+      } catch (error: any) {
         toast.error(
           error.message ?? "Something went wrong. Please try again.",
           {
-            position: toast.POSITION.TOP_RIGHT,
+            position: toast.POSITION.TOP_CENTER,
           }
         );
       }
@@ -78,12 +87,8 @@ const UpdateUserPassForm = ({
           })}
           variant="unstyled"
           className="w-full rounded-md border-2 border-gray-200 bg-white !focus:outline-none !focus:ring-transparent"
+          error={errors.password && errors.password?.message}
         />
-        {errors.password && (
-          <span className="text-center text-sm text-red-500">
-            {errors.password?.message || "A password is required"}
-          </span>
-        )}
       </div>
       <div className="mb-4">
         <PasswordInput
@@ -108,12 +113,8 @@ const UpdateUserPassForm = ({
           })}
           variant="unstyled"
           className="w-full rounded-md border-2 border-gray-200 bg-white"
+          error={errors.newPassword && errors.newPassword.message}
         />
-        {errors.newPassword && (
-          <span className="text-center text-sm text-red-500">
-            {errors.newPassword?.message || "Please enter your new password"}
-          </span>
-        )}
       </div>
       <div>
         <PasswordInput
@@ -138,13 +139,8 @@ const UpdateUserPassForm = ({
           })}
           variant="unstyled"
           className="w-full rounded-md border-2 border-gray-200 bg-white"
+          error={errors.confirmPassword && "Passwords do not match"}
         />
-        {errors.confirmPassword && (
-          <span className="text-center text-sm text-red-500">
-            {errors.confirmPassword?.message ||
-              "Please confirm your new password"}
-          </span>
-        )}
       </div>
       <div></div>
       <div>
@@ -163,6 +159,8 @@ const UpdateUserPassForm = ({
       <div>
         <Button
           type="submit"
+          variant="outline"
+          loading={isLoadingReset}
           className="rounded-md px-4 py-2 text-center font-semibold text-blue-700 border-blue-700 hover:text-white shadow-xl transition delay-150 
                 duration-300 ease-in-out hover:-translate-y-1 hover:scale-100 hover:bg-blue-700 md:text-lg"
         >

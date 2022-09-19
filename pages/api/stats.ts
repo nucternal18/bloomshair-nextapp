@@ -10,11 +10,19 @@ import { getUser } from "@lib/getUser";
 
 const prisma = new PrismaClient();
 
+type ItemProps = {
+  _id: {
+    month: number;
+    year: number;
+  };
+  totalPrice: number;
+};
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
    * @desc Get user session
    */
-  const session: Session = await getSession({ req });
+  const session: Session = (await getSession({ req })) as Session;
   /**
    * @desc check to see if their is a user session
    */
@@ -71,19 +79,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       ],
     })) as unknown as Prisma.JsonArray;
 
-    const monthlySalesStats = monthlySales.map(
-      (item: { _id: any; totalPrice: any }) => {
-        const {
-          _id: { year, month },
-          totalPrice,
-        } = item;
-        const date = moment()
-          .month(month - 1)
-          .year(year)
-          .format("MMM YYYY");
-        return { date, totalPrice };
-      }
-    );
+    const monthlySalesData = JSON.parse(JSON.stringify(monthlySales));
+
+    const monthlySalesStats = monthlySalesData.map((item: ItemProps) => {
+      const {
+        _id: { year, month },
+        totalPrice,
+      } = item;
+      const date = moment()
+        .month(month - 1)
+        .year(year)
+        .format("MMM YYYY");
+      return { date, totalPrice };
+    });
 
     await prisma.$disconnect();
     res.status(200).json({

@@ -1,11 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import { getUser } from "../../lib/getUser";
+import { Session } from "next-auth";
+
 import cloudinary from "../../lib/cloudinary";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await getSession({ req });
+  const session: Session = (await getSession({ req })) as Session;
   if (req.method == "POST") {
     /**
      * @desc Upload image to cloudinary
@@ -17,11 +18,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(401).json({ message: "Not Authorized" });
       return;
     }
-    const userData = await getUser(req);
+
     /**
      * @desc check to see if logged in user is admin
      */
-    if (!userData.isAdmin) {
+    if (!session.user?.isAdmin) {
       res.status(401).json({ message: "Not Authorized" });
       return;
     }
@@ -30,14 +31,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const uploadedResponse = await cloudinary.uploader.upload(fileStr, {
         upload_preset: "blooms_hair_products",
       });
-
-      res.status(201).json(uploadedResponse);
+      const { secure_url } = uploadedResponse;
+      res.status(201).json({ image: secure_url });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ err: "Something went wrong uploading image" });
+      res.status(409).json({ err: "Something went wrong uploading image" });
     }
   } else {
-    return res.status(500).json({
+    return res.status(405).json({
       success: false,
       error: "Server Error. Invalid Request",
     });

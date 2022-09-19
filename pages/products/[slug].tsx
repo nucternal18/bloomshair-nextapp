@@ -10,7 +10,7 @@ import { GetServerSideProps } from "next";
 import styles from "../../styles/Home.module.css";
 
 //Components
-import Layout from "../../Layout/Layout/Layout";
+import Layout from "../../Layout/MainLayout/Layout";
 import Button from "../../components/Button";
 import Rating from "../../components/Rating";
 import ErrorMessage from "../../components/ErrorMessage";

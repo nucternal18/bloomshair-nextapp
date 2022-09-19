@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
-  const session: Session = await getSession({ req });
+  const session: Session = (await getSession({ req })) as Session;
 
   if (req.method === "GET") {
     /**

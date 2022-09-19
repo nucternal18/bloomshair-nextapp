@@ -7,25 +7,28 @@ import { GetServerSidePropsContext } from "next";
 import { Session } from "next-auth";
 
 // utils
-import { getUser } from "../../../lib/getUser";
-import { NEXT_URL } from "../../../config";
+
+import { NEXT_URL } from "@config/index";
 
 // components
-import Button from "../../../components/Button";
-import {
-  CreateService,
-  UpdateService,
-} from "../../../components/DrawerContainers";
+import Button from "@components/Button";
+import { CreateService, UpdateService } from "@components/DrawerContainers";
 import AdminLayout from "../../../Layout/AdminLayout";
-import Table from "../../../components/Tables/ServiceTable";
-import Spinner from "../../../components/Spinner";
+import Table from "@components/Tables/ServiceTable";
+import Spinner from "@components/Spinner";
 
 // context
-import { useService } from "../../../context/serviceContext";
-import { IFormData } from "../../../lib/types";
-import { SearchForm } from "../../../components/Forms";
+import { useService } from "@context/serviceContext";
+import { IFormData, ServiceProps } from "@lib/types";
+import { SearchForm } from "@components/Forms";
 
-const HairServices = ({ services, token }) => {
+const HairServices = ({
+  services,
+  token,
+}: {
+  services: ServiceProps[];
+  token: string;
+}) => {
   const router = useRouter();
   const [isOpenCreateDrawer, setTsOpenCreateDrawer] =
     React.useState<boolean>(false);
@@ -86,7 +89,7 @@ const HairServices = ({ services, token }) => {
   };
   return (
     <AdminLayout>
-      <main className="w-full p-2 mx-auto min-h-screen text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+      <main className="md:ml-56  p-2 mx-auto min-h-screen text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
         <section className="flex flex-col w-full max-w-screen-lg mx-auto ">
           <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
             <div>
@@ -114,7 +117,7 @@ const HairServices = ({ services, token }) => {
         <section className="flex flex-col w-full my-4 mx-auto max-w-screen-lg drop-shadow-md rounded bg-white dark:bg-gray-900 ">
           <SearchForm
             register={register}
-            categoryOptions={["all", ...state.service.categoryOptions]}
+            categoryOptions={["all", ...(state.service.categoryOptions || [])]}
             sortByOptions={state?.service?.sortByOptions}
             errors={errors}
             reset={reset}
@@ -151,7 +154,7 @@ export const getServerSideProps = async (
 ) => {
   const req = context.req;
   const { sortBy, category, search } = context.query;
-  const session: Session = await getSession({ req });
+  const session: Session = (await getSession({ req })) as Session;
 
   if (!session) {
     // If no token is present redirect user to the login page

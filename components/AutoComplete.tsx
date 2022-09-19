@@ -22,7 +22,7 @@ function AutoComplete({
       <ul>
         {suggestions.map((product, index) => (
           <li
-            className="border border-none hover:bg-black hover:text-white cursor-pointer p-2"
+            className="border border-none hover:bg-black hover:text-white dark:text-gray-900 cursor-pointer p-2"
             key={index}
             onClick={() => handleSuggestionClick(product)}
           >

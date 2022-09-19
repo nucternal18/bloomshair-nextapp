@@ -7,7 +7,11 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-const BarChartComponent = ({ data }) => {
+const BarChartComponent = ({
+  data,
+}: {
+  data: { date: string; totalPrice: number }[];
+}) => {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={data} margin={{ top: 50 }}>

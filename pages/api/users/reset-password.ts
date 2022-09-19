@@ -2,7 +2,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import bcrypt from "bcryptjs";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { Session } from "next-auth";
 
 import { getUser } from "../../../lib/getUser";
@@ -14,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     /**
      * @desc Get user session
      */
-    const session: Session = await getSession({ req });
+    const session: Session = (await getSession({ req })) as Session;
     /**
      * @desc check to see if their is a user session
      */
@@ -26,13 +26,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      * @desc Get current user session
      */
 
-    const existingUser = await prisma.user.findUnique({
+    const existingUser: User | null = await prisma.user.findUnique({
       where: { id: session.user?.id },
     });
 
-    if (!bcrypt.compareSync(req.body.password, existingUser.password)) {
-      res.status(403).json({ message: "Incorrect password" });
-      return;
+    if (existingUser) {
+      if (
+        !bcrypt.compareSync(
+          req.body.password,
+          JSON.stringify(existingUser.password)
+        )
+      ) {
+        res.status(403).json({ message: "Incorrect password" });
+        return;
+      }
     }
 
     try {
@@ -47,7 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.json({ success: true, message: "User updated successfully" });
     } catch (error: any) {
       res
-        .status(404)
+        .status(409)
         .json({ success: false, message: "Unable user details", error });
     }
   } else {

@@ -1,9 +1,7 @@
 import { NEXT_URL } from "../config";
 import { UserInfoProps } from "./types";
 
-export const verifyEmail = async (
-  user: Partial<UserInfoProps>
-): Promise<string> => {
+export const verifyEmail = async (user: UserInfoProps): Promise<string> => {
   try {
     const response = await fetch(`${NEXT_URL}/api/auth/verify`, {
       method: "POST",
@@ -20,7 +18,8 @@ export const verifyEmail = async (
     if (response.status === 204) {
       return "Email verification request sent";
     }
-  } catch (error) {
+    return "Email verification request failed";
+  } catch (error: any) {
     throw new Error("Unable to fetch user: " + error.message);
   }
 };

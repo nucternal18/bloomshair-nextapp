@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 // Components
 import Paginate from "../../components/Paginate";
-import Layout from "../../Layout/Layout/Layout";
+import Layout from "../../Layout/MainLayout/Layout";
 import ProductCard from "../../components/ProductCard";
 import SearchBox from "../../components/SearchBox";
 import Spinner from "../../components/Spinner";
@@ -17,8 +17,9 @@ import { NEXT_URL } from "../../config";
 import useOutsideClick from "../../hooks/useOutsideClick";
 
 // context: productContext
-import { useProduct, ActionType } from "../../context/product/productContext";
 import { ProductProps } from "@lib/types";
+import { useAppSelector } from "../../app/hooks";
+import { productSelector } from "../../features/products/productSlice";
 
 interface IFormData {
   search: string;
@@ -37,8 +38,7 @@ function Products({
 }: ProductPageProps): JSX.Element {
   const router = useRouter();
   const { ref, isVisible, setIsVisible } = useOutsideClick();
-  const { state, dispatch } = useProduct();
-  const page = state?.page;
+  const { page } = useAppSelector(productSelector);
 
   const {
     register,

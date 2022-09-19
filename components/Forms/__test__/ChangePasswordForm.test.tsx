@@ -8,13 +8,16 @@ describe("ChangePasswordForm", () => {
   it("Should render", () => {
     const submitHandler = jest.fn();
     const handleSubmit = jest.fn();
-    const error = "";
+    const errors = {
+      password: { type: "", message: "password is required" },
+      confirmPassword: { type: "", message: "confirm password is required" },
+    };
     const register = jest.fn();
     render(
       <ChangePasswordForm
         submitHandler={submitHandler}
         handleSubmit={handleSubmit}
-        errors={error}
+        errors={errors}
         register={register}
       />
     );

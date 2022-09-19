@@ -7,13 +7,16 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GoogleProvider from "next-auth/providers/google";
+import { JWT } from "next-auth/jwt";
 
 const prisma = new PrismaClient();
 
-type CredentialsProps = {
-  email: string;
-  password: string;
-};
+type CredentialsProps =
+  | {
+      email: string;
+      password: string;
+    }
+  | undefined;
 
 export default NextAuth({
   session: {
@@ -28,17 +31,28 @@ export default NextAuth({
   debug: true,
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
     CredentialsProvider({
-      async authorize(credentials: CredentialsProps, req: NextApiRequest) {
+      name: "Blooms Hair Salon",
+      credentials: {
+        email: { label: "Username", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials: CredentialsProps) {
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email: credentials?.email },
         });
         await prisma.$disconnect();
 
-        if (user && bcrypt.compareSync(credentials.password, user.password)) {
+        if (
+          user &&
+          bcrypt.compareSync(
+            credentials?.password as string,
+            user.password as string
+          )
+        ) {
           return {
             id: user.id,
             image: user.image,
@@ -52,7 +66,6 @@ export default NextAuth({
           return null;
         }
       },
-      credentials: undefined,
     }),
   ],
   adapter: PrismaAdapter(prisma),
@@ -65,7 +78,13 @@ export default NextAuth({
      * @param  {object}  user      User object      (only available on sign in)
      * @return {object}              Session that will be returned to the client
      */
-    async session({ session, token, user }): Promise<Session> {
+    async session({
+      session,
+      token,
+    }: {
+      session: Session;
+      token: JWT;
+    }): Promise<Session> {
       // Add property to session, like an access_token from a provider.
       session.user = token.user;
       return session;
@@ -84,5 +103,6 @@ export default NextAuth({
   },
   pages: {
     signIn: "/auth/signin",
+    newUser: "/auth/register",
   },
 });

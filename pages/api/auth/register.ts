@@ -1,10 +1,11 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { withSentry } from "@sentry/nextjs";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 import { verifyEmail } from "../../../lib/verifyEmail";
+import { UserInfoProps } from "@lib/types";
 
 const prisma = new PrismaClient();
 
@@ -51,7 +52,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           password: hashedPassword,
           image: image
             ? image
-            : "https://res.cloudinary.com/dtkjg8f0n/image/upload/e_sharpen:100,q_auto/v1621633003/sample.webp",
+            : "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1625765848/blooms_hair_products/icons8-user-96_wyguya.png",
           isAdmin,
           category: category ? category : "customer",
           shippingAddress: shippingAddress ? shippingAddress : null,

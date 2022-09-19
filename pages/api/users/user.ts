@@ -13,7 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
    * @access Private
    */
   if (req.method === "GET") {
-    const session: Session = await getSession({ req });
+    const session: Session = (await getSession({ req })) as Session;
 
     if (!session) {
       res.status(401).json({ message: "Not Authorized" });
@@ -41,7 +41,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       await prisma.$disconnect();
       res.status(200).json(user);
     } catch (error: any) {
-      res.status(404).json({ success: false, message: "User not found" });
+      res.status(409).json({ success: false, message: "User not found" });
     }
   } else {
     res.status(405).json({ message: `Method ${req.method} not allowed` });

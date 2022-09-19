@@ -59,13 +59,13 @@ export type Actions =
   | ISaveQty;
 
 // Add item to cart
-export const addToCart = (data): IAddToCart => ({
+export const addToCart = (data: CartItemsProps): IAddToCart => ({
   type: ActionType.CART_ADD_ITEM,
   payload: data,
 });
 
 // Remove item from  cart
-export const removeFromCart = (id): IRemoveFromCart => ({
+export const removeFromCart = (id: string): IRemoveFromCart => ({
   type: ActionType.CART_REMOVE_ITEM,
   payload: id,
 });

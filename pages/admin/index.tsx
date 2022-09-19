@@ -2,33 +2,43 @@ import { getSession } from "next-auth/react";
 import { NEXT_URL } from "@config/index";
 import dynamic from "next/dynamic";
 import { Session } from "next-auth";
+import { GetServerSidePropsContext } from "next";
+
+// utils
+import useHasMounted from "@hooks/useHasMounted";
 
 // Components
 import AdminLayout from "../../Layout/AdminLayout/AdminLayout";
-
-// utils
-import { getUser } from "../../lib/getUser";
-import { GetServerSidePropsContext } from "next";
 import StatsContainer from "@components/StatsContainer";
 const ChartsContainer = dynamic(() => import("@components/ChartsContainer"), {
   ssr: false,
 });
 
-export default function Dashboard({ stats }) {
+export default function Dashboard({
+  stats,
+  user,
+}: {
+  stats: any;
+  user: Session;
+}) {
+  const hasMounted = useHasMounted();
+
   return (
-    <AdminLayout title="Admin">
-      <section className=" w-full h-screen px-4 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 md:px-10">
-        <StatsContainer stats={stats} />
-        {stats.monthlySalesStats?.length > 0 && (
-          <ChartsContainer monthlyStats={stats.monthlySalesStats} />
-        )}
-      </section>
-    </AdminLayout>
+    hasMounted && (
+      <AdminLayout title="Admin">
+        <section className=" md:ml-56 h-screen px-4 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 md:px-10">
+          <StatsContainer stats={stats} />
+          {stats.monthlySalesStats?.length > 0 && (
+            <ChartsContainer monthlyStats={stats.monthlySalesStats} />
+          )}
+        </section>
+      </AdminLayout>
+    )
   );
 }
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const req = context.req;
-  const session: Session = await getSession({ req });
+  const session: Session = (await getSession({ req })) as Session;
 
   if (!session) {
     // If no token is present redirect user to the login page
@@ -52,12 +62,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const response = await fetch(`${NEXT_URL}/api/stats`, {
     headers: {
       "Content-Type": "application/json",
-      cookie: req.headers.cookie,
-    },
+      cookie: context.req.headers.cookie,
+    } as HeadersInit,
   });
   const data = await response.json();
 
   return {
-    props: { stats: data }, // will be passed to the page component as props
+    props: { stats: data, user: session }, // will be passed to the page component as props
   };
 }

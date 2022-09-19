@@ -3,10 +3,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
 import { Session } from "next-auth";
+import { prisma } from "../../../lib/prisma-db";
 
 import { getUser } from "../../../lib/getUser";
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   /**
@@ -18,7 +19,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     /**
      * @desc Get user session
      */
-    const session: Session = await getSession({ req });
+    const session: Session = (await getSession({ req })) as Session;
     /**
      * @desc check to see if their is a user session
      */
@@ -27,7 +28,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    const userData = await getUser(req);
     /**
      * @desc check to see if logged in user is admin
      */
@@ -54,7 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         .json({ success: true, message: "Picture uploaded successfully" });
     } catch (error: any) {
       res
-        .status(500)
+        .status(409)
         .json({ success: false, message: "Unable to upload picture", error });
     }
   } else if (req.method === "GET") {

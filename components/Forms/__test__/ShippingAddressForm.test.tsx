@@ -1,12 +1,16 @@
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import { mocked } from "ts-jest/utils";
 import ShippingAddressForm from "../ShippingAddressForm";
 
 describe("ShippingAddressForm", () => {
   it("Should render", () => {
     const submitHandler = jest.fn();
     const handleSubmit = jest.fn();
-    const error = "";
+    const error = {
+      address: { type: "", message: "Address is required" },
+      city: { type: "", message: "City is required" },
+      postalCode: { type: "", message: "Postal Code is required" },
+      country: { type: "", message: "Country is required" },
+    };
     const register = jest.fn();
     render(
       <ShippingAddressForm

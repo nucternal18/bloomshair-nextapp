@@ -1,7 +1,13 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-function ActiveLink({ children, href }) {
+function ActiveLink({
+  children,
+  href,
+}: {
+  children: React.ReactNode;
+  href: string;
+}) {
   const router = useRouter();
 
   return (

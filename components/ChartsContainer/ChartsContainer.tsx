@@ -2,7 +2,11 @@ import { useState } from "react";
 import AreaChartComponent from "@components/Charts/AreaChart";
 import BarChartComponent from "@components/Charts/BarChart";
 
-const ChartsContainer = ({ monthlyStats }) => {
+const ChartsContainer = ({
+  monthlyStats,
+}: {
+  monthlyStats: { date: string; totalPrice: number }[];
+}) => {
   const [barChart, setBarChart] = useState(true);
   return (
     <section className="px-4 mx-auto max-w-screen-xl mt-24 font-mono text-gray-900 dark:text-gray-200 md:px-6 flex flex-col gap-4 items-center justify-center">

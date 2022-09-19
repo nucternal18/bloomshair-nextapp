@@ -1,7 +1,7 @@
 import { FaFacebook, FaInstagram, FaGoogle } from "react-icons/fa";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import Layout from "../Layout/Layout/Layout";
+import Layout from "../Layout/MainLayout/Layout";
 import Maps from "../components/GoogleMaps";
 
 const url: string =

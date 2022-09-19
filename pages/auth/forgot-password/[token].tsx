@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useCallback } from "react";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -8,12 +8,13 @@ import { GetServerSideProps } from "next";
 import { toast } from "react-toastify";
 
 // Components
-import Spinner from "../../../components/Spinner";
-import Layout from "../../../Layout/Layout/Layout";
+import Layout from "../../../Layout/MainLayout/Layout";
 import ChangePasswordForm from "../../../components/Forms/ChangePasswordForm";
 
-import { useAuth } from "../../../context/auth/AuthContext";
 import { prisma } from "../../../lib/prisma-db";
+import { Session } from "next-auth";
+import { useResetCredentialsWithTokenMutation } from "features/users/userApiSlice";
+import { Loader } from "@mantine/core";
 
 const url =
   "https://res.cloudinary.com/dtkjg8f0n/image/upload/ar_16:9,c_fill,e_sharpen,g_auto,w_1000/v1625089267/blooms_hair_products/shari-sirotnak-oM5YoMhTf8E-unsplash_rcpxsj.webp";
@@ -23,28 +24,37 @@ type Inputs = {
   confirmPassword: string;
 };
 
-export default function ResetPassword({ valid, token }) {
+export default function ResetPassword({
+  valid,
+  token,
+}: {
+  valid: boolean;
+  token: string;
+}) {
   const router = useRouter();
-  const { state, resetPassword } = useAuth();
+  const [resetCredentialsWithToken, { isLoading }] =
+    useResetCredentialsWithTokenMutation();
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm<Inputs>();
 
-  useEffect(() => {
-    if (state.success) {
-      toast.success(state.message);
-    }
-  }, [state.success]);
-
   const submitHandler: SubmitHandler<Inputs> = useCallback(
     async ({ password, confirmPassword }) => {
       if (password !== confirmPassword) {
         toast.error("Passwords do not match. please check your password");
       }
-      resetPassword(password, token);
-      router.replace("/auth/signin");
+      try {
+        const response = await resetCredentialsWithToken({
+          password,
+          token,
+        }).unwrap();
+        if (response.success) toast.success(response.message);
+        router.replace("/auth/signin");
+      } catch (error: any) {
+        toast.error(error.message);
+      }
     },
     []
   );
@@ -88,16 +98,13 @@ export default function ResetPassword({ valid, token }) {
             </div>
             <section className="right-0 z-50 flex items-center justify-center py-8 md:w-4/12">
               <div className="w-full px-4">
-                {state.loading ? (
-                  <Spinner />
-                ) : (
-                  <ChangePasswordForm
-                    submitHandler={submitHandler}
-                    errors={errors}
-                    handleSubmit={handleSubmit}
-                    register={register}
-                  />
-                )}
+                <ChangePasswordForm
+                  submitHandler={submitHandler}
+                  errors={errors}
+                  handleSubmit={handleSubmit}
+                  register={register}
+                  isLoading={isLoading}
+                />
                 <div className="flex flex-row justify-center py-3 text-lg">
                   <p className="mr-2">Return to</p>{" "}
                   <Link href={"/auth/signin"}>
@@ -115,7 +122,7 @@ export default function ResetPassword({ valid, token }) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const req = context.req;
-  const session = await getSession({ req });
+  const session: Session = (await getSession({ req })) as Session;
 
   if (session) {
     return {
@@ -126,12 +133,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  // await Token.findOne({
-  //   token: context.params?.token,
-  //   type: "passwordReset",
-  // });
   const tokenDoc = await prisma.token.findUnique({
-    where: { token: context.params.token as string },
+    where: { token: context.params?.token as string },
   });
   await prisma.$disconnect();
   if (!tokenDoc) return { props: { valid: false } };

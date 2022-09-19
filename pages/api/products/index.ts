@@ -3,8 +3,6 @@ import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
 import { Session } from "next-auth";
 
-import { getUser } from "@lib/getUser";
-
 const prisma = new PrismaClient();
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -24,7 +22,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     const count = await prisma.product.findMany({
-      where: { name: req.query.keyword as string },
+      where: {
+        name: { contains: req.query.keyword as string, mode: "insensitive" },
+      },
     });
     const products = await prisma.product.findMany({
       where: {
@@ -40,7 +40,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       page: page,
     });
   } else if (req.method === "POST") {
-    const session: Session = await getSession({ req });
+    const session: Session = (await getSession({ req })) as Session;
+
     /**
      * @desc Create a  product
      * @route POST /api/products
@@ -50,7 +51,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       res.status(401).json({ message: "Not Authorized" });
       return;
     }
-    const userData = await getUser(req);
+
     /**
      * @desc check to see if logged in user is admin
      */
@@ -58,28 +59,31 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       res.status(401).json({ message: "Not Authorized" });
       return;
     }
+
     try {
       await prisma.product.create({
         data: {
-          name: "Sample Name",
-          price: 0,
-          user: { connect: { id: userData.id } },
+          name: req.body.name,
+          price: Number(req.body.price),
+          user: { connect: { id: session.user?.id } },
           image:
+            req.body.image ??
             "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1625415632/blooms_hair_products/sample_wic9ml.jpg",
-          brand: "Sample brand",
-          category: "Sample Category",
-          countInStock: 0,
+          brand: req.body.brand,
+          category: req.body.category,
+          countInStock: Number(req.body.countInStock),
           numReviews: 0,
-          description: "Sample description",
-          slug: "sample-slug",
+          description: req.body.description,
+          slug: req.body.slug,
         },
       });
+
       await prisma.$disconnect();
       res
         .status(201)
         .json({ success: true, message: "Product created successfully" });
     } catch (error: any) {
-      res.status(404).json({
+      res.status(409).json({
         success: false,
         message: error.message ?? "Error creating product",
       });

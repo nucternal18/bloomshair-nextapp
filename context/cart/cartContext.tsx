@@ -10,10 +10,10 @@ import {
 
 export interface InitialCartState {
   cart: {
-    cartItems?: CartItemsProps[];
-    shippingAddress?: ShippingAddressProps | null;
-    paymentMethod?: string;
-    qty?: number;
+    cartItems: CartItemsProps[];
+    shippingAddress: ShippingAddressProps | null;
+    paymentMethod: string;
+    qty: number;
   };
 }
 

@@ -20,11 +20,11 @@ export async function getUser(
       headers: {
         "Content-Type": "application/json",
         cookie: req.headers.cookie,
-      },
+      } as HeadersInit,
     });
     const user = await userRes.json();
     return user;
-  } catch (error) {
+  } catch (error: any) {
     throw new Error("Unable to fetch user: " + error.message);
   }
 }

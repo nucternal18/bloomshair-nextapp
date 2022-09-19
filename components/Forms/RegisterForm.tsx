@@ -1,8 +1,24 @@
 /* eslint-disable no-useless-escape */
+import { Button, PasswordInput, TextInput } from "@mantine/core";
 import React from "react";
-import Button from "../Button";
-import ErrorMessage from "../ErrorMessage";
+import { IoLockClosedOutline } from "react-icons/io5";
+import { MdOutlineEmail } from "react-icons/md";
+import { HiOutlineUser } from "react-icons/hi";
+
 import FormRowInput from "./FormComponents/FormRowInput";
+import { IForm } from "@lib/types";
+
+type Inputs = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
+interface IRegistrationForm extends IForm<Inputs> {
+  buttonName: string;
+  isLoading: boolean;
+}
 
 function RegisterForm({
   submitHandler,
@@ -10,7 +26,8 @@ function RegisterForm({
   handleSubmit,
   register,
   buttonName,
-}) {
+  isLoading,
+}: IRegistrationForm) {
   return (
     <form
       aria-label="register-form"
@@ -19,29 +36,13 @@ function RegisterForm({
       className="px-2 pt-6 pb-8 mx-2 mb-4 bg-transparent w-full"
     >
       <div className="mb-4">
-        {/* <FormRowInput
-          {...register("name", {
-            required: "This is required",
-            minLength: {
-              value: 2,
-              message: "Please enter a name with at least 2 characters",
-            },
-            pattern: {
-              value: /^[A-Za-z -]+$/,
-              message: "Please enter a valid name",
-            },
-          })}
-        /> */}
-        <label
-          htmlFor="name"
-          className="block mb-2 text-base font-bold text-gray-700"
-        >
-          Name
-        </label>
-        <input
-          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
-          id="name"
-          type="text"
+        <FormRowInput
+          className="w-full"
+          type="name"
+          title={"Name"}
+          inputType="text"
+          aria-label="name"
+          prependComponent={<HiOutlineUser fontSize={20} color="lightgrey" />}
           placeholder="Enter your name"
           {...register("name", {
             required: "This is required",
@@ -54,22 +55,18 @@ function RegisterForm({
               message: "Please enter a valid name",
             },
           })}
+          errors={errors.name}
         />
-        {errors.name && (
-          <ErrorMessage variant="danger">{errors.name.message}</ErrorMessage>
-        )}
       </div>
       <div className="mb-4">
-        <label
-          htmlFor="email"
-          className="block mb-2 text-base font-bold text-gray-700"
-        >
-          Email Address
-        </label>
-        <input
-          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
+        <FormRowInput
+          className="w-full "
           id="email"
           type="email"
+          inputType="email"
+          title={"Email Address"}
+          aria-label="email"
+          prependComponent={<MdOutlineEmail fontSize={20} color="lightgrey" />}
           placeholder="Enter email"
           {...register("email", {
             required: "This is required",
@@ -78,10 +75,8 @@ function RegisterForm({
               message: "Please enter a valid email address",
             },
           })}
+          errors={errors.email}
         />
-        {errors.email && (
-          <ErrorMessage variant="danger">{errors.email.message}</ErrorMessage>
-        )}
       </div>
       <div className="mb-4">
         <label
@@ -90,11 +85,12 @@ function RegisterForm({
         >
           Password
         </label>
-        <input
-          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
+        <PasswordInput
+          className="w-ful "
           id="password"
           type="password"
           placeholder="Enter password"
+          icon={<IoLockClosedOutline />}
           {...register("password", {
             required: "This is required",
             minLength: {
@@ -112,12 +108,9 @@ function RegisterForm({
                 "Password must contain at least one uppercase letter, one number and one special character",
             },
           })}
+          error={errors.password && errors.password.message}
+          size="md"
         />
-        {errors.password && (
-          <ErrorMessage variant="danger">
-            {errors.password.message}
-          </ErrorMessage>
-        )}
       </div>
       <div className="mb-4">
         <label
@@ -126,11 +119,13 @@ function RegisterForm({
         >
           Confirm Password
         </label>
-        <input
-          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow-md appearance-none focus:outline-none "
+        <PasswordInput
+          className="w-full"
           id="confirmPassword"
           type="password"
+          aria-label="confirm password"
           placeholder="Confirm password"
+          icon={<IoLockClosedOutline />}
           {...register("confirmPassword", {
             required: "This is required",
             minLength: {
@@ -148,14 +143,19 @@ function RegisterForm({
                 "Password must contain at least one uppercase letter, one number and one special character",
             },
           })}
+          error={errors.confirmPassword && errors.confirmPassword.message}
+          size="md"
         />
-        {errors.confirmPassword && (
-          <ErrorMessage variant="danger">
-            {errors.confirmPassword.message}
-          </ErrorMessage>
-        )}
       </div>
-      <Button type="submit" color="dark" className="w-full">
+      <Button
+        loading={isLoading}
+        type="submit"
+        color="dark"
+        variant="outline"
+        className="w-full bg-gray-900 text-gray-200"
+        uppercase
+        fullWidth
+      >
         {buttonName}
       </Button>
     </form>

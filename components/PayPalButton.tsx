@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import Spinner from "./Spinner";
-const PaypalButton = ({ createOrder, onApprove }): JSX.Element => {
+const PaypalButton = ({ createOrder, onApprove }: any): JSX.Element => {
   const [{ isPending }] = usePayPalScriptReducer();
   return (
     <div>

@@ -1,13 +1,18 @@
 import Link from "next/link";
 import Button from "../Button";
 import ErrorMessage from "../ErrorMessage";
+import { IForm } from "@lib/types";
+
+type FormInput = {
+  email: string;
+};
 
 function RequestPasswordResetForm({
   submitHandler,
   errors,
   handleSubmit,
   register,
-}) {
+}: IForm<FormInput>) {
   return (
     <form
       aria-label="request-password-reset-form"

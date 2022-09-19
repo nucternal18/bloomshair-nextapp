@@ -1,6 +1,19 @@
+import { IForm } from "@lib/types";
 import { motion } from "framer-motion";
 import Button from "../Button";
 import ErrorMessage from "../ErrorMessage";
+
+type FormInput = {
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
+};
+
+interface IShippingAddressForm extends IForm<FormInput> {
+  show: boolean;
+  handleClose: () => void;
+}
 
 function ShippingAddressForm({
   submitHandler,
@@ -9,7 +22,7 @@ function ShippingAddressForm({
   errors,
   show,
   handleClose,
-}) {
+}: IShippingAddressForm) {
   return (
     <motion.div
       aria-label="shipping-address-form-container"

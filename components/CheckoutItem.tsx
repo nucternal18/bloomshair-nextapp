@@ -2,7 +2,15 @@ import Image from "next/image";
 import { FaTrash } from "react-icons/fa";
 import Button from "./Button";
 
-function CheckoutItem({ item, removeFromCartHandler, updateCartHandler }) {
+function CheckoutItem({
+  item,
+  removeFromCartHandler,
+  updateCartHandler,
+}: {
+  item: any;
+  removeFromCartHandler: any;
+  updateCartHandler(arg0: string, arg1: number): void;
+}) {
   return (
     <div className="w-full flex items-center text-md  md:text-xl border-b-2 border-gray-200 sm:px-4 h-24">
       <div className="hidden sm:block w-1/4 pr-4">
@@ -19,7 +27,9 @@ function CheckoutItem({ item, removeFromCartHandler, updateCartHandler }) {
         <select
           className="w-full px-3 py-2 my-2 bg-white border rounded outline-none text-gray-900"
           value={item.qty}
-          onChange={(e) => updateCartHandler(item.product, e.target.value)}
+          onChange={(e) =>
+            updateCartHandler(item.product, Number(e.target.value))
+          }
         >
           {[...Array(item.countInStock).keys()].map((x) => (
             <option key={x + 1} value={x + 1} className="py-1">

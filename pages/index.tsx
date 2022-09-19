@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { GetServerSideProps } from "next";
 
 // components
-import Layout from "Layout/Layout/Layout";
+import Layout from "Layout/MainLayout/Layout";
 import BottomPageContainer from "@components/BottomPageContainer";
 const ProductCarousel = dynamic(() => import("@components/ProductCarousel"), {
   ssr: false,

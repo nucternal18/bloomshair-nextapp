@@ -1,45 +1,77 @@
+import { PasswordInput } from "@mantine/core";
 import Link from "next/link";
+import {
+  FieldErrorsImpl,
+  SubmitHandler,
+  UseFormHandleSubmit,
+  UseFormRegister,
+} from "react-hook-form";
+import { IoLockClosedOutline } from "react-icons/io5";
+import { MdOutlineEmail } from "react-icons/md";
 import Button from "../Button";
 import ErrorMessage from "../ErrorMessage";
+import FormRowInput from "./FormComponents/FormRowInput";
 
-function LoginForm({ submitHandler, handleSubmit, errors, register }) {
+type Inputs = {
+  email: string;
+  password: string;
+};
+interface ILoginFormProps {
+  errors: FieldErrorsImpl<Inputs>;
+  handleSubmit: UseFormHandleSubmit<Inputs>;
+  register: UseFormRegister<Inputs>;
+  submitHandler: SubmitHandler<Inputs>;
+  csrfToken: string;
+}
+
+function LoginForm({
+  submitHandler,
+  handleSubmit,
+  errors,
+  register,
+  csrfToken,
+}: ILoginFormProps) {
   return (
     <form
       aria-label="login-form"
       data-testid="login-form"
       onSubmit={handleSubmit(submitHandler)}
-      className="px-2 pt-6 pb-8 mx-2 mb-4 bg-transparent "
+      className="pt-6 pb-8 mx-2 mb-4 bg-transparent "
     >
+      <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
       <div className="mb-4">
-        <label htmlFor="email" className="block mb-2 text-base font-bold ">
-          Email Address:
-        </label>
-        <input
-          className="z-0 w-full px-3 py-2 leading-tight text-gray-700 border rounded  appearance-none focus:outline-none "
+        <FormRowInput
+          className="w-full "
           id="email"
           type="email"
+          inputType="email"
+          title={"Username"}
+          aria-label="email"
+          prependComponent={<MdOutlineEmail fontSize={20} color="lightgrey" />}
           placeholder="Enter email"
           {...register("email", {
             required: "This is required",
             pattern: {
               value: /\S+@\S+\.\S+/,
-              message: "Please enter a valid email address",
+              message: "Please enter a valid username",
             },
           })}
-        ></input>
+          errors={errors.email}
+        />
       </div>
-      {errors.email && (
-        <ErrorMessage variant="danger">{errors.email.message}</ErrorMessage>
-      )}
       <div className="mb-4">
-        <label htmlFor="password" className="block mb-2 text-base font-bold ">
-          Password:
+        <label
+          htmlFor="password"
+          className="block mb-2 text-base font-bold text-gray-700"
+        >
+          Password
         </label>
-        <input
-          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded  appearance-none focus:outline-none "
+        <PasswordInput
+          className="w-ful "
           id="password"
           type="password"
           placeholder="Enter password"
+          icon={<IoLockClosedOutline />}
           {...register("password", {
             required: "This is required",
             minLength: {
@@ -51,12 +83,15 @@ function LoginForm({ submitHandler, handleSubmit, errors, register }) {
               message: "Please enter a password not more than 15 characters",
             },
             pattern: {
-              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{7,})/,
+              value:
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{7,})/,
               message:
                 "Password must contain at least one uppercase letter, one number and one special character",
             },
           })}
-        ></input>
+          error={errors.password && errors.password.message}
+          size="md"
+        />
       </div>
       <div className="mb-4">
         <Link href={"/auth/forgot-password"}>

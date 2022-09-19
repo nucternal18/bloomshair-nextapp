@@ -7,7 +7,11 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-const AreaChartComponent = ({ data }) => {
+const AreaChartComponent = ({
+  data,
+}: {
+  data: { date: string; totalPrice: number }[];
+}) => {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <AreaChart data={data} margin={{ top: 50 }}>

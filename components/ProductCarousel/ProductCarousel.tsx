@@ -10,10 +10,13 @@ interface Products {
 }
 const ProductCarousel = ({ products }: Products) => {
   const [width, setWidth] = useState(0);
-  const carousel = useRef(null);
+  const carousel = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
+    setWidth(
+      (carousel.current?.scrollWidth as number) -
+        (carousel.current?.offsetWidth as number)
+    );
   }, [carousel.current]);
   return (
     <div aria-label="product-carousel" data-testid="product-carousel">
@@ -23,7 +26,7 @@ const ProductCarousel = ({ products }: Products) => {
           dragConstraints={{ right: 0, left: -width }}
           className="flex gap-2 py-2 cursor-grab lg:justify-center focus:cursor-grabbing"
         >
-          {products.map((product) => (
+          {products?.map((product) => (
             <motion.div
               key={product.id}
               className="min-h-[30rem] min-w-[20rem] sm:min-h-[35rem] sm:min-w-[25rem] p-5"

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { createContext, useReducer, useContext } from "react";
+import { createContext, useReducer, useContext, ReactElement } from "react";
 
 import { NEXT_URL } from "../../config";
 import { orderConfirmationEmail } from "../../lib/emailServices";
@@ -23,7 +23,7 @@ interface IOrderState {
   loading?: boolean;
   error?: string | Error | null;
   totalPrice?: number;
-  order?: OrderProps;
+  order?: OrderProps | null;
 }
 
 const initialState = {
@@ -50,7 +50,7 @@ export const OrderContext = createContext<{
   sendOrderConfirmationEmail: () => {},
 });
 
-export const orderReducer = (state, action) => {
+export const orderReducer = (state: IOrderState, action: any) => {
   switch (action.type) {
     case ActionType.ORDER_ACTION_REQUEST:
       return { ...state, loading: true };
@@ -75,7 +75,7 @@ export const orderReducer = (state, action) => {
   }
 };
 
-const OrderContextProvider = ({ children }) => {
+const OrderContextProvider = ({ children }: { children: ReactElement }) => {
   const [state, dispatch] = useReducer(orderReducer, initialState);
 
   /**
@@ -106,7 +106,7 @@ const OrderContextProvider = ({ children }) => {
           payload: data,
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       const err =
         error.response && error.response.data.message
           ? error.response.data.message
@@ -146,7 +146,7 @@ const OrderContextProvider = ({ children }) => {
           type: ActionType.ORDER_CONFIRMATION_SUCCESS,
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       const err =
         error.response && error.response.data.message
           ? error.response.data.message
@@ -219,7 +219,7 @@ const OrderContextProvider = ({ children }) => {
           type: ActionType.ORDER_DELIVERY_SUCCESS,
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       const err =
         error.response && error.response.data.message
           ? error.response.data.message

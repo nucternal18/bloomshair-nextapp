@@ -4,8 +4,6 @@ import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
 import { Session } from "next-auth";
 
-import { getUser } from "@lib/getUser";
-
 const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -18,7 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     /**
      * @desc Get user session
      */
-    const session: Session = await getSession({ req });
+    const session: Session = (await getSession({ req })) as Session;
     /**
      * @desc check to see if their is a user session
      */
@@ -26,7 +24,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(401).json({ message: "Not Authorized" });
       return;
     }
-    const userData = await getUser(req);
     /**
      * @desc check to see if logged in user is admin
      */
@@ -40,7 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       await prisma.$disconnect();
       res.status(200).json(users);
     } catch (error) {
-      res.status(404).json({ message: "No users found" });
+      res.status(409).json({ message: "No users found" });
     }
   } else {
     res.setHeader("Allow", ["GET"]);

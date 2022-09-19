@@ -21,7 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     /**
      * @desc Get user session
      */
-    const session: Session = await getSession({ req });
+    const session: Session = (await getSession({ req })) as Session;
     /**
      * @desc check to see if their is a user session
      */

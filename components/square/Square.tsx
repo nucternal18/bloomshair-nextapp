@@ -8,14 +8,28 @@ import {
 import { NEXT_URL } from "../../config/index";
 import { TokenResult, payments } from "@square/web-sdk";
 
-function Square({ paymentAmount, onSquarePayment }) {
+type SquarePaymentResult = {
+  id: string;
+  status: string;
+  update_time: string;
+  orderId: string;
+  email_address: string;
+};
+
+function Square({
+  paymentAmount,
+  onSquarePayment,
+}: {
+  paymentAmount: string;
+  onSquarePayment: (data: SquarePaymentResult) => void;
+}) {
   const [isSubmitting, setSubmitting] = useState(false);
 
   return (
     <>
       <SquarePaymentsForm
-        applicationId={process.env.NEXT_PUBLIC_SQUARE_APPLICATION_ID}
-        locationId={process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID}
+        applicationId={process.env.NEXT_PUBLIC_SQUARE_APPLICATION_ID as string}
+        locationId={process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID as string}
         cardTokenizeResponseReceived={async (token: TokenResult, buyer) => {
           setSubmitting(true);
           const paymentResponse = await fetch(
@@ -26,7 +40,7 @@ function Square({ paymentAmount, onSquarePayment }) {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                sourceId: token.token,
+                sourceId: token.token as string,
                 paymentAmount,
               }),
             }

@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { useState, createContext, useReducer, useContext } from "react";
+import {
+  useState,
+  createContext,
+  useReducer,
+  useContext,
+  ReactElement,
+} from "react";
 
 import { NEXT_URL } from "../config";
 
@@ -40,7 +46,7 @@ export enum ActionType {
 export const GalleryContext = createContext<{
   state: GalleryInterface;
   dispatch: React.Dispatch<any>;
-  createPicture: (imgUrl) => void;
+  createPicture: (imgUrl: string) => void;
   deletePicture: (id: string) => void;
   uploadGalleryImage: (base64EncodedImage: string | ArrayBuffer) => void;
 }>({
@@ -51,7 +57,7 @@ export const GalleryContext = createContext<{
   uploadGalleryImage: () => {},
 });
 
-const galleryReducer = (state, action) => {
+const galleryReducer = (state: GalleryInterface, action: any) => {
   switch (action.type) {
     case ActionType.GALLERY_ACTION_REQUEST:
       return {
@@ -74,6 +80,7 @@ const galleryReducer = (state, action) => {
       return {
         ...state,
         loading: false,
+        uploading: false,
         success: true,
         error: null,
         message: action.payload,
@@ -116,7 +123,7 @@ const galleryReducer = (state, action) => {
   }
 };
 
-const GalleryContextProvider = ({ children }) => {
+const GalleryContextProvider = ({ children }: { children: ReactElement }) => {
   const [state, dispatch] = useReducer(galleryReducer, initialGalleryState);
 
   /**
@@ -141,7 +148,7 @@ const GalleryContextProvider = ({ children }) => {
           payload: "Picture created",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       const err =
         error.response && error.response.data.message
           ? error.response.data.message
@@ -167,7 +174,7 @@ const GalleryContextProvider = ({ children }) => {
           payload: "Picture deleted",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       const err =
         error.response && error.response.data.message
           ? error.response.data.message
@@ -190,7 +197,7 @@ const GalleryContextProvider = ({ children }) => {
         type: ActionType.GALLERY_IMAGE_UPLOAD_SUCCESS,
         payload: data,
       });
-    } catch (error) {
+    } catch (error: any) {
       const err =
         error.response && error.response.data.message
           ? error.response.data.message

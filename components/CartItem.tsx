@@ -4,6 +4,19 @@ import Button from "./Button";
 import { FaTrash } from "react-icons/fa";
 import Link from "next/link";
 
+interface ICartItem {
+  product: string;
+  image: string;
+  name: string;
+  price: number;
+  qty: number;
+  countInStock: number;
+  removeFromCartHandler: (arg0: string) => void;
+  updateCartHandler: (arg0: string, arg1: number) => void;
+  size: number;
+  textSize: string;
+}
+
 function CartItem({
   product,
   image,
@@ -15,7 +28,7 @@ function CartItem({
   updateCartHandler,
   size,
   textSize,
-}) {
+}: ICartItem) {
   return (
     <div className="w-full mb-2 border-b">
       <div className="flex items-center justify-around w-full mb-2 ">

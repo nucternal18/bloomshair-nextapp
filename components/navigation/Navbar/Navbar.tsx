@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
@@ -11,9 +11,7 @@ import { RiAdminFill } from "react-icons/ri";
 import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { useSnipcart } from "use-snipcart";
-
-// context
-import { useAuth } from "@context/auth/AuthContext";
+import { useSession } from "next-auth/react";
 
 // components
 const CartIcon = dynamic(() => import("@components/CartIcon"), { ssr: false });
@@ -21,6 +19,7 @@ const CartIcon = dynamic(() => import("@components/CartIcon"), { ssr: false });
 // navlinks
 import { navLink } from "../../../data";
 import { BloomsLogo } from "../../SVG/BloomsLogo";
+import { Session } from "next-auth";
 
 const Navbar = () => {
   const router = useRouter();
@@ -30,7 +29,8 @@ const Navbar = () => {
   const [isDropDownOpen, setIsDropDownOpen] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
   const [pos, setPos] = useState<string>("top");
-  const { state: authState } = useAuth();
+  const { data } = useSession();
+  const session: Session = data as Session;
 
   const { cart = {} } = useSnipcart();
 
@@ -39,14 +39,14 @@ const Navbar = () => {
   }, []);
 
   // mobile nav bar ref
-  const mobileNavRef = useRef<HTMLElement>();
+  const mobileNavRef = useRef<HTMLElement>(null);
   // user drop down ref
-  const ref = useRef<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>(null);
 
   // Close user drop down list when user clicks outside event window
   useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (!ref.current?.contains(event.target)) {
+    const handleOutsideClick = (event: Event) => {
+      if (!ref.current?.contains(event.target as HTMLElement)) {
         if (!isDropDownOpen) return;
         toggleUserDropdown();
       }
@@ -57,8 +57,8 @@ const Navbar = () => {
 
   // Close mobile nav drawer when user clicks outside event window
   useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (!mobileNavRef.current?.contains(event.target)) {
+    const handleOutsideClick = (event: Event) => {
+      if (!mobileNavRef.current?.contains(event.target as HTMLElement)) {
         if (!isOpen) return;
         toggle();
       }
@@ -69,9 +69,9 @@ const Navbar = () => {
 
   // Check the top position of the navigation in the window
   useEffect(() => {
-    const handleScrollTop = (e) => {
-      const scrolled = document.scrollingElement.scrollTop;
-      if (scrolled >= 5) {
+    const handleScrollTop = () => {
+      const scrolled = document.scrollingElement?.scrollTop;
+      if ((scrolled as number) >= 5) {
         setPos("moved");
       } else {
         setPos("top");
@@ -151,15 +151,15 @@ const Navbar = () => {
             />
           </button>
           <div className="flex items-center lg:hidden">
-            {authState.user && (
+            {session?.user && (
               <button
                 aria-label="user-dropdown"
                 className="flex items-center  bg-gray-200 border-2 border-yellow-500 rounded-full"
                 disabled
               >
                 <Image
-                  src={authState.user.image}
-                  alt={authState.user.name}
+                  src={session.user.image as string}
+                  alt={session.user.name as string}
                   width={30}
                   height={30}
                   className="rounded-full"
@@ -173,7 +173,7 @@ const Navbar = () => {
             >
               <CartIcon
                 itemCount={cart.items?.count || 0}
-                className={`${
+                classNames={`${
                   router.asPath === "/" && pos === "top"
                     ? "text-gray-200"
                     : "text-gray-900 dark:text-gray-200"
@@ -230,7 +230,7 @@ const Navbar = () => {
               <span hidden>toggle theme</span>
             </button>
           </li>
-          {authState.user ? (
+          {session?.user ? (
             <li className="px-1 m-0 text-base list-none">
               <button
                 aria-label="user-dropdown-button"
@@ -238,8 +238,8 @@ const Navbar = () => {
                 onClick={toggleUserDropdown}
               >
                 <Image
-                  src={authState.user.image}
-                  alt={authState.user.name}
+                  src={session.user.image as string}
+                  alt={session.user.name as string}
                   width={30}
                   height={30}
                   className="rounded-full"
@@ -272,7 +272,7 @@ const Navbar = () => {
                       </a>
                     </Link>
                   </button>
-                  {authState.user.isAdmin && (
+                  {session.user?.isAdmin && (
                     <button
                       aria-label="admin-link"
                       className="flex items-center px-4 py-2 space-x-2"
@@ -330,7 +330,7 @@ const Navbar = () => {
             >
               <CartIcon
                 itemCount={cart.items?.count || 0}
-                className={`${
+                classNames={`${
                   router.asPath === "/" && pos === "top"
                     ? "text-gray-200"
                     : "text-gray-900 dark:text-gray-200"
@@ -403,7 +403,7 @@ const Navbar = () => {
                   </Link>
                 </li>
               ))}
-              {authState.user ? (
+              {session?.user ? (
                 <>
                   <li className="px-1 m-0 text-base list-none text-md">
                     <button
@@ -424,7 +424,7 @@ const Navbar = () => {
                       </Link>
                     </button>
                   </li>
-                  {authState.user.isAdmin && (
+                  {session?.user?.isAdmin && (
                     <li className="px-1 m-0 text-base list-none text-md">
                       <button
                         aria-label="admin-button"

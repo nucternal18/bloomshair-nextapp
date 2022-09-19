@@ -1,5 +1,17 @@
 import FormRowInput from "./FormComponents/FormRowInput";
 import FormRowSelect from "./FormComponents/FormRowSelect";
+import { IForm } from "@lib/types";
+
+type Inputs = {
+  category: string;
+  sortBy: string;
+};
+
+interface SearchFormProps extends IForm<Inputs> {
+  categoryOptions: string[];
+  sortByOptions: string[];
+  reset: () => void;
+}
 
 const SearchForm = ({
   register,
@@ -7,7 +19,7 @@ const SearchForm = ({
   errors,
   categoryOptions,
   sortByOptions,
-}) => {
+}: SearchFormProps) => {
   return (
     <form>
       <div className="relative p-2  max-w-screen-xl  bg-white font-mono dark:bg-gray-900 shadow-xl mt-5 mx-2 md:mx-auto md:p-4">
@@ -17,14 +29,16 @@ const SearchForm = ({
         <div className="grid grid-cols-1">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
             <FormRowSelect
-              name="category"
+              placeHolder="Select Category"
+              label="Category"
               type="category"
               {...register("category")}
-              errors={errors.category}
+              errors={errors?.category}
               list={categoryOptions}
             />
             <FormRowSelect
-              name="Sort By"
+              placeHolder="Select an Option"
+              label="Sort By"
               type="sortBy"
               {...register("sortBy")}
               errors={errors.sortBy}

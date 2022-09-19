@@ -1,46 +1,59 @@
-import { useState, useEffect, useContext } from "react";
-import Image from "next/image";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
-import { FaPlusCircle } from "react-icons/fa";
-import dynamic from "next/dynamic";
 import { toast } from "react-toastify";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Session } from "next-auth";
+import { Loader } from "@mantine/core";
+import { GetServerSidePropsContext } from "next";
 
 //components
-import Spinner from "../../../components/Spinner";
 import FormContainer from "../../../components/FormContainer";
 import Button from "../../../components/Button";
 import AdminLayout from "../../../Layout/AdminLayout/AdminLayout";
-const TextEditor = dynamic(() => import("../../../components/Editor"), {
-  ssr: false,
-});
-import FormRowInput from "../../../components/Forms/FormComponents/FormRowInput";
 
-//Context
-import { useProduct } from "../../../context/product/productContext";
+// Redux ApiSlice imports
+import {
+  useUpdateProductMutation,
+  useUploadProdImageMutation,
+} from "../../../features/products/productApiSlice";
+import { useAppSelector, useAppDispatch } from "../../../app/hooks";
+import {
+  productSelector,
+  setError,
+} from "../../../features/products/productSlice";
 
-// Server Url
-import { getUser } from "../../../lib/getUser";
-import { NEXT_URL } from "../../../config";
-import { GetServerSidePropsContext } from "next";
-import { IFormData } from "../../../lib/types";
+// lib/utils
+import { NEXT_URL } from "@config/index";
+import { ProductProps } from "@lib/types";
+import ProductForm from "@components/AdminProductSection/ProductForm";
+import useHasMounted from "@hooks/useHasMounted";
 
-const ProductEditScreen = ({ product, productId, isLoading }): JSX.Element => {
+const ProductEditScreen = ({
+  product,
+  productId,
+}: {
+  product: ProductProps;
+  productId: string;
+  isLoading: string;
+}): JSX.Element => {
   const router = useRouter();
-  const { state, uploadProdImage, updateProduct } = useProduct();
-  const { loading, image, error } = state;
-  const [mounted, setMounted] = useState(false);
+  const hasMounted = useHasMounted();
+  const [updateProduct, { isLoading: isLoadingUpdateProduct }] =
+    useUpdateProductMutation();
+  const [uploadProdImage, { isLoading: isLoadingUploadProdImage }] =
+    useUploadProdImageMutation();
+  const { image, error } = useAppSelector(productSelector);
   const [value, setValue] = useState(product.description);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Partial<IFormData>>({
+  } = useForm<ProductProps>({
     defaultValues: {
       name: product.name,
+      slug: product.slug,
       price: product.price,
       brand: product.brand,
       category: product.category,
@@ -50,43 +63,53 @@ const ProductEditScreen = ({ product, productId, isLoading }): JSX.Element => {
 
   const ALLOWED_FORMATS = ["image/jpeg", "image/png", "image/jpg"];
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const submitHandler: SubmitHandler<ProductProps> = useCallback(
+    async (data) => {
+      try {
+        const response = await updateProduct({
+          id: productId,
+          name: data.name,
+          price: data.price,
+          image: image ? image : product.image,
+          brand: data.brand,
+          category: data.category,
+          countInStock: data.countInStock,
+          description: value,
+          slug: product.slug,
+        }).unwrap();
+        if (response.success)
+          toast.success(response.message ?? "Product updated Successfully", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        router.replace("/admin/products");
+      } catch (error: any) {
+        console.log(error);
+        toast.error(error.message ?? "Error updating product", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      }
+    },
+    [image]
+  );
 
-  const submitHandler: SubmitHandler<Partial<IFormData>> = (data) => {
-    updateProduct({
-      id: productId,
-      name: data.name,
-      price: data.price,
-      image: image ? image : product.image,
-      brand: data.brand,
-      category: data.category,
-      countInStock: data.countInStock,
-      description: value,
-      slug: product.slug,
-    });
-    router.replace("/admin/products");
-  };
-
-  const uploadFileHandler = (e) => {
-    const file = e.target.files[0];
+  const uploadFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] as File;
     const reader = new FileReader();
     if (ALLOWED_FORMATS.includes(file.type)) reader.readAsDataURL(file);
     reader.onloadend = async () => {
-      uploadProdImage(reader.result);
+      reader && uploadProdImage(reader.result);
     };
     reader.onerror = () => {
       toast.error("something went wrong!");
     };
   };
 
-  if (isLoading) {
+  if (!hasMounted) {
     return (
       <AdminLayout>
-        <main className="w-full h-screen p-4 mx-auto overflow-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+        <main className="md:ml-56 h-screen p-4 mx-auto overflow-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
           <div className="flex items-center justify-center">
-            <Spinner message="Loading Product Details..." />
+            <Loader size="xl" variant="bars" />
           </div>
         </main>
       </AdminLayout>
@@ -94,134 +117,48 @@ const ProductEditScreen = ({ product, productId, isLoading }): JSX.Element => {
   }
 
   return (
-    mounted && (
-      <AdminLayout>
-        <main className="w-full h-screen p-4 mx-auto overflow-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
-          <section className="container px-2 pt-6 pb-8 mx-2 mt-6 mb-4 rounded shadow-2xl md:mx-auto ">
-            <div className="flex items-center justify-between px-4 mb-4 border-b-2 border-current border-gray-200">
-              <div className="mt-6">
-                <Button
-                  color="dark"
-                  type="button"
-                  onClick={() => router.back()}
-                >
-                  Go Back
-                </Button>
-              </div>
-              <div>
-                <h1 className="p-5 mt-6 text-3xl font-thin md:text-5xl">
-                  Edit Product
-                </h1>
-              </div>
+    <AdminLayout>
+      <main className=" md:ml-56  p-4 my-4 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+        <section className="container p-2 mx-2 rounded shadow-md md:mx-auto ">
+          <div className="flex items-center justify-between px-4 mb-4 border-b-2 border-current border-gray-200">
+            <div className="mt-6">
+              <Button color="dark" type="button" onClick={() => router.back()}>
+                Go Back
+              </Button>
             </div>
-            <FormContainer>
-              <form
-                onSubmit={handleSubmit(submitHandler)}
-                className="w-full px-12 pt-6 pb-8 mx-2 mb-4  sm:mx-auto"
-              >
-                <div className="flex flex-col items-center justify-around md:flex-row">
-                  {loading ? (
-                    <Spinner message="loading..." />
-                  ) : (
-                    <div className="flex flex-col items-center w-full mb-2">
-                      {image ? (
-                        <Image
-                          src={image}
-                          alt={product?.name}
-                          width={450}
-                          height={350}
-                        />
-                      ) : (
-                        <Image
-                          src={product?.image}
-                          alt={product?.name}
-                          width={250}
-                          height={250}
-                        />
-                      )}
-                      <label className="block py-2 my-2 mr-2 text-base font-bold ">
-                        <FaPlusCircle
-                          fontSize={21}
-                          className="text-4xl cursor-pointer"
-                        />
-                        <input
-                          type="file"
-                          onChange={uploadFileHandler}
-                          className="hidden"
-                        />
-                      </label>
-                    </div>
-                  )}
-                  {error && (
-                    <div className="justify-center">{error as string}</div>
-                  )}
-                  <div className="w-full">
-                    <div className="flex flex-col w-full mb-2">
-                      <FormRowInput
-                        type={"name"}
-                        title={"Name"}
-                        errors={errors}
-                        inputType={"text"}
-                        {...register("name")}
-                      />
-                    </div>
-                    <div className="flex flex-col mb-2">
-                      <FormRowInput
-                        type={"price"}
-                        title={"Price"}
-                        errors={errors}
-                        inputType={"text"}
-                        {...register("price")}
-                      />
-                    </div>
-                    <div className="flex flex-col mb-2">
-                      <FormRowInput
-                        type={"brand"}
-                        title={"Brand"}
-                        errors={errors}
-                        inputType={"text"}
-                        {...register("brand")}
-                      />
-                    </div>
-                    <div className="flex flex-col mb-2">
-                      <FormRowInput
-                        type={"category"}
-                        title={"Category"}
-                        errors={errors}
-                        inputType={"text"}
-                        {...register("category")}
-                      />
-                    </div>
-                    <div className="flex flex-col mb-2">
-                      <FormRowInput
-                        type={"countInStock"}
-                        title={"Count In Stock"}
-                        errors={errors}
-                        inputType={"number"}
-                        {...register("countInStock")}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <TextEditor value={value} setValue={setValue} />
-                <div className="flex items-center justify-center px-4 pt-4 my-4 border-t-2 border-current border-gray-200">
-                  <Button type="submit" color="dark">
-                    <span className="text-2xl font-thin font-mono">Update</span>
-                  </Button>
-                </div>
-              </form>
-            </FormContainer>
-          </section>
-        </main>
-      </AdminLayout>
-    )
+            <div>
+              <h1 className="p-5 mt-6 text-3xl font-thin md:text-5xl">
+                Edit Product
+              </h1>
+            </div>
+          </div>
+          <FormContainer>
+            <ProductForm
+              handleSubmit={handleSubmit}
+              submitHandler={submitHandler}
+              errors={errors}
+              error={error as string | Error | null}
+              isLoading={isLoadingUpdateProduct as boolean}
+              isLoadingImage={isLoadingUploadProdImage as boolean}
+              image={image as string}
+              product={product}
+              uploadFileHandler={uploadFileHandler}
+              register={register}
+              value={value as string}
+              setValue={
+                setValue as React.Dispatch<React.SetStateAction<string>>
+              }
+            />
+          </FormContainer>
+        </section>
+      </main>
+    </AdminLayout>
   );
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { slug } = context.params;
   const req = context.req;
-  const session: Session = await getSession({ req });
+  const session: Session = (await getSession({ req })) as Session;
 
   if (!session) {
     // If no token is present redirect user to the login page
@@ -242,7 +179,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const res = await fetch(`${NEXT_URL}/api/products/${slug}`);
+  const res = await fetch(`${NEXT_URL}/api/products/${context.params?.slug}`, {
+    headers: {
+      "Content-Type": "application/json",
+      cookie: context.req.headers.cookie,
+    } as HeadersInit,
+  });
   const data = await res.json();
 
   return {

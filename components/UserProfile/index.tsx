@@ -9,27 +9,32 @@ import Button from "@components/Button";
 import { UpdateUserForm, UpdateUserPassForm } from "@components/Forms";
 import Table from "@components/OrdersTable/OrdersTable";
 import EditImageModal from "./EditImageModal";
-import { UserInfoProps } from "@lib/types";
-// context
-import { useAuth } from "../../context/auth/AuthContext";
+import { OrderProps, UserInfoProps } from "@lib/types";
+
+// redux userApiSlice import
+import { useRequestPasswordResetMutation } from "../../features/users/userApiSlice";
 
 const UserProfileSection = ({
   refetch,
   user,
+  isLoadingUser,
 }: {
+  isLoadingUser: boolean;
   user: UserInfoProps;
   refetch(): void;
 }) => {
   const [opened, setOpened] = useState<boolean>(false);
   const [responseMessage, setResponseMessage] = useState<string>("");
-  const { state, requestPasswordReset } = useAuth();
+  const [requestPasswordReset] = useRequestPasswordResetMutation();
 
   const handleVerifyEmail = useCallback(async () => {
     try {
-      requestPasswordReset(state.user.email);
-      if (state?.success) {
-        setResponseMessage(state?.message);
-        toast.success(state?.message ?? "Email verification email sent", {
+      const response = await requestPasswordReset(
+        user.email as string
+      ).unwrap();
+      if (response?.success) {
+        setResponseMessage(response?.message);
+        toast.success(response?.message ?? "Email verification email sent", {
           position: toast.POSITION.TOP_CENTER,
         });
       }
@@ -40,13 +45,21 @@ const UserProfileSection = ({
     }
   }, []);
 
+  if (isLoadingUser) {
+    return (
+      <div className="flex h-[700px] items-center justify-center">
+        <Loader size="xl" variant="bars" />
+      </div>
+    );
+  }
+
   return (
     <>
       <section className="  mt-2 w-full  space-y-4 py-6 sm:px-4">
         <h1 className="text-xl font-semibold">Profile Settings</h1>
-        {!user?.emailVerified && (
+        {!user?.isEmailVerified && (
           <div className="mb-4 flex items-center justify-between rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200  px-4 py-2 shadow-md">
-            {!state.success ? (
+            {!(responseMessage.length > 0) ? (
               <>
                 <p className="font-poppins text-base">
                   <strong>Note:</strong> <span>Your email</span> (
@@ -73,7 +86,7 @@ const UserProfileSection = ({
             <div className="flex w-full items-center space-x-6 rounded-md bg-white dark:bg-gray-800  p-6 shadow-xl">
               <div className="mr-2">
                 <Avatar
-                  imageUrl={user?.image}
+                  imageUrl={user?.image as string}
                   classes="rounded-lg bg-white w-24 h-24"
                 />
               </div>
@@ -109,7 +122,9 @@ const UserProfileSection = ({
           <div className="mb-6 border-b-2 border-current border-gray-200">
             <h1 className="my-2 text-3xl font-thin md:text-4xl ">My Orders</h1>
           </div>
-          {user.orders?.length > 0 && <Table tableData={user.orders} />}
+          {(user?.orders as OrderProps[]) && (
+            <Table tableData={user.orders as OrderProps[]} />
+          )}
         </section>
         <section className=" flex w-full flex-col items-center justify-between space-y-4 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 p-6 shadow-xl md:flex-row md:space-y-0">
           <div className="flex flex-col items-center space-y-2 text-gray-400 md:flex-row md:space-y-0 md:space-x-4">
@@ -149,7 +164,7 @@ const UserProfileSection = ({
         opened={opened}
         setOpened={setOpened}
         refetch={refetch}
-        user={state.user}
+        user={user}
       />
     </>
   );

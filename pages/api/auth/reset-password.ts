@@ -13,15 +13,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "PUT") {
     const { token, password } = req.body;
 
-    const deletedToken = await prisma.token.findUnique({
+    const existingToken = await prisma.token.findUnique({
       where: { token: token },
     });
 
-    if (!deletedToken) {
+    if (!existingToken) {
       res.status(403).end();
       await prisma.$disconnect();
       return;
     }
+
+    const deletedToken = await prisma.token.delete({
+      where: { token: token },
+    });
 
     const user = await prisma.user.findUnique({
       where: { id: deletedToken.userId },

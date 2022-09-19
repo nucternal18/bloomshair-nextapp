@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import { Session } from "next-auth";
+import { Loader } from "@mantine/core";
 
 // context
 import { useOrder } from "../../../context/order/OrderContext";
@@ -15,20 +16,39 @@ import AdminLayout from "../../../Layout/AdminLayout/AdminLayout";
 
 import { NEXT_URL } from "../../../config";
 import { getUser } from "../../../lib/getUser";
+import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
+import { OrderProps, UserInfoProps } from "@lib/types";
+import useHasMounted from "@hooks/useHasMounted";
 
-function OrderScreen(props): JSX.Element {
+interface IOrderScreenProps {
+  order: OrderProps;
+  userInfo: UserInfoProps;
+}
+
+function OrderScreen(props: IOrderScreenProps): JSX.Element {
   const { order, userInfo } = props;
   const router = useRouter();
   const { state, orderDelivery, sendOrderConfirmationEmail } = useOrder();
+  const hasMounted = useHasMounted();
 
   const deliveryHandler = () => {
     orderDelivery(props.order);
     router.reload();
   };
 
+  if (!hasMounted) {
+    <AdminLayout>
+      <main className="md:ml-56 h-screen p-4 mx-auto overflow-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+        <div className="flex items-center justify-center">
+          <Loader size="xl" variant="bars" />
+        </div>
+      </main>
+    </AdminLayout>;
+  }
+
   return (
     <AdminLayout>
-      <main className="w-full p-4 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+      <main className="md:ml-56  p-4 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
         <section className="container px-2 pt-6 pb-8 mx-2 my-4  rounded max-w-screen-lg shadow-2xl md:mx-auto ">
           <div className="flex flex-col sm:flex-row items-center justify-between px-4 mb-4 border-b-2 border-current border-gray-200">
             <div className="mt-6">
@@ -42,14 +62,14 @@ function OrderScreen(props): JSX.Element {
               <Button
                 color="dark"
                 type="button"
-                onClick={() => sendOrderConfirmationEmail(order._id)}
+                onClick={() => sendOrderConfirmationEmail(order?.id as string)}
               >
                 Send Order Confirmation
               </Button>
             </div>
             <div>
               <h1 className="p-3 mt-6 text-sm md:text-2xl font-light">
-                Order Id: {order?._id}
+                Order Id: {order?.id}
               </h1>
             </div>
           </div>
@@ -63,16 +83,16 @@ function OrderScreen(props): JSX.Element {
                   </h2>
                 </div>
                 <div className="px-2">
-                  <p className="mb-1">{order.user.name}</p>
+                  <p className="mb-1">{order.user?.name}</p>
                   <p className="mb-1">
-                    <a href={`mailto:${order.user.email}`}>
-                      {order.user.email}
+                    <a href={`mailto:${order.user?.email}`}>
+                      {order.user?.email}
                     </a>
                   </p>
                   <p className="text-xl font-thin mb-1">
                     {order.shippingAddress?.address}{" "}
                     {order.shippingAddress?.city}{" "}
-                    {order.hippingAddress?.postalCode}{" "}
+                    {order.shippingAddress?.postalCode}{" "}
                     {order.shippingAddress?.country}
                   </p>
                 </div>
@@ -80,7 +100,8 @@ function OrderScreen(props): JSX.Element {
                   <p className="mr-2 font-thin">status:</p>
                   {order.isDelivered ? (
                     <p className="text-green-600">
-                      Delivered on {order.deliveredAt.slice(0, 10)}
+                      Delivered on{" "}
+                      {new Date(order.deliveredAt as Date).toLocaleString()}
                     </p>
                   ) : (
                     <p className="text-red-500">Not Delivered</p>
@@ -103,7 +124,8 @@ function OrderScreen(props): JSX.Element {
                     <p className="mr-2 font-thin">status:</p>
                     {order.isPaid ? (
                       <p className="text-green-600">
-                        Paid on {order.paidAt.slice(0, 10)}
+                        Paid on{" "}
+                        {new Date(order.paidAt as Date).toLocaleString()}
                       </p>
                     ) : (
                       <p className="text-red-500">Not Paid</p>
@@ -172,33 +194,35 @@ function OrderScreen(props): JSX.Element {
                           </tr>
                         </thead>
                         <tbody className="w-full">
-                          {order.orderItems.map((item, index) => (
-                            <tr
-                              key={index}
-                              className="h-20 text-base leading-none text-gray-800  hover:bg-gray-100 border-b border-t border-gray-100"
-                            >
-                              <td className="pl-4 text-left ">
-                                <Image
-                                  src={item.image}
-                                  alt={item.name}
-                                  width={50}
-                                  height={50}
-                                  className="rounded"
-                                />
-                              </td>
-                              <td className="pl-12 text-left font-thin">
-                                <Link href={`/product/${item.product}`}>
-                                  <a>{item.name}</a>
-                                </Link>
-                              </td>
-                              <td className="pl-12 text-left font-thin">
-                                {item.qty}
-                              </td>
-                              <td className="pl-12 text-left font-thin">
-                                £{item.price}
-                              </td>
-                            </tr>
-                          ))}
+                          {order?.orderItems?.map(
+                            (item: OrderProps, index: number) => (
+                              <tr
+                                key={index}
+                                className="h-20 text-base leading-none text-gray-800  hover:bg-gray-100 border-b border-t border-gray-100"
+                              >
+                                <td className="pl-4 text-left ">
+                                  <Image
+                                    src={item.image}
+                                    alt={item.name}
+                                    width={50}
+                                    height={50}
+                                    className="rounded"
+                                  />
+                                </td>
+                                <td className="pl-12 text-left font-thin">
+                                  <Link href={`/product/${item.product}`}>
+                                    <a>{item.name}</a>
+                                  </Link>
+                                </td>
+                                <td className="pl-12 text-left font-thin">
+                                  {item.qty}
+                                </td>
+                                <td className="pl-12 text-left font-thin">
+                                  £{item.price}
+                                </td>
+                              </tr>
+                            )
+                          )}
                         </tbody>
                       </table>
                     </div>
@@ -236,10 +260,11 @@ function OrderScreen(props): JSX.Element {
   );
 }
 
-export async function getServerSideProps(context) {
-  const { id } = context.params;
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
   const req = context.req;
-  const session: Session = await getSession({ req });
+  const session: Session = (await getSession({ req })) as Session;
 
   if (!session) {
     // If no token is present redirect user to the login page
@@ -261,18 +286,18 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const res = await fetch(`${NEXT_URL}/api/orders/${id}`, {
+  const res = await fetch(`${NEXT_URL}/api/orders/${context.params?.id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       cookie: context.req.headers.cookie,
-    },
+    } as HeadersInit,
   });
   const data = await res.json();
 
   return {
-    props: { order: data, orderId: id, userInfo: userData }, // will be passed to the page component as props
+    props: { order: data, orderId: context.params?.id, userInfo: userData }, // will be passed to the page component as props
   };
-}
+};
 
 export default OrderScreen;

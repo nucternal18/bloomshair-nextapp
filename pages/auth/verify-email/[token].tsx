@@ -2,11 +2,11 @@ import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
 
-import Layout from "../../../Layout/Layout/Layout";
+import Layout from "../../../Layout/MainLayout/Layout";
 
 const prisma = new PrismaClient();
 
-export default function EmailVerifyPage({ valid }) {
+export default function EmailVerifyPage({ valid }: { valid: boolean }) {
   return (
     <Layout title="Email verification">
       <main className="text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">

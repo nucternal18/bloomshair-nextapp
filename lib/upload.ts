@@ -1,6 +1,8 @@
 import { NEXT_URL } from "../config";
 
-export async function uploadImage(base64EncodedImage) {
+export async function uploadImage(
+  base64EncodedImage: string | ArrayBuffer | null
+) {
   try {
     const response = await fetch(`${NEXT_URL}/api/upload`, {
       method: "POST",

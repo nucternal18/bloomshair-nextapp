@@ -2,7 +2,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { GetServerSidePropsContext } from "next";
 
-import Layout from "../Layout/Layout/Layout";
+import Layout from "../Layout/MainLayout/Layout";
 import BottomPageContainer from "../components/BottomPageContainer";
 import { NEXT_URL } from "../config";
 import { ServiceCategory, ServiceProps } from "@lib/types";
@@ -10,11 +10,7 @@ import { ServiceCategory, ServiceProps } from "@lib/types";
 const url =
   "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1621805398/blooms_hair_products/AdobeStock_290145313_mbpudc.webp";
 
-function ServiceMenu({ services }): JSX.Element {
-  console.log(
-    "🚀 ~ file: service-menu.tsx ~ line 14 ~ ServiceMenu ~ services",
-    services
-  );
+function ServiceMenu({ services }: { services: ServiceProps[] }): JSX.Element {
   return (
     <Layout
       title="Service Menu"
@@ -100,7 +96,7 @@ function ServiceMenu({ services }): JSX.Element {
                     >
                       <div className="sm:px-4 py-2">{service.name}</div>
                       <div className=" sm:px-4 py-2">
-                        £{service.price.toFixed(2)}
+                        £{service.price?.toFixed(2)}
                       </div>
                     </div>
                   ))}
@@ -119,7 +115,7 @@ function ServiceMenu({ services }): JSX.Element {
                     >
                       <div className=" sm:px-4 py-2">{service.name}</div>
                       <div className=" sm:px-4 py-2">
-                        £{service.price.toFixed(2)}
+                        £{service.price?.toFixed(2)}
                       </div>
                     </div>
                   ))}
@@ -142,7 +138,7 @@ function ServiceMenu({ services }): JSX.Element {
                         £
                         {service.name === "Bleaching"
                           ? "P.O.T"
-                          : service.price.toFixed(2)}
+                          : service.price?.toFixed(2)}
                       </div>
                     </div>
                   ))}
@@ -161,7 +157,7 @@ function ServiceMenu({ services }): JSX.Element {
                     >
                       <div className="sm:px-4 py-2">{service.name}</div>
                       <div className=" sm:px-4 py-2">
-                        £{service.price.toFixed(2)}
+                        £{service.price?.toFixed(2)}
                       </div>
                     </div>
                   ))}

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 
 // Component
-import Layout from "../../Layout/Layout/Layout";
+import Layout from "../../Layout/MainLayout/Layout";
 import Button from "../../components/Button";
 import ErrorMessage from "../../components/ErrorMessage";
 import CheckoutItem from "../../components/CheckoutItem";
@@ -17,10 +17,13 @@ import {
 } from "../../context/cart/cartActions";
 import { NEXT_URL } from "../../config";
 
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { CartItemsProps } from "@lib/types";
+import { Session } from "next-auth";
 
-function Cart({ session }) {
+function Cart({
+  session,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const { state, dispatch } = useCart();
@@ -29,7 +32,7 @@ function Cart({ session }) {
     setMounted(true);
   }, []);
 
-  const removeFromCartHandler = (itemId) => {
+  const removeFromCartHandler = (itemId: string) => {
     dispatch(removeFromCart(itemId));
     router.reload();
   };
@@ -42,7 +45,7 @@ function Cart({ session }) {
     }
   };
 
-  const updateCartHandler = async (itemId, qty) => {
+  const updateCartHandler = async (itemId: string, qty: number) => {
     const res = await fetch(`${NEXT_URL}/api/products/${itemId}`, {
       method: "GET",
     });
@@ -211,7 +214,7 @@ function Cart({ session }) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const req = context.req;
-  const session = await getSession({ req });
+  const session: Session = (await getSession({ req })) as Session;
 
   return {
     props: {

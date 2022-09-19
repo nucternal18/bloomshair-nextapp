@@ -13,7 +13,13 @@ import Button from "./Button";
 import { NEXT_URL } from "../config";
 import { CartItemsProps } from "@lib/types";
 
-function CartContainer({ cartIsOpen, toggleCartDrawer }) {
+function CartContainer({
+  cartIsOpen,
+  toggleCartDrawer,
+}: {
+  cartIsOpen: boolean;
+  toggleCartDrawer: () => void;
+}) {
   const router = useRouter();
   const { state, dispatch } = useCart();
 
@@ -21,12 +27,12 @@ function CartContainer({ cartIsOpen, toggleCartDrawer }) {
   useEffect(() => {
     setMounted(true);
   }, []);
-  const removeFromCartHandler = (itemId) => {
+  const removeFromCartHandler = (itemId: string) => {
     dispatch(removeFromCart(itemId));
     router.reload();
   };
 
-  const updateCartHandler = async (id, qty) => {
+  const updateCartHandler = async (id: string, qty: number) => {
     const res = await fetch(`${NEXT_URL}/api/products/${id}`, {
       method: "GET",
     });

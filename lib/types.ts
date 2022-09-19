@@ -1,3 +1,20 @@
+import { UserCategory, UsersShippingAddress } from "@prisma/client";
+import { DehydratedState } from "@tanstack/react-query";
+import {
+  FieldErrorsImpl,
+  SubmitHandler,
+  UseFormHandleSubmit,
+  UseFormRegister,
+  FieldValues,
+} from "react-hook-form";
+
+export interface IForm<T extends FieldValues> {
+  handleSubmit: UseFormHandleSubmit<T>;
+  submitHandler: SubmitHandler<T>;
+  register: UseFormRegister<T>;
+  errors: FieldErrorsImpl<T>;
+}
+
 export type IFormData = {
   search?: string;
   price?: number;
@@ -15,6 +32,13 @@ export type IFormData = {
   country?: string;
   emailVerified?: boolean;
 };
+
+export interface IProductPageProps {
+  dehydratedState?: DehydratedState;
+  products: ProductProps[];
+  pages: number;
+  page: number;
+}
 
 export enum ServiceCategory {
   Gents_Hair = "Gents_Hair",
@@ -54,7 +78,26 @@ export type ProductProps = {
   slug?: string;
 };
 
+export interface AppError extends Error {
+  message: string;
+}
+
+export interface AuthState {
+  currentUser: UserInfoProps | null;
+  token: string | null;
+  error: Error | undefined;
+  image?: string;
+  categoryOptions?: UserCategory[];
+}
+
 export type UserInfoProps = {
+  category: UserCategory;
+  emailVerified: Date | null;
+  password: string | null;
+  shippingAddress: UsersShippingAddress | null;
+  refresh_token: string | null;
+  access_token: string | null;
+  id_token: string | null;
   id?: string;
   name?: string;
   image?: string;
@@ -62,9 +105,6 @@ export type UserInfoProps = {
   isAdmin?: boolean;
   email?: string;
   isEmailVerified?: boolean;
-  emailVerified?: string;
-  category?: string;
-  shippingAddress?: ShippingAddressProps;
   orders?: OrderProps[];
   createdAt?: Date;
   updatedAt?: Date;
@@ -100,12 +140,18 @@ export type CartItemsProps = {
 };
 
 export type OrderProps = {
+  product: string;
+  name: string;
+  image: string;
+  price: number;
+  countInStock: number;
+  qty: number;
   orderItems?: CartItemsProps[];
   user?: {
     name: string;
     email: string;
   };
-  shippingAddress?: ShippingAddressProps;
+  shippingAddress?: ShippingAddressProps | null;
   paymentMethod?: string;
   itemsPrice?: number;
   shippingPrice?: number;

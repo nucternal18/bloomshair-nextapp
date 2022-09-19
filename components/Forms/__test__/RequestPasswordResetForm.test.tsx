@@ -1,12 +1,13 @@
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import { mocked } from "ts-jest/utils";
 import RequestPasswordResetForm from "../RequestPasswordResetForm";
 
 describe("RequestPasswordResetForm", () => {
   it("Should render", () => {
     const submitHandler = jest.fn();
     const handleSubmit = jest.fn();
-    const error = "";
+    const error = {
+      email: { type: "", message: "password is required" },
+    };
     const register = jest.fn();
     render(
       <RequestPasswordResetForm

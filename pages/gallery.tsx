@@ -2,7 +2,7 @@ import { useState } from "react";
 import { GetServerSideProps } from "next";
 
 // Components
-import Layout from "../Layout/Layout/Layout";
+import Layout from "../Layout/MainLayout/Layout";
 import ImageCard from "../components/pictures/ImageCard";
 import Modal from "../components/Modal";
 // Server Url
@@ -10,7 +10,7 @@ import { NEXT_URL } from "../config";
 import { GalleryProps } from "@lib/types";
 
 function Gallery({ pictures }: { pictures: GalleryProps[] }): JSX.Element {
-  const [selectedImg, setSelectedImg] = useState(null);
+  const [selectedImg, setSelectedImg] = useState<string | null>(null);
   return (
     <Layout title="Gallery" description="Pictures of hair color and cut">
       <section className="flex w-full h-screen text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-scroll md:px-0">

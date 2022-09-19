@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { FaPlus } from "react-icons/fa";
 import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
+import { GetServerSidePropsContext } from "next";
 
 // context
 import { useOrder } from "@context/order/OrderContext";
@@ -15,12 +16,17 @@ import Button from "@components/Button";
 import Table from "@components/Tables/OrdersTable";
 
 // utils
-import { getUser } from "@lib/getUser";
-
 import { NEXT_URL } from "@config/index";
 import { CreateOrder } from "@components/DrawerContainers";
+import { OrderProps } from "@lib/types";
 
-const OrderListScreen = ({ orders, token }) => {
+const OrderListScreen = ({
+  orders,
+  token,
+}: {
+  orders: OrderProps[];
+  token: string;
+}) => {
   const router = useRouter();
   const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
@@ -40,7 +46,7 @@ const OrderListScreen = ({ orders, token }) => {
 
   return (
     <AdminLayout>
-      <main className="w-full h-screen p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+      <main className="md:ml-56 h-screen p-2 mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
         <section className=" px-2 sm:px-4 pt-6 pb-8">
           <div className="flex items-center justify-between mb-6 border-b-2 border-current border-gray-200">
             <div>
@@ -70,7 +76,7 @@ const OrderListScreen = ({ orders, token }) => {
           ) : (
             <div className="w-full sm:shadow-2xl sm:rounded-2xl">
               <Table
-                tableData={orders.length > 0 ? orders : []}
+                tableData={orders?.length > 0 ? orders : []}
                 show={show}
                 handleClose={handleClose}
                 handleShow={handleShow}
@@ -89,9 +95,9 @@ const OrderListScreen = ({ orders, token }) => {
   );
 };
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const req = context.req;
-  const session: Session = await getSession({ req });
+  const session: Session = (await getSession({ req })) as Session;
 
   if (!session) {
     // If no token is present redirect user to the login page
@@ -117,13 +123,9 @@ export async function getServerSideProps(context) {
     headers: {
       "Content-Type": "application/json",
       cookie: context.req.headers.cookie,
-    },
+    } as HeadersInit,
   });
   const data = await res.json();
-  console.log(
-    "🚀 ~ file: index.tsx ~ line 123 ~ getServerSideProps ~ data",
-    data
-  );
 
   return {
     props: { orders: data, token: context.req.headers.cookie }, // will be passed to the page component as props

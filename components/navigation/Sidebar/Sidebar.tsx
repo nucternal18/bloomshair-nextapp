@@ -16,12 +16,14 @@ import { FiLogOut, FiMoon, FiSun } from "react-icons/fi";
 import { useTheme } from "next-themes";
 import ActiveLink from "../../ActiveLink";
 import { BloomsLogo } from "../../SVG/BloomsLogo";
+import useHasMounted from "@hooks/useHasMounted";
 
 const Sidebar = () => {
   const router = useRouter();
   const [collapseShow, setCollapseShow] = useState<string>("hidden");
   const [mounted, setMounted] = useState<boolean>(false);
   const { theme, setTheme } = useTheme();
+  const hasMounted = useHasMounted();
 
   useEffect(() => {
     setMounted(true);
@@ -32,8 +34,12 @@ const Sidebar = () => {
     router.push("/");
   };
 
+  if (!hasMounted) {
+    return null;
+  }
+
   return (
-    <nav className="relative z-10 flex flex-wrap items-center my-2 ml-2 mr-2 sm:mr-0 drop-shadow-2xl dark:drop-shadow-none justify-between px-4 py-4 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 rounded-md sm:rounded-r-md md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-no-wrap md:overflow-hidden md:w-64">
+    <nav className="relative z-10 flex flex-wrap items-center sm:mr-0 drop-shadow-sm dark:drop-shadow-none justify-between px-4 py-4 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 rounded-md md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-no-wrap md:overflow-hidden md:w-56">
       <div className="flex flex-wrap items-center justify-between w-full px-0 mx-auto md:flex-col md:items-stretch md:min-h-full md:flex-no-wrap">
         {/* Toggler */}
         <div className="flex items-center gap-4 sm:gap-1">
@@ -49,7 +55,7 @@ const Sidebar = () => {
           </button>
 
           {/* Brand */}
-          {mounted && (
+          {hasMounted && (
             <Link href={"/"}>
               <a className="inline-block p-0 m-0 text-2xl font-bold cursor-pointer  ">
                 <BloomsLogo
@@ -60,23 +66,6 @@ const Sidebar = () => {
               </a>
             </Link>
           )}
-          <button
-            type="button"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className={`flex p-1  font-medium list-none ml-4 sm:ml-0  cursor-pointer lg:ml-0 lg:mb-0 lg:p-1 lg:px-1 focus:outline-none focus:ring-none focus:border-transparent`}
-          >
-            {theme === "light" ? (
-              <FiSun
-                fontSize={21}
-                className={`text-gray-900 dark:text-gray-200 font-bold `}
-              />
-            ) : (
-              <FiMoon
-                fontSize={21}
-                className={`text-gray-900 dark:text-gray-200 font-bold `}
-              />
-            )}
-          </button>
         </div>
 
         {/* Collapse */}
@@ -128,10 +117,10 @@ const Sidebar = () => {
           </form>
 
           {/* Divider */}
-          <hr className="my-4 md:min-w-full" />
+          <hr className="my-1 md:min-w-full" />
           {/* Navigation */}
 
-          <ul className="flex flex-col list-none md:flex-col md:min-w-full md:mb-4 ">
+          <ul className="flex flex-col list-none md:flex-col flex-grow md:min-w-full md:mb-4 ">
             <li className="items-center justify-center">
               <ActiveLink href="/admin">
                 <FaNewspaper className="mr-2 text-sm" />

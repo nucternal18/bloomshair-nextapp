@@ -1,9 +1,8 @@
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import { mocked } from "ts-jest/utils";
 import ProductCarousel from "./ProductCarousel";
 const products = [
   {
-    _id: "1",
+    id: "1",
     image: "./bloomslogo512x512.png",
     name: "product1",
     price: 1.0,

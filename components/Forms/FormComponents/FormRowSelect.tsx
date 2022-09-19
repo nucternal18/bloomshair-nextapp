@@ -1,3 +1,4 @@
+import { UserCategory } from "@prisma/client";
 import React from "react";
 import { FieldError } from "react-hook-form";
 import { FaCaretDown } from "react-icons/fa";
@@ -5,29 +6,26 @@ import { FaCaretDown } from "react-icons/fa";
 export type Ref = HTMLSelectElement;
 
 type SelectProps = {
-  name: string;
+  placeHolder: string;
+  label: string;
   type: string;
-  list: string[];
+  list: any[];
   errors: FieldError | undefined;
 };
 
 const FormRowSelect: React.FunctionComponent<
-  React.DetailedHTMLProps<
-    React.SelectHTMLAttributes<HTMLSelectElement>,
-    HTMLSelectElement
-  > &
-    SelectProps
+  SelectProps & React.RefAttributes<HTMLSelectElement>
 > = React.forwardRef<Ref, SelectProps>(
-  ({ list, errors, name, type, ...props }: SelectProps, ref) => (
+  ({ list, errors, placeHolder, label, type, ...props }: SelectProps, ref) => (
     <div className="flex flex-col ">
       <label htmlFor="jobType" className="block mb-2 text-base font-bold ">
-        {name}
+        {label}
       </label>
       <select
         className="form-select px-3 py-2 leading-tight text-gray-900 bg-white shadow appearance-none focus:ring-0 focus:outline-none  dark:bg-white"
         id={`${type}`}
         ref={ref}
-        placeholder={`${name}`}
+        placeholder={`${placeHolder}`}
         aria-label={`${type}-input`}
         aria-errormessage={`${type}-error`}
         name={`${type}`}

@@ -1,6 +1,15 @@
-import React, { forwardRef, ReactNode } from "react";
+import React, { forwardRef, HTMLProps, ReactNode } from "react";
 
 export type Ref = HTMLButtonElement;
+interface Colors {
+  primary: string;
+  success: string;
+  danger: string;
+  dark: string;
+  warning: string;
+  indigo: string;
+  yellow: string;
+}
 
 type ButtonProps = {
   disabled?: boolean;
@@ -8,18 +17,12 @@ type ButtonProps = {
   color: string;
   type: "submit" | "button";
   children?: ReactNode;
-  props?: any;
+  props?: HTMLProps<HTMLButtonElement>;
   buttonName?: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 };
 
-const Button: React.FunctionComponent<
-  React.DetailedHTMLProps<
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    HTMLButtonElement
-  > &
-    ButtonProps
-> = forwardRef<Ref, ButtonProps>(
+const Button = forwardRef<Ref, ButtonProps>(
   (
     {
       children,
@@ -38,7 +41,7 @@ const Button: React.FunctionComponent<
       disabled={disabled}
       aria-label={`${buttonName}-button`}
       type={type}
-      className={`${colors[color]} ${className} ${
+      className={`${colors[color as keyof Colors]} ${className} ${
         disabled ? "opacity-60 cursor-not-allowed" : ""
       }  text-white focus:outline-none shadow rounded px-4 py-2 font-medium transition flex items-center justify-center ease-in duration-200`}
     >
@@ -47,7 +50,7 @@ const Button: React.FunctionComponent<
   )
 );
 
-const colors = {
+const colors: Colors = {
   primary: `border-blue-700 border-2 text-blue-700 active:bg-blue-700 active:text-white hover:bg-blue-700 hover:text-white`,
   success: `border-green-700 border-2 text-green-700 active:bg-green-700 active:text-white`,
   danger: `border-red-600 border text-red-600 active:bg-red-600 active:text-white`,

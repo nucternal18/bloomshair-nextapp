@@ -4,23 +4,14 @@ import {
   UseFormHandleSubmit,
   UseFormRegister,
 } from "react-hook-form";
-import { UserInfoProps } from "../../lib/types";
+import { UserInfoProps, IForm } from "../../lib/types";
 import Button from "../Button";
 import FormCheckbox from "./FormComponents/FormCheckbox";
 import FormRowInput from "./FormComponents/FormRowInput";
 import FormRowSelect from "./FormComponents/FormRowSelect";
 
-interface ICreateAdminForm {
-  handleSubmit: UseFormHandleSubmit<Partial<UserInfoProps>>;
-  submitHandler: (data: Partial<UserInfoProps>) => void;
+interface ICreateAdminForm extends IForm<Partial<UserInfoProps>> {
   list: string[];
-  register: UseFormRegister<Partial<UserInfoProps>>;
-  errors: {
-    name?: FieldError;
-    email?: FieldError;
-    isAdmin?: FieldError;
-    category?: FieldError;
-  };
   buttonName: string;
   loading?: boolean;
 }
@@ -73,7 +64,8 @@ const CreateAdminForm = ({
           {...register("isAdmin")}
         />
         <FormRowSelect
-          name="Category"
+          placeHolder="Select Category"
+          label="Category"
           type="category"
           errors={errors && errors?.category}
           list={list}

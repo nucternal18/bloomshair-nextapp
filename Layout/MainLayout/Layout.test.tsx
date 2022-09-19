@@ -1,5 +1,5 @@
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import { mocked } from "ts-jest/utils";
+// import { mocked } from "ts-jest/utils";
 import About from "../../pages/about";
 import Layout from "./Layout";
 
@@ -53,7 +53,7 @@ describe("Layout", () => {
   it("Should render", async () => {
     render(
       <Layout title="Home" description="Home page">
-        {About}
+        <About />
       </Layout>
     );
     const main = screen.getByRole("main");
