@@ -74,7 +74,7 @@ export const getCartItems = () => {
   const cart =
     typeof window !== "undefined"
       ? localStorage.getItem("cartItems")
-        ? JSON.parse(window.localStorage.getItem("cartItems"))
+        ? JSON.parse(window.localStorage.getItem("cartItems") as string)
         : []
       : [];
 
