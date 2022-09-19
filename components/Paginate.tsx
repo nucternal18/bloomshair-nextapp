@@ -2,8 +2,6 @@ import React from "react";
 import Link from "next/link";
 import { NextRouter } from "next/router";
 import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
-import { useProduct } from "../context/product/productContext";
-import { ActionType } from "@context/product/productActions";
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { setPage, productSelector } from "../features/products/productSlice";
 
