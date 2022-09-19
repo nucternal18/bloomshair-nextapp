@@ -1,13 +1,16 @@
 import { getServerSideSitemapIndex, ISitemapField } from "next-sitemap";
 import { GetServerSideProps } from "next";
 import { NEXT_URL } from "@config/index";
+import { ProductProps } from "@lib/types";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   // Method to source urls from cms
   const response = await fetch(`${NEXT_URL}/api/products/allProducts`);
   const data = await response.json();
 
-  const fields = data.map((product) => `${NEXT_URL}/products/${product.slug}`);
+  const fields = data.map(
+    (product: ProductProps) => `${NEXT_URL}/products/${product.slug}`
+  );
 
   return getServerSideSitemapIndex(ctx, fields);
 };
