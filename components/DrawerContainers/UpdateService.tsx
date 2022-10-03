@@ -2,7 +2,6 @@ import { useCallback, useEffect } from "react";
 import { Drawer } from "@mantine/core";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-import { useService } from "../../context/serviceContext";
 import { ServiceProps } from "../../lib/types";
 import ServiceForm from "../Forms/CreateServiceForm";
 import { useAppSelector } from "app/hooks";
