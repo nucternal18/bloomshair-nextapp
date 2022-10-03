@@ -43,7 +43,7 @@ function CartContainer({
     });
     const data = await res.json();
     const items: CartItemsProps = {
-      product: data.product._id,
+      product: data.product.id,
       name: data.product.name,
       image: data.product.image,
       price: data.product.price,

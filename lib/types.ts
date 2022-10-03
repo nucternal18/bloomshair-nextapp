@@ -149,7 +149,7 @@ export type ShippingAddressProps = {
 };
 
 export type CartItemsProps = {
-  id: string;
+  id?: string;
   product: string;
   name: string;
   image: string;
