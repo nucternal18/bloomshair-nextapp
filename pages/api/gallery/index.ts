@@ -36,15 +36,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    const { imageUrl } = req.body;
+    const { image } = req.body;
 
-    if (!imageUrl) {
+    if (!image) {
       return res.status(400).send({ message: "Missing fields" });
     }
     try {
       await prisma.picture.create({
         data: {
-          image: imageUrl,
+          image: image,
           admin: { connect: { id: session.user?.id } },
         },
       });

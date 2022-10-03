@@ -4,8 +4,6 @@ import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
 import { Session } from "next-auth";
 
-import { getUser } from "../../../lib/getUser";
-
 const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -22,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const service = await prisma.service.findUnique({
         where: { id: id as string },
       });
-      if (service) res.status(200).json({ service });
+      if (service) res.status(200).json(service);
     } catch (error) {
       res
         .status(404)
@@ -39,7 +37,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(401).json({ message: "Not Authorized" });
       return;
     }
-    const userData = await getUser(req);
     /**
      * @desc check to see if logged in user is admin
      */
@@ -69,7 +66,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(401).json({ message: "Not Authorized" });
       return;
     }
-    const userData = await getUser(req);
+
     /**
      * @desc check to see if logged in user is admin
      */
@@ -77,14 +74,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(401).json({ message: "Not Authorized" });
       return;
     }
-    const { service } = req.body;
+    const { name, price, category } = req.body;
+
+    const existingService = await prisma.service.findUnique({
+      where: { id: id as string },
+    });
+
+    if (!existingService) {
+      res.status(404).json({ success: false, message: "Service not found" });
+      return;
+    }
+
     try {
       await prisma.service.update({
         where: { id: id as string },
         data: {
-          name: service.name,
-          price: service.price,
-          category: service.category,
+          name: name ? name : existingService.name,
+          price: price ? price : existingService.price,
+          category: category ? category : existingService.category,
         },
       });
       await prisma.$disconnect();

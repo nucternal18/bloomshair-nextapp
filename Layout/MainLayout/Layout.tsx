@@ -1,14 +1,16 @@
 import React from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { DefaultSeo } from "next-seo";
 
 import Navbar from "../../components/navigation/Navbar/Navbar";
 import Footer from "../../components/Footer";
+import { defaultSEO } from "next-seo.config";
 
 interface ILayout {
   title?: string;
   description?: string;
-  children: React.ReactNode;
+  children: React.PropsWithChildren<React.ReactNode>;
 }
 
 function Layout({ title, description, children }: ILayout): JSX.Element {
@@ -57,6 +59,7 @@ function Layout({ title, description, children }: ILayout): JSX.Element {
         <meta property="og:url" content="https://bloomshair.co.uk" />
         <meta name="theme-color" content="#000000" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <DefaultSeo {...defaultSEO} />
       </Head>
       <Navbar />
       <main

@@ -1,4 +1,5 @@
 import { UserCategory, UsersShippingAddress } from "@prisma/client";
+import type { NextApiRequest } from "next";
 import { DehydratedState } from "@tanstack/react-query";
 import {
   FieldErrorsImpl,
@@ -7,6 +8,23 @@ import {
   UseFormRegister,
   FieldValues,
 } from "react-hook-form";
+
+declare global {
+  interface Window {
+    paypal?: any;
+    Square?: any;
+    Snipcart: any;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace JSX {
+    interface IntrinsicElements {
+      "address-fields": any;
+      "snipcart-label": any;
+      "snipcart-input": any;
+    }
+  }
+}
 
 export interface IForm<T extends FieldValues> {
   handleSubmit: UseFormHandleSubmit<T>;
@@ -52,11 +70,9 @@ export type ServiceProps = {
   name?: string;
   price?: number;
   category?: ServiceCategory;
-  categoryOptions?: string[];
+
   createdAt?: string;
   updatedAt?: string;
-  sortBy?: string;
-  sortByOptions?: string[];
 };
 
 export type ReviewProps = {
@@ -75,10 +91,12 @@ export type ProductProps = {
   description?: string;
   rating?: number;
   numReviews?: number;
+  reviews?: ReviewProps[];
   slug?: string;
 };
 
 export interface AppError extends Error {
+  success: boolean;
   message: string;
 }
 
@@ -131,6 +149,7 @@ export type ShippingAddressProps = {
 };
 
 export type CartItemsProps = {
+  id: string;
   product: string;
   name: string;
   image: string;
@@ -172,3 +191,80 @@ export type GalleryProps = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type SnipcartWebhookEvent =
+  | "order.completed"
+  | "order.status.changed"
+  | "order.paymentStatus.changed"
+  | "order.trackingNumber.changed"
+  | "order.refund.created"
+  | "order.notification.created"
+  | "subscription.created"
+  | "subscription.cancelled"
+  | "subscription.paused"
+  | "subscription.resumed"
+  | "subscription.invoice.created"
+  | "shippingrates.fetch"
+  | "taxes.calculate"
+  | "customauth:customer_updated";
+
+export interface SnipcartWebhookContent {
+  discounts: { [key: string]: any };
+  items: { [key: string]: any };
+  shippingAddress: {
+    fullName: string;
+    firstName?: string;
+    name: string;
+    company?: string;
+    address1: string;
+    address2?: string;
+    fullAddress: string;
+    city: string;
+    country: string;
+    postalCode: string;
+    province: string;
+    phone?: string;
+  };
+  shippingRateUserDefinedId?: string;
+  [key: string]: any;
+}
+
+export type SnipcartShippingRate = {
+  /** Shipping method's price. */
+  cost: number;
+  /** Name or description of the shipping method. */
+  description: string;
+  /** Estimated time for delivery in days. */
+  guaranteedDaysToDelivery?: number;
+  /** Internal ID of shipping method, can be useful when using shipping fulfillment solutions. */
+  userDefinedId?: string;
+};
+
+export type SnipcartTaxItem = {
+  name: string;
+  amount: number;
+  rate: number;
+  numberForInvoice?: string;
+  includedInPrice?: boolean;
+  appliesOnShipping?: boolean;
+};
+
+export interface SnipcartRequest extends NextApiRequest {
+  headers: {
+    "x-snipcart-requesttoken"?: string;
+  };
+  body: {
+    eventName: SnipcartWebhookEvent;
+    mode: string;
+    createdOn: string;
+    content: SnipcartWebhookContent;
+  };
+}
+
+export interface ISyncProduct {
+  id: string;
+  external_id: string;
+  name: string;
+  variants: number;
+  synced: number;
+}

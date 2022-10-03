@@ -17,7 +17,7 @@ import Spinner from "../Spinner";
 interface IImageUploadFormProps {
   uploadFileHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
   uploading: boolean;
-  error: string | Error | null;
+  error?: string | Error | null;
   image: string | null;
 }
 

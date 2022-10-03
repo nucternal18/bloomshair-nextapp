@@ -7,17 +7,19 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 // Components
 import ErrorMessage from "../../ErrorMessage";
-import Spinner from "../../Spinner";
 import Square from "../../square/Square";
 import PaypalButton from "../../PayPalButton";
 
 // context
-import { useCart } from "../../../context/cart/cartContext";
+// redux
 import {
-  clearCart,
   savePaymentMethod,
-} from "../../../context/cart/cartActions";
-import { useOrder } from "../../../context/order/OrderContext";
+  clearCart,
+  cartSelector,
+} from "features/cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+
+import { useAddOrderMutation } from "features/orders/ordersApiSlice";
 import { CartItemsProps, UserInfoProps } from "@lib/types";
 
 const CheckOutContainer = ({
@@ -30,13 +32,13 @@ const CheckOutContainer = ({
   handleStepChange(arg0: string): void;
 }) => {
   const router = useRouter();
-  const { state: cartState, dispatch } = useCart();
+  const dispatch = useAppDispatch();
   const {
     cart: { shippingAddress, cartItems, paymentMethod },
-  } = cartState;
+  } = useAppSelector(cartSelector);
+  const [addOrder, { isLoading, isSuccess, isError, error }] =
+    useAddOrderMutation();
 
-  const { state: orderState, createOrder } = useOrder();
-  const { success, error, order } = orderState;
   const wrapper = useRef<HTMLDivElement>(null);
 
   /**
@@ -83,12 +85,6 @@ const CheckOutContainer = ({
     }
   }, [cartItems]);
 
-  // useEffect(() => {
-  //   if (error) {
-  //     toast.error(error);
-  //   }
-  // }, [error]);
-
   /**
    * @description Creates a paypal order and returns the paypal orderID
    * @param data
@@ -132,15 +128,15 @@ const CheckOutContainer = ({
    * @param actions
    * @returns
    */
-  const onApprove = (
+  const onApprove = async (
     data: any,
     actions: { order: { capture: () => Promise<any> } }
   ) => {
     return actions.order
       .capture()
-      .then(function async(details) {
-        createOrder(
-          {
+      .then(async function (details) {
+        const response = await addOrder({
+          newOrder: {
             orderItems: cartItems,
             shippingAddress: shippingAddress,
             paymentMethod,
@@ -155,16 +151,19 @@ const CheckOutContainer = ({
             countInStock: 0,
             qty: 0,
           },
-          details
-        );
-        toast.success("Payment Successful");
+          paymentResult: details,
+        }).unwrap();
+        if (response.success)
+          toast.success(response.message ?? "Payment Successful", {
+            position: toast.POSITION.TOP_CENTER,
+          });
         handleStepChange("next");
         dispatch(clearCart());
       })
       .catch((err) => toast.error("Something went wrong." + err));
   };
 
-  const onSquarePayment = (data: any) => {
+  const onSquarePayment = async (data: any) => {
     const paymentResult = {
       id: data.id,
       status: data.status,
@@ -173,8 +172,8 @@ const CheckOutContainer = ({
       email_address: userInfo.email as string,
     };
 
-    createOrder(
-      {
+    const response = await addOrder({
+      newOrder: {
         orderItems: cartItems,
         shippingAddress: shippingAddress,
         paymentMethod,
@@ -189,9 +188,12 @@ const CheckOutContainer = ({
         countInStock: 0,
         qty: 0,
       },
-      paymentResult
-    );
-    toast.success("Payment Successful");
+      paymentResult,
+    }).unwrap();
+    if (response.success)
+      toast.success(response.message ?? "Payment Successful", {
+        position: toast.POSITION.TOP_CENTER,
+      });
     handleStepChange("next");
     dispatch(clearCart());
   };
@@ -350,33 +352,35 @@ const CheckOutContainer = ({
                         </tr>
                       </thead>
                       <tbody className="w-full">
-                        {cartItems.map((item, index) => (
-                          <tr
-                            key={index}
-                            className="h-20 text-base leading-none border-b border-t border-gray-100"
-                          >
-                            <td className="pl-4 text-left ">
-                              <Image
-                                src={item.image}
-                                alt={item.name}
-                                width={50}
-                                height={50}
-                                className="rounded"
-                              />
-                            </td>
-                            <td className="pl-12 text-left font-thin">
-                              <Link href={`/product/${item.product}`}>
-                                <a>{item.name}</a>
-                              </Link>
-                            </td>
-                            <td className="pl-12 text-left font-thin">
-                              {item.qty}
-                            </td>
-                            <td className="pl-12 text-left font-thin">
-                              £{item.price}
-                            </td>
-                          </tr>
-                        ))}
+                        {cartItems.map(
+                          (item: CartItemsProps, index: number) => (
+                            <tr
+                              key={index}
+                              className="h-20 text-base leading-none border-b border-t border-gray-100"
+                            >
+                              <td className="pl-4 text-left ">
+                                <Image
+                                  src={item.image}
+                                  alt={item.name}
+                                  width={50}
+                                  height={50}
+                                  className="rounded"
+                                />
+                              </td>
+                              <td className="pl-12 text-left font-thin">
+                                <Link href={`/product/${item.product}`}>
+                                  <a>{item.name}</a>
+                                </Link>
+                              </td>
+                              <td className="pl-12 text-left font-thin">
+                                {item.qty}
+                              </td>
+                              <td className="pl-12 text-left font-thin">
+                                £{item.price}
+                              </td>
+                            </tr>
+                          )
+                        )}
                       </tbody>
                     </table>
                   </div>

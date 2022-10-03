@@ -123,7 +123,7 @@ const OrderModal = ({ handleClose, tableData, show }: IOrderModal) => {
           <tbody className=" block px-1 md:px-0 pb-4  md:table-row-group">
             {tableData?.map((item) => (
               <tr
-                key={item.product}
+                key={item.id}
                 className="bg-white text-gray-900 dark:text-gray-100 shadow-2xl md:shadow-none dark:bg-gray-700 rounded md:rounded-none overflow-hidden sm:py-2  mb-2 md:mb-0 md:border-none block md:table-row"
               >
                 <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
@@ -132,7 +132,7 @@ const OrderModal = ({ handleClose, tableData, show }: IOrderModal) => {
                   </span>
                   <div className="flex items-center justify-center">
                     <div className="text-sm font-medium text-ellipsis overflow-hidden">
-                      {item.product}
+                      {item.id}
                     </div>
                   </div>
                 </td>

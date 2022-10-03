@@ -10,14 +10,25 @@ interface ITable {
   tableData: OrderProps[];
 }
 
+const tableHeaders: Array<string> = [
+  "Order ID",
+  "Date",
+  "Total",
+  "Paid",
+  "Delivered",
+  "Details",
+];
 const Table = ({ tableData }: ITable) => {
   return (
-    <table className="w-full sm:rounded-2xl  md:table">
-      <thead className="bg-gray-50 dark:bg-teal-500  hidden md:table-header-group">
-        <tr className="md:table-row absolute  -top-full font-mono md:top-auto gap-2 -left-full md:left-auto  md:relative">
-          <th
-            scope="col"
-            className="
+    <div className="relative w-full overflow-x-auto">
+      <table className="w-full sm:rounded-xl  table">
+        <thead className="bg-gray-50 dark:bg-teal-500  table-header-group">
+          <tr className="table-row font-mono top-auto gap-2 left-auto  relative">
+            {tableHeaders.map((header, index) => (
+              <th
+                key={`${header}-${index}`}
+                scope="col"
+                className="
                   px-3
                   py-3
                   text-left 
@@ -26,135 +37,42 @@ const Table = ({ tableData }: ITable) => {
                   dark:text-gray-100
                   uppercase
                   tracking-wider
-                  md:table-cell
+                  table-cell
                 "
-          >
-            ID
-          </th>
-
-          <th
-            scope="col"
-            className="
-                  px-3
-                  py-3
-                  text-left 
-                  font-medium
-                  text-gray-800
-                  dark:text-gray-100
-                  uppercase
-                  tracking-wider
-                  md:table-cell
-                "
-          >
-            DATE
-          </th>
-          <th
-            scope="col"
-            className="
-                  px-3
-                  py-3
-                  text-left 
-                  font-medium
-                  text-gray-800
-                  dark:text-gray-100
-                  uppercase
-                  tracking-wider
-                  md:table-cell
-                "
-          >
-            TOTAL
-          </th>
-          <th
-            scope="col"
-            className="
-                  px-3
-                  py-3
-                  text-left 
-                  font-medium
-                  text-gray-800
-                  dark:text-gray-100
-                  uppercase
-                  tracking-wider
-                  md:table-cell
-                "
-          >
-            PAID
-          </th>
-          <th
-            scope="col"
-            className="
-                  px-3
-                  py-3
-                  text-left 
-                  font-medium
-                  text-gray-800
-                  dark:text-gray-100
-                  uppercase
-                  tracking-wider
-                  md:table-cell
-                "
-          >
-            DELIVERED
-          </th>
-          <th
-            scope="col"
-            className="
-                  px-3
-                  py-3
-                  text-left 
-                  font-medium
-                  text-gray-800
-                  dark:text-gray-100
-                  uppercase
-                  tracking-wider
-                  md:table-cell
-                "
-          >
-            DETAILS
-          </th>
-        </tr>
-      </thead>
-      <tbody className=" block px-1 md:px-0  md:table-row-group">
-        {tableData?.map((item) => (
-          <tr
-            key={item.id}
-            className="bg-white text-gray-900 dark:text-gray-100 shadow-2xl md:shadow-none dark:bg-gray-700 rounded md:rounded-none overflow-hidden  mb-2 md:mb-0 md:border-none block md:table-row"
-          >
-            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
-              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
-                ID
-              </span>
-              <div className="flex items-center">
-                <div className="text-sm font-medium text-ellipsis overflow-hidden">
-                  {item.id}
+              >
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="px-0  table-row-group">
+          {tableData?.map((item) => (
+            <tr
+              key={item.id}
+              className="bg-white text-gray-900 dark:text-gray-100 shadow-none dark:bg-gray-700  rounded-none overflow-hidden  mb-0 border-none table-row"
+            >
+              <td className="p-2  items-center text-left whitespace-nowrap table-cell gap-2">
+                <div className="flex items-center">
+                  <div className="text-sm font-medium text-ellipsis overflow-hidden">
+                    {item.id}
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
-              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
-                DATE
-              </span>
-              <div className="flex items-center">
-                <div className="text-sm font-medium text-ellipsis overflow-hidden">
-                  {new Date(item.createdAt as Date).toLocaleDateString()}
+              </td>
+              <td className="p-2  items-center text-left whitespace-nowrap table-cell gap-2">
+                <div className="flex items-center">
+                  <div className="text-sm font-medium text-ellipsis overflow-hidden">
+                    {new Date(item.createdAt as Date).toLocaleDateString()}
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
-              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
-                TOTAL PRICE
-              </span>
-              <div className="flex items-center">
-                <div className="text-sm font-medium text-ellipsis overflow-hidden">
-                  £{item.totalPrice}
+              </td>
+              <td className="p-2  items-center text-left whitespace-nowrap table-cell gap-2">
+                <div className="flex items-center">
+                  <div className="text-sm font-medium text-ellipsis overflow-hidden">
+                    £{item.totalPrice}
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
-              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
-                PAID
-              </span>
-              <div className="flex items-center">
+              </td>
+              <td className="p-2  items-center text-left whitespace-nowrap table-cell gap-2">
                 <div className="text-sm font-medium text-ellipsis overflow-hidden">
                   {item.isPaid ? (
                     new Date(item.paidAt as Date).toLocaleDateString()
@@ -162,46 +80,38 @@ const Table = ({ tableData }: ITable) => {
                     <FaTimes className="text-red-500" />
                   )}
                 </div>
-              </div>
-            </td>
-            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
-              <span className="inline-block w-1/3 md:hidden font-bold text-teal-500 font-mono">
-                DELIVERED
-              </span>
-              <div className="flex items-center">
-                <div className="text-sm font-medium text-ellipsis overflow-hidden">
+              </td>
+              <td className="p-2  items-center text-center whitespace-nowrap table-cell gap-2">
+                <div className="text-sm font-medium text-ellipsis  overflow-hidden">
                   {item.isDelivered ? (
                     new Date(item.deliveredAt as Date).toLocaleDateString()
                   ) : (
-                    <FaTimes className="text-red-500 " />
+                    <FaTimes fontSize={24} className="text-red-500  " />
                   )}
                 </div>
-              </div>
-            </td>
+              </td>
 
-            <td className="p-2 flex items-center text-left whitespace-nowrap md:table-cell gap-2">
-              <span className="inline-block w-1/3 md:hidden uppercase font-bold text-teal-500 font-mono">
-                DETAILS
-              </span>
-              <span
-                className="
+              <td className="p-2  items-center text-left whitespace-nowrap table-cell gap-2">
+                <span
+                  className="
                     px-2
                     inline-flex
                     text-xs
                     leading-5
                   "
-              >
-                <Button type="button" color="dark">
-                  <Link href={`/orders/${item.id}`}>
-                    <a>Details</a>
-                  </Link>
-                </Button>
-              </span>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+                >
+                  <Button type="button" color="dark">
+                    <Link href={`/orders/${item.id}`}>
+                      <a>Details</a>
+                    </Link>
+                  </Button>
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

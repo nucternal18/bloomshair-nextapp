@@ -12,16 +12,15 @@ type OrdersOrderItems {
   image   String
   name    String
   price   Float
-  product String @db.ObjectId
   qty     Int
 }
 
 type OrdersPaymentResult {
   email_address String
-  id            String
   status        String
   orderId      String
-  update_time   String
+  completionDate  String
+  shippingRateUserDefinedId String
 }
 
 type OrdersShippingAddress {
@@ -49,7 +48,7 @@ type UsersShippingAddress {
   postalCode String
 }
 
-model Order {
+model Orders {
   id              String                @id @default(auto()) @map("_id") @db.ObjectId
   createdAt       DateTime              @default(now())
   deliveredAt     DateTime?             @db.Date
@@ -65,10 +64,8 @@ model Order {
   taxPrice        Float
   totalPrice      Float
   updatedAt       DateTime              @updatedAt
-  userId            String                @db.ObjectId @unique
+  userId       String            @db.ObjectId 
   user User @relation(fields: [userId], references: [id])
-
-  @@map("orders")
 }
 
 model Picture {
@@ -140,7 +137,7 @@ model User {
   shippingAddress   UsersShippingAddress?
   services          Service?
   tokens            Token?
-  orders            Order[]
+  orders            Orders[]
   picture           Picture[]
   products          Product[]
   refresh_token     String?         @db.String

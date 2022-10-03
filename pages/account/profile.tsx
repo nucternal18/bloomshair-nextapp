@@ -23,16 +23,12 @@ type ProfileProps = {
 };
 
 function Profile({ userData }: ProfileProps): JSX.Element {
-  const router = useRouter();
   const hasMounted = useHasMounted();
-  const { data, isLoading: isLoadingUser } = useGetUserByIdQuery(
-    userData.id as string
-  );
-
-  const refetch = () => {
-    // reload the page to refresh the data
-    router.replace(router.asPath);
-  };
+  const {
+    data,
+    isLoading: isLoadingUser,
+    refetch,
+  } = useGetUserByIdQuery(userData.id as string);
 
   if (!hasMounted) {
     return (

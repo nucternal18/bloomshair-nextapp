@@ -40,7 +40,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     try {
-      await prisma.order.update({
+      await prisma.orders.update({
         where: { id: id as string },
         data: { isDelivered: true, deliveredAt: new Date() },
       });

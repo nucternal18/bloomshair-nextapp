@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Key, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 
@@ -9,12 +9,14 @@ import ErrorMessage from "../../components/ErrorMessage";
 import CheckoutItem from "../../components/CheckoutItem";
 
 // Context
-import { useCart } from "../../context/cart/cartContext";
+
+import { useAppDispatch, useAppSelector } from "app/hooks";
 import {
   removeFromCart,
   clearCart,
   addToCart,
-} from "../../context/cart/cartActions";
+  cartSelector,
+} from "features/cart/cartSlice";
 import { NEXT_URL } from "../../config";
 
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
@@ -25,17 +27,18 @@ function Cart({
   session,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { cart } = useAppSelector(cartSelector);
   const [mounted, setMounted] = useState(false);
-  const { state, dispatch } = useCart();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const removeFromCartHandler = (itemId: string) => {
+  const removeFromCartHandler = useCallback((itemId: string) => {
     dispatch(removeFromCart(itemId));
     router.reload();
-  };
+  }, []);
 
   const checkoutHandler = () => {
     if (!session) {
@@ -84,7 +87,7 @@ function Cart({
             <div className="flex justify-center w-full">
               <div className="grid grid-cols-1 px-1 md:gap-2 lg:gap-4 md:px-1 sm:grid-cols-2 md:grid-cols-3 w-full">
                 <div className=" md:col-span-2">
-                  {state.cart.cartItems?.length === 0 ? (
+                  {cart.cartItems?.length === 0 ? (
                     <ErrorMessage variant="default">
                       Your cart is empty
                     </ErrorMessage>
@@ -93,15 +96,17 @@ function Cart({
                       <div className="flex justify-between p-2 border-b">
                         <h1 className="text-2xl font-normal">Cart Items</h1>
                       </div>
-                      {state.cart.cartItems?.map((item) => (
-                        <div key={item.product}>
-                          <CheckoutItem
-                            item={item}
-                            updateCartHandler={updateCartHandler}
-                            removeFromCartHandler={removeFromCartHandler}
-                          />
-                        </div>
-                      ))}
+                      {cart.cartItems?.map(
+                        (item: { product: Key | null | undefined }) => (
+                          <div key={item.product}>
+                            <CheckoutItem
+                              item={item}
+                              updateCartHandler={updateCartHandler}
+                              removeFromCartHandler={removeFromCartHandler}
+                            />
+                          </div>
+                        )
+                      )}
                     </div>
                   )}
                   <div className="flex flex-col justify-around mb-2 md:items-center md:flex-row">
@@ -110,7 +115,7 @@ function Cart({
                         type="button"
                         color="dark"
                         className="w-full mb-2 md:w-40"
-                        disabled={state.cart.cartItems?.length === 0}
+                        disabled={cart.cartItems?.length === 0}
                         onClick={() => dispatch(clearCart())}
                       >
                         Clear Cart
@@ -121,7 +126,7 @@ function Cart({
                         type="button"
                         color="dark"
                         className="w-full mb-2 md:w-40 md:mr-1"
-                        disabled={state.cart.cartItems?.length === 0}
+                        disabled={cart.cartItems?.length === 0}
                         onClick={() => router.reload()}
                       >
                         Update Basket
@@ -151,9 +156,12 @@ function Cart({
                           <p className="font-thin">Subtotal:</p>
                           <p className="font-medium">
                             £
-                            {state.cart.cartItems
+                            {cart.cartItems
                               ?.reduce(
-                                (acc, item) => acc + item.qty * item.price,
+                                (
+                                  acc: number,
+                                  item: { qty: number; price: number }
+                                ) => acc + item.qty * item.price,
                                 0
                               )
                               .toFixed(2)}
@@ -163,8 +171,9 @@ function Cart({
                           <p className="font-thin">Items:</p>
                           <p className="font-medium">
                             {
-                              +state.cart.cartItems?.reduce(
-                                (acc, item) => acc + item.qty,
+                              +cart.cartItems?.reduce(
+                                (acc: any, item: { qty: any }) =>
+                                  acc + item.qty,
                                 0
                               )
                             }
@@ -182,9 +191,12 @@ function Cart({
                           <span className="font-medium text-lg">
                             {" "}
                             £
-                            {state.cart.cartItems
+                            {cart.cartItems
                               ?.reduce(
-                                (acc, item) => acc + item.qty * item.price,
+                                (
+                                  acc: number,
+                                  item: { qty: number; price: number }
+                                ) => acc + item.qty * item.price,
                                 0
                               )
                               .toFixed(2)}
@@ -194,7 +206,7 @@ function Cart({
                           type="button"
                           color="dark"
                           className="w-full"
-                          disabled={state.cart.cartItems?.length === 0}
+                          disabled={cart.cartItems?.length === 0}
                           onClick={checkoutHandler}
                         >
                           Proceed To Checkout

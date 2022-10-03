@@ -4,9 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { GetServerSideProps } from "next";
 
-// context
-import { useOrder } from "../../context/order/OrderContext";
-
 // components
 import ErrorMessage from "../../components/ErrorMessage";
 import Button from "../../components/Button";
@@ -15,6 +12,7 @@ import Layout from "../../Layout/MainLayout";
 import { NEXT_URL } from "../../config";
 import { Card } from "../../components/Card";
 import { OrderProps } from "@lib/types";
+import { Session } from "next-auth";
 
 const OrderDetails = ({ order }: { order: OrderProps }) => {
   const router = useRouter();
@@ -208,7 +206,7 @@ const OrderDetails = ({ order }: { order: OrderProps }) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const req = context.req;
-  const session = await getSession({ req });
+  const session: Session = (await getSession({ req })) as Session;
 
   if (!session) {
     // If no token is present redirect user to the login page
@@ -220,40 +218,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const [userRes, orderRes] = await Promise.all([
-    fetch(`${NEXT_URL}/api/users/user`, {
+  const orderRes = await fetch(
+    `${NEXT_URL}/api/orders/myOrders/${context.params?.id}`,
+    {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         cookie: context.req.headers.cookie,
       } as HeadersInit,
-    }),
-    fetch(`${NEXT_URL}/api/orders/myOrders/${context.params?.id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        cookie: context.req.headers.cookie,
-      } as HeadersInit,
-    }),
-  ]);
+    }
+  );
 
-  const [userData, orderData] = await Promise.all([
-    userRes.json(),
-    orderRes.json(),
-  ]);
-
-  if (!userData) {
-    return {
-      redirect: {
-        destination: "/auth/signin",
-        permanent: false,
-      },
-    };
-  }
+  const orderData = await orderRes.json();
 
   return {
     props: {
-      userInfo: userData,
       order: orderData,
       orderId: context.params?.id,
     }, // will be passed to the page component as props

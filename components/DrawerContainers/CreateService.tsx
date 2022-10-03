@@ -1,23 +1,27 @@
+import { useCallback } from "react";
 import { Drawer } from "@mantine/core";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useService } from "../../context/serviceContext";
-import { IFormData, ServiceProps } from "../../lib/types";
+import { toast } from "react-toastify";
+
+import { ServiceProps } from "../../lib/types";
 import ServiceForm from "../Forms/CreateServiceForm";
+import { useAppSelector } from "app/hooks";
+import { hairServiceSelector } from "features/hairServices/hairServiceSlice";
+import { useCreateServiceMutation } from "features/hairServices/hairServicesApiSlice";
 
 interface ICreateHairService {
   isOpenCreateDrawer: boolean;
   setTsOpenCreateDrawer: React.Dispatch<React.SetStateAction<boolean>>;
-  token: string;
-  refreshData: () => void;
+  refetch: () => void;
 }
 
 const CreateService = ({
   isOpenCreateDrawer,
   setTsOpenCreateDrawer,
-  token,
-  refreshData,
+  refetch,
 }: ICreateHairService) => {
-  const { state, createService } = useService();
+  const { category, categoryOptions } = useAppSelector(hairServiceSelector);
+  const [createService] = useCreateServiceMutation();
   const {
     register,
     handleSubmit,
@@ -27,16 +31,30 @@ const CreateService = ({
     defaultValues: {
       name: "",
       price: 0,
-      category: state?.service?.category,
+      category: category,
     },
   });
 
-  const submitHandler: SubmitHandler<Partial<ServiceProps>> = (data): void => {
-    createService(data as ServiceProps, token);
-    reset();
-    setTsOpenCreateDrawer(false);
-    refreshData();
-  };
+  const submitHandler: SubmitHandler<Partial<ServiceProps>> = useCallback(
+    async (data) => {
+      try {
+        const response = await createService(data as ServiceProps).unwrap();
+        reset();
+        setTsOpenCreateDrawer(false);
+        refetch();
+        if (response.success) {
+          toast.success(response.message ?? "Service Created", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        }
+      } catch (error: any) {
+        toast.error(error.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      }
+    },
+    []
+  );
 
   return (
     <div>
@@ -53,7 +71,7 @@ const CreateService = ({
           register={register}
           errors={errors}
           submitHandler={submitHandler}
-          list={state?.service?.categoryOptions as string[]}
+          list={categoryOptions as string[]}
           buttonName="Add Service"
         />
       </Drawer>

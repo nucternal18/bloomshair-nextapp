@@ -29,7 +29,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      */
 
     try {
-      const order = await prisma.order.findUnique({
+      const order = await prisma.orders.findUnique({
         where: { id: id as string },
         select: {
           id: true,
@@ -58,6 +58,32 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
       await prisma.$disconnect();
       res.status(200).json(order);
+    } catch (error: any) {
+      res
+        .status(404)
+        .json({ success: false, message: "Order not found", error });
+    }
+  } else if (req.method === "DELETE") {
+    /**
+     * @desc Delete an order
+     * @route DELETE /api/order/myOrders/:id
+     * @access Private
+     */
+
+    const existingOrder = await prisma.orders.findUnique({
+      where: { id: id as string },
+    });
+
+    if (!existingOrder) {
+      res.status(404).json({ success: false, message: "Order not found" });
+      return;
+    }
+    try {
+      const order = await prisma.orders.delete({
+        where: { id: id as string },
+      });
+      await prisma.$disconnect();
+      res.status(200).json({ success: true, message: "Order deleted" });
     } catch (error: any) {
       res
         .status(404)

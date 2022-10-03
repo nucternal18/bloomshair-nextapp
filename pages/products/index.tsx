@@ -4,22 +4,23 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useEffect } from "react";
 
 // Components
-import Paginate from "../../components/Paginate";
+import Paginate from "@components/Paginate";
 import Layout from "../../Layout/MainLayout/Layout";
-import ProductCard from "../../components/ProductCard";
-import SearchBox from "../../components/SearchBox";
-import Spinner from "../../components/Spinner";
+import ProductCard from "@components/ProductCard";
+import SearchBox from "@components/SearchBox";
 
 // config: default URL import
-import { NEXT_URL } from "../../config";
+import { NEXT_URL } from "@config/index";
 
 // Hooks
-import useOutsideClick from "../../hooks/useOutsideClick";
+import useOutsideClick from "@hooks/useOutsideClick";
+import useHasMounted from "@hooks/useHasMounted";
 
 // context: productContext
 import { ProductProps } from "@lib/types";
 import { useAppSelector } from "../../app/hooks";
 import { productSelector } from "../../features/products/productSlice";
+import { Loader } from "@mantine/core";
 
 interface IFormData {
   search: string;
@@ -28,15 +29,12 @@ interface IFormData {
 type ProductPageProps = {
   products: ProductProps[];
   pages: number;
-  isLoading: boolean;
+  isLoading?: boolean;
 };
 
-function Products({
-  products,
-  pages,
-  isLoading,
-}: ProductPageProps): JSX.Element {
+function Products({ products, pages }: ProductPageProps): JSX.Element {
   const router = useRouter();
+  const hasMounted = useHasMounted();
   const { ref, isVisible, setIsVisible } = useOutsideClick();
   const { page } = useAppSelector(productSelector);
 
@@ -71,26 +69,14 @@ function Products({
     return () => subscribe.unsubscribe();
   }, [watch, page]);
 
-  if (isLoading) {
+  if (!hasMounted) {
     return (
-      <Layout title="Products" description="list of hair care products">
-        <main className="relative w-full mx-auto text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-hidden">
-          <div className="flex mt-1 justify-center py-4 ">
-            <SearchBox
-              register={register}
-              suggestions={products}
-              setIsVisible={setIsVisible}
-              isVisible={isVisible}
-              documentRef={ref}
-            />
-          </div>
-          <div className="flex justify-center items-center h-screen">
-            <Spinner message="Loading products..." />
-          </div>
-        </main>
-      </Layout>
+      <div>
+        <Loader size="xl" variant="dots" />
+      </div>
     );
   }
+
   if (products.length < 1) {
     return (
       <Layout title="Products" description="list of hair care products">

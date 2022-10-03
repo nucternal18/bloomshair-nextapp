@@ -1,10 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import { PrismaClient } from "@prisma/client";
+import { Category, PrismaClient } from "@prisma/client";
 import { Session } from "next-auth";
-
-import { getUser } from "../../../lib/getUser";
 
 const prisma = new PrismaClient();
 
@@ -39,27 +37,39 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    const userData = await getUser(req);
     /**
      * @desc check to see if logged in user is admin
      */
     if (!session.user?.isAdmin) {
-      res.status(401).json({ message: "Not Authorized" });
+      res.status(401).json({ success: false, message: "Not Authorized" });
       return;
     }
 
-    const { service } = req.body;
+    const { name, price, category } = req.body;
 
-    if (!service) {
-      return res.status(400).send({ message: "Missing fields" });
+    if (!name || !price || !category) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Missing fields" });
     }
+
+    const existingService = await prisma.service.findUnique({
+      where: { name: name },
+    });
+
+    if (existingService) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Service already exists" });
+    }
+
     try {
       await prisma.service.create({
         data: {
-          name: service.serviceName,
-          price: parseFloat(service.price),
-          category: service.category,
-          user: { connect: { id: userData.id } },
+          name: name,
+          price: parseFloat(price),
+          category: category,
+          user: { connect: { id: session.user?.id } },
         },
       });
       await prisma.$disconnect();
@@ -77,18 +87,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      * @route GET /api/hair-services
      * @access Public
      */
-    const { sortBy } = req.query;
+    const { sortBy, category } = req.query;
 
     let result: ServiceDataProps[];
 
     // Chain sort conditions
-    if (sortBy === "latest") {
+    if (sortBy === "latest" || category) {
       result = await prisma.service.findMany({
+        where: { category: category as Category },
         orderBy: {
           createdAt: "desc",
         },
       });
-    } else if (sortBy === "oldest") {
+    } else if (sortBy === "oldest" || category) {
       result = await prisma.service.findMany({
         orderBy: {
           createdAt: "asc",
@@ -97,6 +108,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     } else {
       result = await prisma.service.findMany({});
     }
+
     res.status(200).json(result);
   } else {
     res.setHeader("Allow", ["GET"]);

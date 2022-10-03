@@ -22,6 +22,8 @@ import BottomPageContainer from "./BottomPageContainer";
 import AutoComplete from "./AutoComplete";
 import ActiveLink from "./ActiveLink";
 import UserProfileSection from "./UserProfile";
+import ProductPreview from "./ProductPreview";
+import ProductReviewSection from "./ProductReviewSection";
 
 export {
   HandleDeleteModal,
@@ -52,4 +54,6 @@ export {
   AutoComplete,
   ActiveLink,
   UserProfileSection,
+  ProductPreview,
+  ProductReviewSection,
 };

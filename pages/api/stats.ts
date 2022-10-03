@@ -46,18 +46,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         isAdmin: false,
       },
     });
-    const orderStats = await prisma.order.count();
-    const ordersDelivered = await prisma.order.count({
+    const orderStats = await prisma.orders.count();
+    const ordersDelivered = await prisma.orders.count({
       select: { isDelivered: true },
     });
-    const ordersPaid = await prisma.order.count({ select: { isPaid: true } });
-    const totalSalesStats = await prisma.order.aggregate({
+    const ordersPaid = await prisma.orders.count({ select: { isPaid: true } });
+    const totalSalesStats = await prisma.orders.aggregate({
       _sum: {
         totalPrice: true,
       },
     });
 
-    const monthlySales = (await prisma.order.aggregateRaw({
+    const monthlySales = (await prisma.orders.aggregateRaw({
       pipeline: [
         {
           $project: {

@@ -38,9 +38,7 @@ export const productApi = productApiSlice.injectEndpoints({
         method: "POST",
         body: { ...product },
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Product", id: arg?.id },
-      ],
+      invalidatesTags: ["Product"],
     }),
     updateProduct: builder.mutation<
       { success: boolean; message: string },

@@ -34,16 +34,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           id: true,
           name: true,
           email: true,
+          image: true,
           isAdmin: true,
           isEmailVerified: true,
           emailVerified: true,
           shippingAddress: true,
+          orders: true,
           category: true,
           createdAt: true,
           updatedAt: true,
         },
       });
-
       await prisma.$disconnect();
       res.status(200).json(user);
     } catch (error: any) {

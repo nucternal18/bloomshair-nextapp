@@ -5,9 +5,6 @@ import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
 import { GetServerSidePropsContext } from "next";
 
-// context
-import { useOrder } from "@context/order/OrderContext";
-
 // Component
 import Spinner from "@components/Spinner";
 // import Paginate from '@components/Paginate';

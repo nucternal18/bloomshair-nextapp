@@ -1,13 +1,14 @@
 import { useRouter } from "next/router";
-// Context
-import { useOrder } from "../../../context/order/OrderContext";
+// redux
+import { useAppSelector } from "app/hooks";
+import { orderSelector } from "features/orders/orderSlice";
 
 // Components
 import Button from "../../Button";
 
 const OrderComplete = () => {
   const router = useRouter();
-  const { state } = useOrder();
+  const { order } = useAppSelector(orderSelector);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -17,7 +18,7 @@ const OrderComplete = () => {
         </h2>
       </div>
       <div className="px-2 mb-4">
-        <h3>your order # is: {state?.order?.id}</h3>
+        <h3>your order # is: {order?.id}</h3>
       </div>
       <div className="px-2 mb-4">
         <p>

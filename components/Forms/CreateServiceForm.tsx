@@ -1,9 +1,4 @@
-import {
-  FieldError,
-  UseFormHandleSubmit,
-  UseFormRegister,
-} from "react-hook-form";
-import { IForm, IFormData, ServiceProps } from "../../lib/types";
+import { IForm, ServiceProps } from "../../lib/types";
 import Button from "../Button";
 
 import FormRowInput from "./FormComponents/FormRowInput";

@@ -1,13 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { GetServerSidePropsContext } from "next";
 import { Session } from "next-auth";
+import { Loader } from "@mantine/core";
 
-// utils
-
+// utils/libs/config
+import { IFormData, ServiceCategory, ServiceProps } from "@lib/types";
 import { NEXT_URL } from "@config/index";
 
 // components
@@ -15,32 +16,41 @@ import Button from "@components/Button";
 import { CreateService, UpdateService } from "@components/DrawerContainers";
 import AdminLayout from "../../../Layout/AdminLayout";
 import Table from "@components/Tables/ServiceTable";
-import Spinner from "@components/Spinner";
+import { SearchForm } from "@components/Forms";
 
 // context
-import { useService } from "@context/serviceContext";
-import { IFormData, ServiceProps } from "@lib/types";
-import { SearchForm } from "@components/Forms";
+import {
+  useDeleteServiceMutation,
+  useGetHairServicesQuery,
+} from "features/hairServices/hairServicesApiSlice";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import {
+  hairServiceSelector,
+  setSearchOptions,
+} from "features/hairServices/hairServiceSlice";
+import { toast } from "react-toastify";
 
 type Inputs = {
   category: string;
   sortBy: string;
 };
 
-const HairServices = ({
-  services,
-  token,
-}: {
-  services: ServiceProps[];
-  token: string;
-}) => {
-  const router = useRouter();
+const HairServices = () => {
+  const dispatch = useAppDispatch();
   const [isOpenCreateDrawer, setTsOpenCreateDrawer] =
     React.useState<boolean>(false);
   const [isOpenUpdateDrawer, setTsOpenUpdateDrawer] =
     React.useState<boolean>(false);
-  const [isRefreshing, setIsRefreshing] = React.useState<boolean>(false);
-  const { fetchServiceItem, deleteServiceItem, state } = useService();
+  const [deleteService] = useDeleteServiceMutation();
+  const { category, sortBy } = useAppSelector(hairServiceSelector);
+
+  const {
+    data: services,
+    isLoading,
+    error,
+    refetch,
+  } = useGetHairServicesQuery({ sortBy, category });
+
   const {
     register,
     reset,
@@ -49,47 +59,44 @@ const HairServices = ({
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
-      category: state.service?.category,
-      sortBy: state.service?.sortBy,
+      category: category,
+      sortBy: sortBy,
     },
   });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {};
-  const refreshData = () => {
-    router.replace(router.asPath);
-    setIsRefreshing(true);
-  };
-
-  useEffect(() => {
-    setIsRefreshing(false);
-  }, [services]);
 
   useEffect(() => {
     const subscribe = watch((data) => {
-      const { sortBy, category } = data;
-      const url = `${NEXT_URL}/admin/hair-services?sortBy=${sortBy}&category=${category}`;
-      router.replace(url);
+      dispatch(
+        setSearchOptions({
+          sortBy: data.sortBy as string,
+          category: data.category as ServiceCategory,
+        })
+      );
     });
     return () => subscribe.unsubscribe();
   }, [watch]);
 
-  const handleUpdateDrawerOpen = async (id: string) => {
-    const response = await fetch(`${NEXT_URL}/api/hair-services/${id}`, {
-      headers: {
-        cookie: token,
-      },
-    });
-    const data = await response.json();
-    if (response.ok) {
-      fetchServiceItem(data.service);
-    }
+  const handleUpdateDrawerOpen = async () => {
     setTsOpenUpdateDrawer(true);
   };
 
-  const handleDelete = (id: string) => {
-    deleteServiceItem(id, token);
-    refreshData();
-  };
+  const handleDelete = useCallback(async (id: string) => {
+    try {
+      const response = await deleteService(id).unwrap();
+      if (response.success) {
+        toast.success(response.message ?? "Service Deleted", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        refetch();
+      }
+    } catch (error: any) {
+      toast.error(error.message, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+  }, []);
   return (
     <AdminLayout>
       <main className="md:ml-56  p-2 mx-auto min-h-screen text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
@@ -113,15 +120,12 @@ const HairServices = ({
           <CreateService
             isOpenCreateDrawer={isOpenCreateDrawer}
             setTsOpenCreateDrawer={setTsOpenCreateDrawer}
-            token={token}
-            refreshData={refreshData}
+            refetch={refetch}
           />
         </section>
         <section className="flex flex-col w-full my-4 mx-auto max-w-screen-lg drop-shadow-md rounded bg-white dark:bg-gray-900 ">
           <SearchForm
             register={register}
-            categoryOptions={["all", ...(state.service.categoryOptions || [])]}
-            sortByOptions={state?.service?.sortByOptions as string[]}
             errors={errors}
             reset={reset}
             handleSubmit={handleSubmit}
@@ -129,14 +133,14 @@ const HairServices = ({
           />
         </section>
         <section className="flex flex-col w-full mx-auto max-w-screen-lg drop-shadow-md rounded bg-white dark:bg-gray-900 ">
-          {isRefreshing ? (
-            <div className="w-full h-full flex items-center justify-center">
-              <Spinner message="refreshing..." />
+          {isLoading ? (
+            <div className="w-full h-[700px] flex items-center justify-center">
+              <Loader size="xl" variant="bars" />
             </div>
           ) : (
             <div>
               <Table
-                tableData={services}
+                tableData={services as ServiceProps[]}
                 handleDelete={handleDelete}
                 handleUpdateDrawerOpen={handleUpdateDrawerOpen}
               />
@@ -145,8 +149,7 @@ const HairServices = ({
           <UpdateService
             isOpenUpdateDrawer={isOpenUpdateDrawer}
             setTsOpenUpdateDrawer={setTsOpenUpdateDrawer}
-            token={token}
-            refreshData={refreshData}
+            refetch={refetch}
           />
         </section>
       </main>
@@ -179,22 +182,9 @@ export const getServerSideProps = async (
       },
     };
   }
-  let url = `hair-services?sortBy=${sortBy || "all"}&category=${
-    category || "Gents Hair"
-  }`;
-  if (search) {
-    url += `&search=${search}`;
-  }
 
-  const response = await fetch(`${NEXT_URL}/api/${url}`, {
-    method: "GET",
-  });
-  const data = await response.json();
   return {
-    props: {
-      services: data,
-      token: context.req.headers.cookie,
-    }, // will be passed to the page component as props
+    props: {}, // will be passed to the page component as props
   };
 };
 

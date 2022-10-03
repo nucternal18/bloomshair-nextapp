@@ -4,19 +4,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { Session } from "next-auth";
 import { Loader } from "@mantine/core";
+import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
 
 // context
-import { useOrder } from "../../../context/order/OrderContext";
+import { useAppSelector } from "app/hooks";
+import { orderSelector } from "features/orders/orderSlice";
+import { useOrderDeliveryMutation } from "features/orders/ordersApiSlice";
 
 // components
-import Spinner from "../../../components/Spinner";
-import ErrorMessage from "../../../components/ErrorMessage";
 import Button from "../../../components/Button";
 import AdminLayout from "../../../Layout/AdminLayout/AdminLayout";
 
 import { NEXT_URL } from "../../../config";
 import { getUser } from "../../../lib/getUser";
-import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
 import { OrderProps, UserInfoProps } from "@lib/types";
 import useHasMounted from "@hooks/useHasMounted";
 
@@ -28,11 +28,13 @@ interface IOrderScreenProps {
 function OrderScreen(props: IOrderScreenProps): JSX.Element {
   const { order, userInfo } = props;
   const router = useRouter();
-  const { state, orderDelivery, sendOrderConfirmationEmail } = useOrder();
+  const [orderDelivery, { isLoading, isSuccess, isError, error }] =
+    useOrderDeliveryMutation();
   const hasMounted = useHasMounted();
 
-  const deliveryHandler = () => {
-    orderDelivery(props.order);
+  const deliveryHandler = async () => {
+    const id: string = order.id as string;
+    orderDelivery(id as string);
     router.reload();
   };
 
@@ -58,15 +60,7 @@ function OrderScreen(props: IOrderScreenProps): JSX.Element {
                 </Link>
               </Button>
             </div>
-            <div className="mt-6">
-              <Button
-                color="dark"
-                type="button"
-                onClick={() => sendOrderConfirmationEmail(order?.id as string)}
-              >
-                Send Order Confirmation
-              </Button>
-            </div>
+            <div className="mt-6"></div>
             <div>
               <h1 className="p-3 mt-6 text-sm md:text-2xl font-light">
                 Order Id: {order?.id}
@@ -228,12 +222,6 @@ function OrderScreen(props: IOrderScreenProps): JSX.Element {
                     </div>
                   </div>
                   <div className="p-3 w-full">
-                    {state.loading && <Spinner message="loading..." />}
-                    {state.error && (
-                      <ErrorMessage variant="danger">
-                        {state.error as string}
-                      </ErrorMessage>
-                    )}
                     {userInfo &&
                       userInfo.isAdmin &&
                       order?.isPaid &&

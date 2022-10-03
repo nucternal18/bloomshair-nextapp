@@ -7,12 +7,21 @@ import { toast } from "react-toastify";
 import Button from "../../Button";
 import ShippingAddressForm from "../../Forms/ShippingAddressForm";
 
-// Context
-import { useCart } from "../../../context/cart/cartContext";
-import { saveShippingAddress } from "../../../context/cart/cartActions";
+// redux
+import {
+  removeFromCart,
+  addToCart,
+  cartSelector,
+  saveShippingAddress,
+} from "features/cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "app/hooks";
 
 import { useUpdateUserMutation } from "../../../features/users/userApiSlice";
-import { ShippingAddressProps, UserInfoProps } from "@lib/types";
+import {
+  CartItemsProps,
+  ShippingAddressProps,
+  UserInfoProps,
+} from "@lib/types";
 
 type Inputs = {
   address: string;
@@ -29,7 +38,8 @@ function ShippingContainer({
   handleStepChange(arg0: string): void;
 }) {
   const router = useRouter();
-  const { state, dispatch } = useCart();
+  const dispatch = useAppDispatch();
+  const { cart } = useAppSelector(cartSelector);
   const {
     handleSubmit,
     register,
@@ -79,7 +89,7 @@ function ShippingContainer({
     const shippingAddress =
       (userData.shippingAddress?.address as string) !== ""
         ? userData.shippingAddress
-        : state.cart.shippingAddress;
+        : cart.shippingAddress;
     if (!deliveryMethod) {
       toast.error("Delivery method required");
       return;
@@ -131,10 +141,10 @@ function ShippingContainer({
               <div className="">
                 <h1 className="text-lg mb-4">Address</h1>
                 <div>
-                  <p>{state.cart.shippingAddress?.address}</p>
-                  <p>{state.cart.shippingAddress?.city}</p>
-                  <p>{state.cart.shippingAddress?.postalCode}</p>
-                  <p>{state.cart.shippingAddress?.country}</p>
+                  <p>{cart.shippingAddress?.address}</p>
+                  <p>{cart.shippingAddress?.city}</p>
+                  <p>{cart.shippingAddress?.postalCode}</p>
+                  <p>{cart.shippingAddress?.country}</p>
                 </div>
               </div>
             )}
@@ -244,22 +254,26 @@ function ShippingContainer({
             <div className="mb-2">
               <p className="font-medium">
                 <span className="mr-1">
-                  {state.cart.cartItems.reduce(
-                    (acc, item) => acc + item.qty,
+                  {cart.cartItems.reduce(
+                    (acc: any, item: { qty: any }) => acc + item.qty,
                     0
                   )}
                 </span>
                 Items in Cart
               </p>
             </div>
-            {state.cart.cartItems.map((item) => (
+            {cart.cartItems.map((item: CartItemsProps) => (
               <div key={item.product}>
                 <div className="flex items-center justify-between mb-2">
                   <p className="font-thin">{item.name}</p>
                   <p className="font-medium">
                     £
-                    {state.cart.cartItems
-                      .reduce((acc, item) => acc + item.qty * item.price, 0)
+                    {cart.cartItems
+                      .reduce(
+                        (acc: number, item: { qty: number; price: number }) =>
+                          acc + item.qty * item.price,
+                        0
+                      )
                       .toFixed(2)}
                   </p>
                 </div>
@@ -268,7 +282,10 @@ function ShippingContainer({
             <div className="mb-2">
               <p className="flex items-center">
                 <span className="mr-2">Qty</span>
-                {state.cart.cartItems.reduce((acc, item) => acc + item.qty, 0)}
+                {cart.cartItems.reduce(
+                  (acc: any, item: { qty: any }) => acc + item.qty,
+                  0
+                )}
               </p>
             </div>
           </div>

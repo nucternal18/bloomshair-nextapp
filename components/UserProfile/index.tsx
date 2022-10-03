@@ -118,13 +118,12 @@ const UserProfileSection = ({
           </section>
         </section>
         {/* Users orders list table */}
-        <section className="container px-2 pt-6 pb-8 mb-4  rounded shadow-xl md:px-12 md:mx-auto bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
+        <section className="px-4 pt-6 pb-8 mb-4  rounded shadow-xl  md:mx-auto bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
           <div className="mb-6 border-b-2 border-current border-gray-200">
             <h1 className="my-2 text-3xl font-thin md:text-4xl ">My Orders</h1>
           </div>
-          {(user?.orders as OrderProps[]) && (
-            <Table tableData={user.orders as OrderProps[]} />
-          )}
+
+          <Table tableData={user?.orders as OrderProps[]} />
         </section>
         <section className=" flex w-full flex-col items-center justify-between space-y-4 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 p-6 shadow-xl md:flex-row md:space-y-0">
           <div className="flex flex-col items-center space-y-2 text-gray-400 md:flex-row md:space-y-0 md:space-x-4">

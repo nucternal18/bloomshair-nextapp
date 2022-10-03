@@ -1,6 +1,8 @@
 import FormRowInput from "./FormComponents/FormRowInput";
 import FormRowSelect from "./FormComponents/FormRowSelect";
 import { IForm } from "@lib/types";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import { hairServiceSelector } from "features/hairServices/hairServiceSlice";
 
 type Inputs = {
   category: string;
@@ -8,18 +10,12 @@ type Inputs = {
 };
 
 interface SearchFormProps extends IForm<Inputs> {
-  categoryOptions: string[];
-  sortByOptions: string[];
   reset: () => void;
 }
 
-const SearchForm = ({
-  register,
-  reset,
-  errors,
-  categoryOptions,
-  sortByOptions,
-}: SearchFormProps) => {
+const SearchForm = ({ register, reset, errors }: SearchFormProps) => {
+  const { categoryOptions, sortByOptions } =
+    useAppSelector(hairServiceSelector);
   return (
     <form>
       <div className="relative p-2  max-w-screen-xl  bg-white font-mono dark:bg-gray-900 shadow-xl mt-5 mx-2 md:mx-auto md:p-4">
@@ -34,7 +30,7 @@ const SearchForm = ({
               type="category"
               {...register("category")}
               errors={errors?.category}
-              list={categoryOptions}
+              list={[...categoryOptions]}
             />
             <FormRowSelect
               placeHolder="Select an Option"
@@ -42,7 +38,7 @@ const SearchForm = ({
               type="sortBy"
               {...register("sortBy")}
               errors={errors.sortBy}
-              list={sortByOptions}
+              list={[...sortByOptions]}
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">

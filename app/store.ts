@@ -17,6 +17,10 @@ import {
 } from "./api/apiSlice";
 import userReducer from "../features/users/userSlice";
 import productReducer from "features/products/productSlice";
+import hairServiceReducer from "features/hairServices/hairServiceSlice";
+import galleryReducer from "features/gallery/gallerySlice";
+import cartReducer from "features/cart/cartSlice";
+import orderReducer from "features/orders/orderSlice";
 
 const reducers = {
   [userApiSlice.reducerPath]: userApiSlice.reducer,
@@ -26,6 +30,10 @@ const reducers = {
   [orderApiSlice.reducerPath]: orderApiSlice.reducer,
   user: userReducer,
   product: productReducer,
+  hairService: hairServiceReducer,
+  gallery: galleryReducer,
+  cart: cartReducer,
+  order: orderReducer,
 };
 
 const combinedReducer = combineReducers<typeof reducers>(reducers);

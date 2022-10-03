@@ -4,11 +4,10 @@ import { getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
 import { Session } from "next-auth";
 
-import { getUser } from "../../../lib/getUser";
-
 const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  console.log("GETTING ALL ORDERS 1");
   /**
    * @desc Get user session
    */
@@ -21,7 +20,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const userData = await getUser(req);
   /**
    * @desc check to see if logged in user is admin
    */
@@ -38,7 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
      */
 
     try {
-      const orders = await prisma.order.findMany({
+      const orders = await prisma.orders.findMany({
         select: {
           id: true,
           user: {

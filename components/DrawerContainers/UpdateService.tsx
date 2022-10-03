@@ -1,25 +1,30 @@
+import { useCallback, useEffect } from "react";
 import { Drawer } from "@mantine/core";
-import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+
 import { useService } from "../../context/serviceContext";
-import { IFormData, ServiceProps } from "../../lib/types";
+import { ServiceProps } from "../../lib/types";
 import ServiceForm from "../Forms/CreateServiceForm";
+import { useAppSelector } from "app/hooks";
+import { hairServiceSelector } from "features/hairServices/hairServiceSlice";
+import { useUpdateServiceMutation } from "features/hairServices/hairServicesApiSlice";
+import { toast } from "react-toastify";
 
 interface IUpdateHairService {
   isOpenUpdateDrawer: boolean;
   setTsOpenUpdateDrawer: React.Dispatch<React.SetStateAction<boolean>>;
-  refreshData: () => void;
-  token: string;
+  refetch: () => void;
 }
 
 const UpdateService = ({
   isOpenUpdateDrawer,
   setTsOpenUpdateDrawer,
-  refreshData,
-  token,
+  refetch,
 }: IUpdateHairService) => {
-  const { state, updateServiceItem } = useService();
-  const { service } = state;
+  const { service, category, categoryOptions } =
+    useAppSelector(hairServiceSelector);
+  const [updateService, { isLoading }] = useUpdateServiceMutation();
+
   const {
     register,
     handleSubmit,
@@ -42,13 +47,27 @@ const UpdateService = ({
     reset(newServiceItem);
   }, [service, isOpenUpdateDrawer]);
 
-  const submitHandler: SubmitHandler<Partial<ServiceProps>> = (data): void => {
-    const updatedServiceItem = { ...data, _id: service?.id };
-    updateServiceItem(updatedServiceItem, token);
-    reset();
-    setTsOpenUpdateDrawer(false);
-    refreshData();
-  };
+  const submitHandler: SubmitHandler<Partial<ServiceProps>> = useCallback(
+    async (data) => {
+      const updatedServiceItem = { ...data, id: service?.id };
+      try {
+        const response = await updateService(updatedServiceItem).unwrap();
+        if (response.success) {
+          toast.success(response.message ?? "Service Updated", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+          reset();
+          setTsOpenUpdateDrawer(false);
+          refetch();
+        }
+      } catch (error: any) {
+        toast.error(error.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      }
+    },
+    []
+  );
 
   return (
     <div>
@@ -65,9 +84,9 @@ const UpdateService = ({
           register={register}
           errors={errors}
           submitHandler={submitHandler}
-          list={state?.service?.categoryOptions as string[]}
+          list={categoryOptions as string[]}
           buttonName="Update Service"
-          loading={state?.isLoading}
+          loading={isLoading}
         />
       </Drawer>
     </div>

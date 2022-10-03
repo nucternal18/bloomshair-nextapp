@@ -3,9 +3,13 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { Drawer, Group } from "@mantine/core";
 
-// Context
-import { useCart } from "../context/cart/cartContext";
-import { removeFromCart, addToCart } from "../context/cart/cartActions";
+// redux
+import {
+  removeFromCart,
+  addToCart,
+  cartSelector,
+} from "features/cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "app/hooks";
 
 // Component
 import CartItem from "./CartItem";
@@ -21,7 +25,8 @@ function CartContainer({
   toggleCartDrawer: () => void;
 }) {
   const router = useRouter();
-  const { state, dispatch } = useCart();
+  const dispatch = useAppDispatch();
+  const { cart } = useAppSelector(cartSelector);
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -54,7 +59,7 @@ function CartContainer({
   //   }
   //   router.push('/checkout/shipping');
   // };
-  if (state.cart.cartItems?.length === 0 && mounted) {
+  if (cart.cartItems?.length === 0 && mounted) {
     return (
       <Drawer
         opened={cartIsOpen}
@@ -96,7 +101,7 @@ function CartContainer({
         <div className="pt-4">
           {/* cart items */}
           <div className="mb-4">
-            {state.cart.cartItems?.map((item) => {
+            {cart.cartItems?.map((item: CartItemsProps) => {
               return (
                 <div key={item.product}>
                   <CartItem
@@ -116,8 +121,12 @@ function CartContainer({
               <h4 className="text-xl font-thin ">Basket Subtotal:</h4>
               <p className="text-xl font-medium">
                 £
-                {state.cart.cartItems
-                  ?.reduce((acc, item) => acc + item.qty * item.price, 0)
+                {cart.cartItems
+                  ?.reduce(
+                    (acc: number, item: { qty: number; price: number }) =>
+                      acc + item.qty * item.price,
+                    0
+                  )
                   .toFixed(2)}
               </p>
             </div>

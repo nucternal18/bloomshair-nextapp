@@ -1,74 +1,61 @@
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/router";
+import { useCallback } from "react";
 import { getSession } from "next-auth/react";
 import { toast } from "react-toastify";
-import { useForm, SubmitHandler } from "react-hook-form";
 import { Session } from "next-auth";
+import { Loader } from "@mantine/core";
 
 // Components
 import Table from "@components/Tables/GalleryTable";
-import ErrorMessage from "@components/ErrorMessage";
 import AdminLayout from "../../../Layout/AdminLayout/AdminLayout";
 import { ImageUploadForm } from "@components/Forms";
 import { GetServerSidePropsContext } from "next";
+import Button from "@components/Button";
 
-// Context
-import { ActionType, useGallery } from "@context/GalleryContext";
+// redux
+import {
+  useGetImagesQuery,
+  useUploadGalleryImageMutation,
+  useDeleteImageMutation,
+  useAddImageMutation,
+} from "features/gallery/galleryApiSlice";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import { gallerySelector, setImage } from "features/gallery/gallerySlice";
 
 // Server Url
 import { NEXT_URL } from "@config/index";
 
-// utils
-import Button from "@components/Button";
+// utils/libs/hooks
 import { GalleryProps } from "@lib/types";
 import useHasMounted from "@hooks/useHasMounted";
-import { Loader } from "@mantine/core";
 
-const GalleryAdminPage = ({
-  pictures,
-  isLoading,
-}: {
-  pictures: GalleryProps[];
-  isLoading: string;
-}) => {
-  const router = useRouter();
-  const {
-    deletePicture,
-    uploadGalleryImage,
-    createPicture,
-    dispatch,
-    state: { uploading, error, success, message, image },
-  } = useGallery();
-  const [isRefreshing, setIsRefreshing] = useState(false);
+const GalleryAdminPage = () => {
   const hasMounted = useHasMounted();
-
-  /**
-   * @description - This function is used to refresh the page after a successful action
-   */
-  const refreshData = () => {
-    router.reload();
-    setIsRefreshing(true);
-  };
-
-  useEffect(() => {
-    setIsRefreshing(false);
-  }, [pictures]);
+  const dispatch = useAppDispatch();
+  const { data: pictures, isLoading, refetch } = useGetImagesQuery();
+  const [uploadImage, { isLoading: isUploading, error }] =
+    useUploadGalleryImageMutation();
+  const [deleteImage] = useDeleteImageMutation();
+  const [addImage] = useAddImageMutation();
+  const { image } = useAppSelector(gallerySelector);
 
   /**
    * @description - This function is used to upload the image to cloudinary
    * @param data
    */
   const uploadFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch({ type: ActionType.GALLERY_IMAGE_UPLOAD_REQUEST });
     const file = e.target.files?.[0] as File;
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      uploadGalleryImage(reader.result as string | ArrayBuffer);
-      dispatch({ type: ActionType.GALLERY_IMAGE_UPLOAD_SUCCESS });
+    reader.onloadend = async () => {
+      await uploadImage(reader.result as string | ArrayBuffer).unwrap();
+      toast.success("Image uploaded successfully", {
+        position: toast.POSITION.TOP_CENTER,
+      });
     };
     reader.onerror = () => {
-      toast.error("something went wrong!");
+      toast.error("something went wrong!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
     };
   };
 
@@ -77,16 +64,21 @@ const GalleryAdminPage = ({
    */
   const submitHandler = useCallback(async () => {
     try {
-      dispatch({ type: ActionType.GALLERY_IMAGE_UPLOAD_REQUEST });
-      createPicture(image as string);
-      refreshData();
-      dispatch({ type: ActionType.GALLERY_IMAGE_UPLOAD_SUCCESS });
+      const response = await addImage(image as string).unwrap();
+      if (response.success) {
+        toast.success(response.message ?? "Image added successfully", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        dispatch(setImage(null));
+        refetch();
+      }
     } catch (error: any) {
-      toast.error("something went wrong!" + error.message);
-      dispatch({
-        type: ActionType.GALLERY_ACTION_FAIL,
-        payload: error.message,
-      });
+      toast.error(
+        error.message ?? "Something went wrong! Unable to add image",
+        {
+          position: toast.POSITION.TOP_CENTER,
+        }
+      );
     }
   }, [image]);
 
@@ -94,15 +86,18 @@ const GalleryAdminPage = ({
    * @description - This function is used to delete the image from the server
    * @param id
    */
-  const deleteHandler = useCallback((id: string) => {
+  const deleteHandler = useCallback(async (id: string) => {
     try {
-      deletePicture(id);
-      refreshData();
+      const response = await deleteImage(id).unwrap();
+      if (response.success) {
+        toast.success(response.message ?? "Image deleted successfully", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        refetch();
+      }
     } catch (error: any) {
-      toast.error("something went wrong!" + error.message);
-      dispatch({
-        type: ActionType.GALLERY_ACTION_FAIL,
-        payload: error.message,
+      toast.error(error.message ?? "something went wrong!", {
+        position: toast.POSITION.TOP_CENTER,
       });
     }
   }, []);
@@ -127,8 +122,7 @@ const GalleryAdminPage = ({
               <div className="space-y-2">
                 <ImageUploadForm
                   uploadFileHandler={uploadFileHandler}
-                  uploading={uploading}
-                  error={error}
+                  uploading={isUploading}
                   image={image}
                 />
                 <div className="flex items-center justify-center p-2 border-t-2 border-current border-gray-200">
@@ -139,15 +133,16 @@ const GalleryAdminPage = ({
               </div>
             </div>
             <div className="col-span-1  w-full">
-              {isRefreshing ? (
-                <div className="w-full flex items-center justify-center h-[300px]">
+              {isLoading ? (
+                <div className="w-full flex items-center justify-center h-[400px]">
                   <Loader size="xl" variant="bars" />
                 </div>
-              ) : error ? (
-                <ErrorMessage variant="danger">{error}</ErrorMessage>
               ) : (
                 <div className="w-full shadow-2xl mx-auto overscroll-auto">
-                  <Table tableData={pictures} deleteHandler={deleteHandler} />
+                  <Table
+                    tableData={pictures as GalleryProps[]}
+                    deleteHandler={deleteHandler}
+                  />
                 </div>
               )}
             </div>

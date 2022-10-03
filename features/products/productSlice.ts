@@ -8,6 +8,8 @@ import { HYDRATE } from "next-redux-wrapper";
 interface IProduct {
   product?: ProductProps | null;
   requestStatus?: string;
+  rating?: number;
+  comment?: string;
   message?: string;
   success?: boolean;
   loading?: boolean;
@@ -27,6 +29,8 @@ const initialState: IProduct = {
   image: "",
   uploading: false,
   page: 1,
+  rating: 0,
+  comment: "No comment",
 };
 
 export const productSlice = createSlice({
@@ -42,6 +46,12 @@ export const productSlice = createSlice({
     setImage: (state, { payload }: PayloadAction<string>) => {
       state.image = payload;
     },
+    setRating: (state, { payload }: PayloadAction<{ rating: number }>) => {
+      state.rating = payload.rating;
+    },
+    setComment: (state, { payload }: PayloadAction<{ comment: string }>) => {
+      state.comment = payload.comment;
+    },
     setError: (state, { payload }: PayloadAction<AppError>) => {
       state.error = payload;
     },
@@ -55,6 +65,13 @@ export const productSlice = createSlice({
   },
 });
 
-export const { setPage, setProduct, setImage, setError } = productSlice.actions;
+export const {
+  setPage,
+  setProduct,
+  setImage,
+  setError,
+  setRating,
+  setComment,
+} = productSlice.actions;
 export const productSelector = (state: RootState) => state.product;
 export default productSlice.reducer;

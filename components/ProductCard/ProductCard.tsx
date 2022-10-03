@@ -8,9 +8,9 @@ import Rating from "../Rating";
 import { Card, CardBody, CardTitle, CardText } from "../Card";
 import Button from "../Button";
 
-// context
-import { useCart } from "../../context/cart/cartContext";
-import { addToCart } from "../../context/cart/cartActions";
+// redux
+import { addToCart, cartSelector } from "features/cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "app/hooks";
 import { CartItemsProps, ProductProps } from "../../lib/types";
 import { NEXT_URL } from "@config/index";
 
@@ -29,13 +29,13 @@ const cld = new Cloudinary({
 });
 
 const dev = process.env.NODE_ENV !== "production";
-const NGROK_URL = "https://385e-77-100-6-97.eu.ngrok.io";
+const NGROK_URL = "https://07f6-77-100-6-97.eu.ngrok.io";
 
 const ProductCard = ({ product, isAvailable }: IProductCard) => {
   const url = product.image.substring(61, product.image.lastIndexOf("."));
   const productImageUrl = cld.image(url).quality("auto").format("auto").toURL();
   const router = useRouter();
-  const { state, dispatch } = useCart();
+
   // const addToCartHandler = () => {
   //   const items: CartItemsProps = {
   //     product: product._id,

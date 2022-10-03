@@ -1,6 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
+import { withSentry } from "@sentry/nextjs";
 import { PrismaClient } from "@prisma/client";
 import { Session } from "next-auth";
 
@@ -20,47 +21,31 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  /**
-   * @desc check to see if logged in user is admin
-   */
-  if (!session.user.isAdmin) {
-    res.status(401).json({ message: "Not Authorized" });
-    return;
-  }
-
-  if (req.method === "GET") {
+  if (req.method === "PUT") {
     /**
-     * @desc Get an order by id
-     * @route Get /api/order/myOrders/:id
+     * @desc Update an order
+     * @route Put /api/order/myOrders/:id
      * @access Private
      */
+    const { paymentResult } = req.body;
 
+    const existingOrder = await prisma.orders.findUnique({
+      where: { id: id as string },
+    });
+
+    if (!existingOrder) {
+      res.status(404).json({ success: false, message: "Order not found" });
+      return;
+    }
     try {
-      const order = await prisma.orders.findUnique({
+      const order = await prisma.orders.update({
         where: { id: id as string },
-        select: {
-          id: true,
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-          deliveredAt: true,
-          isDelivered: true,
+        data: {
           isPaid: true,
-          itemsPrice: true,
-          orderItems: true,
-          paidAt: true,
-          paymentMethod: true,
-          paymentResult: true,
-          shippingAddress: true,
-          shippingPrice: true,
-          taxPrice: true,
-          totalPrice: true,
-          createdAt: true,
-          updatedAt: true,
+          paidAt: new Date(),
+          paymentResult: paymentResult
+            ? paymentResult
+            : existingOrder.paymentResult,
         },
       });
       await prisma.$disconnect();
@@ -76,4 +61,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default handler;
+export default withSentry(handler);
