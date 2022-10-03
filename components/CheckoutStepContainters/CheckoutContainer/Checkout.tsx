@@ -19,7 +19,6 @@ import {
 } from "features/cart/cartSlice";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 
-import { useAddOrderMutation } from "features/orders/ordersApiSlice";
 import { CartItemsProps, UserInfoProps } from "@lib/types";
 
 const CheckOutContainer = ({
@@ -36,8 +35,6 @@ const CheckOutContainer = ({
   const {
     cart: { shippingAddress, cartItems, paymentMethod },
   } = useAppSelector(cartSelector);
-  const [addOrder, { isLoading, isSuccess, isError, error }] =
-    useAddOrderMutation();
 
   const wrapper = useRef<HTMLDivElement>(null);
 
@@ -135,28 +132,28 @@ const CheckOutContainer = ({
     return actions.order
       .capture()
       .then(async function (details) {
-        const response = await addOrder({
-          newOrder: {
-            orderItems: cartItems,
-            shippingAddress: shippingAddress,
-            paymentMethod,
-            itemsPrice: +itemsPrice,
-            shippingPrice: +shippingPrice,
-            taxPrice: +taxPrice,
-            totalPrice: +totalPrice,
-            product: "",
-            name: "",
-            image: "",
-            price: 0,
-            countInStock: 0,
-            qty: 0,
-          },
-          paymentResult: details,
-        }).unwrap();
-        if (response.success)
-          toast.success(response.message ?? "Payment Successful", {
-            position: toast.POSITION.TOP_CENTER,
-          });
+        // const response = await addOrder({
+        //   newOrder: {
+        //     orderItems: cartItems,
+        //     shippingAddress: shippingAddress,
+        //     paymentMethod,
+        //     itemsPrice: +itemsPrice,
+        //     shippingPrice: +shippingPrice,
+        //     taxPrice: +taxPrice,
+        //     totalPrice: +totalPrice,
+        //     product: "",
+        //     name: "",
+        //     image: "",
+        //     price: 0,
+        //     countInStock: 0,
+        //     qty: 0,
+        //   },
+        //   paymentResult: details,
+        // }).unwrap();
+        // if (response.success)
+        //   toast.success(response.message ?? "Payment Successful", {
+        //     position: toast.POSITION.TOP_CENTER,
+        //   });
         handleStepChange("next");
         dispatch(clearCart());
       })
@@ -172,28 +169,28 @@ const CheckOutContainer = ({
       email_address: userInfo.email as string,
     };
 
-    const response = await addOrder({
-      newOrder: {
-        orderItems: cartItems,
-        shippingAddress: shippingAddress,
-        paymentMethod,
-        itemsPrice: +itemsPrice,
-        shippingPrice: +shippingPrice,
-        taxPrice: +taxPrice,
-        totalPrice: +totalPrice,
-        product: "",
-        name: "",
-        image: "",
-        price: 0,
-        countInStock: 0,
-        qty: 0,
-      },
-      paymentResult,
-    }).unwrap();
-    if (response.success)
-      toast.success(response.message ?? "Payment Successful", {
-        position: toast.POSITION.TOP_CENTER,
-      });
+    // const response = await addOrder({
+    //   newOrder: {
+    //     orderItems: cartItems,
+    //     shippingAddress: shippingAddress,
+    //     paymentMethod,
+    //     itemsPrice: +itemsPrice,
+    //     shippingPrice: +shippingPrice,
+    //     taxPrice: +taxPrice,
+    //     totalPrice: +totalPrice,
+    //     product: "",
+    //     name: "",
+    //     image: "",
+    //     price: 0,
+    //     countInStock: 0,
+    //     qty: 0,
+    //   },
+    //   paymentResult,
+    // }).unwrap();
+    // if (response.success)
+    //   toast.success(response.message ?? "Payment Successful", {
+    //     position: toast.POSITION.TOP_CENTER,
+    //   });
     handleStepChange("next");
     dispatch(clearCart());
   };
