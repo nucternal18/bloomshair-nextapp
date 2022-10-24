@@ -13,13 +13,6 @@ import "react-quill/dist/quill.snow.css";
 import { store, wrapper } from "../app/store";
 
 function MyApp({ Component, pageProps, router }: AppProps) {
-  // useEffect(() => {
-  //   const unsubscribe = snipcart.events.on('item.added', (cartItem) => {
-  //     console.log(cartItem);
-  //   })
-  //   return () => unsubscribe();
-  // },[])
-
   return (
     <>
       <Provider store={store}>

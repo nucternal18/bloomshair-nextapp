@@ -1,6 +1,6 @@
 import { UserCategory, UsersShippingAddress } from "@prisma/client";
 import type { NextApiRequest } from "next";
-import { DehydratedState } from "@tanstack/react-query";
+
 import {
   FieldErrorsImpl,
   SubmitHandler,
@@ -52,7 +52,6 @@ export type IFormData = {
 };
 
 export interface IProductPageProps {
-  dehydratedState?: DehydratedState;
   products: ProductProps[];
   pages: number;
   page: number;
@@ -93,6 +92,7 @@ export type ProductProps = {
   numReviews?: number;
   reviews?: ReviewProps[];
   slug?: string;
+  weight: number;
 };
 
 export interface AppError extends Error {
@@ -260,6 +260,23 @@ export interface SnipcartRequest extends NextApiRequest {
     content: SnipcartWebhookContent;
   };
 }
+
+export type SnipcartItem = {
+  uniqueId: string;
+  id: string;
+  name: string;
+  price: string;
+  quantity: number;
+  url: string;
+  weight: number;
+  description: string;
+  image: string;
+  customFieldsJson: JSON;
+  stackable: boolean;
+  maxQuantity: number | null;
+  totalPrice: number;
+  totalWeight: number;
+};
 
 export interface ISyncProduct {
   id: string;

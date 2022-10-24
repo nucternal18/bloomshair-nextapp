@@ -1,13 +1,9 @@
-import {
-  AnyAction,
-  createEntityAdapter,
-  createSelector,
-} from "@reduxjs/toolkit";
+import { createEntityAdapter } from "@reduxjs/toolkit";
 import { galleryApiSlice } from "app/api/apiSlice";
-import { GalleryProps, ServiceProps } from "@lib/types";
+import { GalleryProps } from "@lib/types";
 import { setImage, setError } from "./gallerySlice";
 
-export const galleryAdapter = createEntityAdapter<ServiceProps>({});
+export const galleryAdapter = createEntityAdapter<GalleryProps>({});
 
 export const galleryApi = galleryApiSlice.injectEndpoints({
   endpoints: (builder) => ({

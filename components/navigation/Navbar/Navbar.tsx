@@ -12,17 +12,22 @@ import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { useSnipcart } from "use-snipcart";
 import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
 
-// components
-const CartIcon = dynamic(() => import("@components/CartIcon"), { ssr: false });
+// redux
+import { userApiSlice } from "app/api/apiSlice";
+import { useAppDispatch } from "app/hooks";
 
 // navlinks
 import { navLink } from "../../../data";
 import { BloomsLogo } from "../../SVG/BloomsLogo";
-import { Session } from "next-auth";
+
+// components
+const CartIcon = dynamic(() => import("@components/CartIcon"), { ssr: false });
 
 const Navbar = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [cartIsOpen, setCartIsOpen] = useState<boolean>(false);
@@ -97,6 +102,7 @@ const Navbar = () => {
   // logout handler
   const logoutHandler = () => {
     signOut();
+    dispatch(userApiSlice.util.resetApiState());
   };
 
   return (

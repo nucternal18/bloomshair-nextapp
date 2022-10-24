@@ -17,19 +17,7 @@ interface IProductFormProps {
   handleSubmit: UseFormHandleSubmit<ProductProps>;
   submitHandler: SubmitHandler<ProductProps>;
   register: UseFormRegister<ProductProps>;
-  errors: FieldErrorsImpl<{
-    id: string;
-    name: string;
-    price: number;
-    image: string;
-    brand: string;
-    category: string;
-    countInStock: number;
-    description: string;
-    rating: number;
-    numReviews: number;
-    slug: string;
-  }>;
+  errors: FieldErrorsImpl<ProductProps>;
   isLoadingImage: boolean;
   isLoading: boolean;
   image: string;
@@ -132,6 +120,15 @@ const ProductForm = ({
               errors={errors}
               inputType={"text"}
               {...register("category")}
+            />
+          </div>
+          <div className="flex flex-col mb-2">
+            <FormRowInput
+              type={"weight"}
+              title={"Weight"}
+              errors={errors}
+              inputType={"text"}
+              {...register("weight")}
             />
           </div>
           <div className="flex flex-col mb-2">

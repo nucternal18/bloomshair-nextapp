@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Image from "next/image";
 import {
   FaBars,
   FaTimes,
@@ -12,14 +11,25 @@ import {
   FaShippingFast,
 } from "react-icons/fa";
 import { signOut } from "next-auth/react";
-import { FiLogOut, FiMoon, FiSun } from "react-icons/fi";
+import { FiLogOut } from "react-icons/fi";
 import { useTheme } from "next-themes";
+
+// redux
+import {
+  userApiSlice,
+  orderApiSlice,
+  hairServiceApiSlice,
+  galleryApiSlice,
+} from "app/api/apiSlice";
+import { useAppDispatch } from "app/hooks";
+
 import ActiveLink from "../../ActiveLink";
 import { BloomsLogo } from "../../SVG/BloomsLogo";
 import useHasMounted from "@hooks/useHasMounted";
 
 const Sidebar = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [collapseShow, setCollapseShow] = useState<string>("hidden");
   const [mounted, setMounted] = useState<boolean>(false);
   const { theme, setTheme } = useTheme();
@@ -31,6 +41,10 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     signOut();
+    dispatch(userApiSlice.util.resetApiState());
+    dispatch(orderApiSlice.util.resetApiState());
+    dispatch(hairServiceApiSlice.util.resetApiState());
+    dispatch(galleryApiSlice.util.resetApiState());
     router.push("/");
   };
 

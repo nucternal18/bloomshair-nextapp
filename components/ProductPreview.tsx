@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import parse from "html-react-parser";
+import Link from "next/link";
 
 import Button from "./Button";
 import Rating from "./Rating";
@@ -14,7 +15,7 @@ interface IProductPreviewProps {
 }
 
 const dev = process.env.NODE_ENV !== "production";
-const NGROK_URL = "https://07f6-77-100-6-97.eu.ngrok.io";
+const NGROK_URL = "https://174a-77-100-6-97.eu.ngrok.io";
 
 const ProductPreview = ({ product, productImageUrl }: IProductPreviewProps) => {
   return (
@@ -70,28 +71,35 @@ const ProductPreview = ({ product, productImageUrl }: IProductPreviewProps) => {
               )}
 
               <div className="mb-4">
-                <Button
-                  color="dark"
-                  type="button"
-                  className="snipcart-add-item"
-                  data-item-id={product.id}
-                  data-item-price={product.price}
-                  data-item-url={
-                    dev
-                      ? `${NGROK_URL}/api/products/${product.slug}`
-                      : `/api/products/${product.slug}`
-                  }
-                  data-item-description={product.description}
-                  data-item-image={productImageUrl}
-                  data-item-name={product.name}
-                  disabled={product.countInStock === 0}
-                >
-                  <p className="text-xl font-semibold">
-                    {product.countInStock > 0
-                      ? "ADD TO CART"
-                      : "Contact Us For Details"}
-                  </p>
-                </Button>
+                {product.countInStock > 0 ? (
+                  <Button
+                    color="dark"
+                    type="button"
+                    className="snipcart-add-item"
+                    data-item-id={product.id}
+                    data-item-price={product.price}
+                    data-item-url={
+                      dev
+                        ? `${NGROK_URL}/api/products/${product.slug}`
+                        : `/api/products/${product.slug}`
+                    }
+                    data-item-description={product.description}
+                    data-item-image={productImageUrl}
+                    data-item-name={product.name}
+                    data-item-weight={product.weight}
+                    disabled={!!(product.countInStock === 0)}
+                  >
+                    <p className="text-xl font-semibold">ADD TO CART</p>
+                  </Button>
+                ) : (
+                  <div className="focus:outline-none shadow rounded px-4 py-2 font-medium transition flex items-center justify-center border dark:border-none text-gray-200 bg-black">
+                    <Link href="/contact-us">
+                      <a className="text-xl font-semibold">
+                        Contact Us For Details
+                      </a>
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>

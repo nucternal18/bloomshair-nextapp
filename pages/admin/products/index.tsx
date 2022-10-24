@@ -1,8 +1,6 @@
 import { getSession } from "next-auth/react";
 import { GetServerSidePropsContext } from "next";
-import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { Session } from "next-auth";
-import { Loader } from "@mantine/core";
 
 // Components
 import AdminLayout from "../../../Layout/AdminLayout/AdminLayout";

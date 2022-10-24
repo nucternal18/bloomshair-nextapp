@@ -95,7 +95,7 @@ export default NextAuth({
      * @param  {object}  account   Provider account (only available on sign in)
      * @return {object}            JSON Web Token that will be saved
      */
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       // Add access_token to the token right after signin
       user && (token.user = user);
       return token;

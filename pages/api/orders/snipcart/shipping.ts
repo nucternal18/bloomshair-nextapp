@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { SnipcartShippingRate } from "@lib/types";
+import { getShippingRates } from "@lib/shippingRates";
 
 interface SnipcartRequest extends NextApiRequest {
   body: {
@@ -30,7 +31,7 @@ export default async function handler(
 
   const { items } = content;
 
-  const result: SnipcartShippingRate[] = [];
+  const result: Array<SnipcartShippingRate> = getShippingRates(items);
   try {
     res.status(200).json({
       rates: result.map((rate) => ({

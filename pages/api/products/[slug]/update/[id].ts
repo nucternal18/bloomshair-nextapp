@@ -45,7 +45,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       category,
       countInStock,
       slug,
+      weight,
     } = req.body;
+    console.log("🚀 ~ file: [id].ts ~ line 50 ~ handler ~ slug", slug);
 
     try {
       await prisma.product.update({
@@ -61,6 +63,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             ? Number(countInStock)
             : existingProduct.countInStock,
           slug: slug ? slug : existingProduct.slug,
+          weight: weight ? weight : existingProduct.weight,
         },
       });
 

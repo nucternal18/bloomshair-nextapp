@@ -29,7 +29,7 @@ const cld = new Cloudinary({
 });
 
 const dev = process.env.NODE_ENV !== "production";
-const NGROK_URL = "https://07f6-77-100-6-97.eu.ngrok.io";
+const NGROK_URL = "https://174a-77-100-6-97.eu.ngrok.io";
 
 const ProductCard = ({ product, isAvailable }: IProductCard) => {
   const url = product.image.substring(61, product.image.lastIndexOf("."));
@@ -104,6 +104,7 @@ const ProductCard = ({ product, isAvailable }: IProductCard) => {
               data-item-description={product.description}
               data-item-image={productImageUrl}
               data-item-name={product.name}
+              data-item-weight={product.weight}
               disabled={product.countInStock === 0}
             >
               Add to Cart

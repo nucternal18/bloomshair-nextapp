@@ -75,6 +75,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           numReviews: 0,
           description: req.body.description,
           slug: req.body.slug,
+          weight: Number(req.body.width),
         },
       });
 

@@ -58,6 +58,7 @@ const ProductEditScreen = ({
       brand: product.brand,
       category: product.category,
       countInStock: product.countInStock,
+      weight: product.weight,
     },
   });
 
@@ -75,7 +76,8 @@ const ProductEditScreen = ({
           category: data.category,
           countInStock: data.countInStock,
           description: value,
-          slug: product.slug,
+          slug: data.slug,
+          weight: Number(data.weight),
         }).unwrap();
         if (response.success)
           toast.success(response.message ?? "Product updated Successfully", {
