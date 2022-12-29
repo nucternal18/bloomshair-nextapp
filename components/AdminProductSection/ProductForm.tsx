@@ -17,7 +17,7 @@ interface IProductFormProps {
   handleSubmit: UseFormHandleSubmit<ProductProps>;
   submitHandler: SubmitHandler<ProductProps>;
   register: UseFormRegister<ProductProps>;
-  errors: FieldErrorsImpl<ProductProps>;
+  errors: Partial<FieldErrorsImpl<ProductProps>>;
   isLoadingImage: boolean;
   isLoading: boolean;
   image: string;
@@ -56,11 +56,16 @@ const ProductForm = ({
         ) : (
           <div className="flex flex-col items-center w-full mb-2">
             {image ? (
-              <Image src={image} alt={product?.name} width={450} height={350} />
+              <Image
+                src={image}
+                alt={product?.name as string}
+                width={450}
+                height={350}
+              />
             ) : (
               <Image
                 src={product?.image as string}
-                alt={product?.name}
+                alt={product?.name as string}
                 width={250}
                 height={250}
               />
