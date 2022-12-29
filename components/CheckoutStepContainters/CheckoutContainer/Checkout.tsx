@@ -7,7 +7,7 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 // Components
 import ErrorMessage from "../../ErrorMessage";
-import Square from "../../square/Square";
+// import Square from "../../square/Square";
 import PaypalButton from "../../PayPalButton";
 
 // context
@@ -284,10 +284,10 @@ const CheckOutContainer = ({
               </div>
               {paymentMethod === "Square" && (
                 <div className="w-full">
-                  <Square
+                  {/* <Square
                     paymentAmount={Number(totalPrice).toFixed(2)}
                     onSquarePayment={onSquarePayment}
-                  />
+                  /> */}
                 </div>
               )}
             </div>
