@@ -27,7 +27,7 @@ const CreateAdmin = ({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Partial<UserInfoProps>>({
+  } = useForm<UserInfoProps>({
     defaultValues: {
       name: "",
       email: "",
@@ -36,7 +36,7 @@ const CreateAdmin = ({
     },
   });
 
-  const submitHandler: SubmitHandler<Partial<UserInfoProps>> = useCallback(
+  const submitHandler: SubmitHandler<UserInfoProps> = useCallback(
     async (data) => {
       const displayName = data.name,
         email = data.email,

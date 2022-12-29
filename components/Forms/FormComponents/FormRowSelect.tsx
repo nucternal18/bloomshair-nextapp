@@ -1,6 +1,6 @@
 import { UserCategory } from "@prisma/client";
 import React from "react";
-import { FieldError } from "react-hook-form";
+import { FieldError, Merge } from "react-hook-form";
 import { FaCaretDown } from "react-icons/fa";
 
 export type Ref = HTMLSelectElement;
@@ -10,7 +10,7 @@ type SelectProps = {
   label: string;
   type: string;
   list: any[];
-  errors: FieldError | undefined;
+  errors: FieldError | Merge<FieldError, UserCategory> | undefined;
 };
 
 const FormRowSelect: React.FunctionComponent<

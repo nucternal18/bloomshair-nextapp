@@ -1,6 +1,7 @@
 import React from "react";
 import {
   FieldError,
+  FieldErrorsImpl,
   UseFormHandleSubmit,
   UseFormRegister,
 } from "react-hook-form";
@@ -10,10 +11,11 @@ import FormCheckbox from "./FormComponents/FormCheckbox";
 import FormRowInput from "./FormComponents/FormRowInput";
 import FormRowSelect from "./FormComponents/FormRowSelect";
 
-interface ICreateAdminForm extends IForm<Partial<UserInfoProps>> {
+interface ICreateAdminForm extends IForm<UserInfoProps> {
   list: string[];
   buttonName: string;
   loading?: boolean;
+  errors: Partial<FieldErrorsImpl<UserInfoProps>>;
 }
 
 const CreateAdminForm = ({
