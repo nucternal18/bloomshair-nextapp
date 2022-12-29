@@ -134,7 +134,7 @@ const Table = ({ tableData, deleteHandler }: IUserTable) => {
               <div className="flex items-center">
                 <Image
                   src={item.image as string}
-                  alt={item.name}
+                  alt={item.name as string}
                   width={50}
                   height={50}
                   className="rounded-full"
