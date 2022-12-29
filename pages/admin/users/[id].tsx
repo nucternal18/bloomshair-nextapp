@@ -120,7 +120,7 @@ const UserEditScreen = ({ userId }: { userId: string }) => {
                   {user?.image && (
                     <Image
                       src={user?.image as string}
-                      alt={user?.name}
+                      alt={user?.name as string}
                       width={450}
                       height={350}
                     />
