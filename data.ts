@@ -21,17 +21,7 @@ export const navLink = [
   },
   {
     id: 5,
-    link: "/products",
-    title: "PRODUCTS",
-  },
-  {
-    id: 6,
     link: "/contact-us",
     title: "CONTACT US",
-  },
-  {
-    id: 7,
-    link: "/book-online",
-    title: "BOOK ONLINE",
   },
 ];

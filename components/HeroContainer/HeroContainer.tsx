@@ -30,7 +30,7 @@ const toBase64 = (str: string) =>
 
 const HeroContainer = () => {
   return (
-    <section className="relative flex items-center content-center justify-center h-[700px] pt-16 pb-32 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+    <section className="relative flex items-center content-center justify-center h-screen pt-16 pb-32 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
       <div className="absolute top-0 w-full h-full bg-center bg-cover">
         <div className="relative w-full h-full">
           <Image
@@ -62,14 +62,12 @@ const HeroContainer = () => {
             variants={variants}
             transition={{ delay: 3.0, duration: 5.0 }}
           >
-            <p className="mb-4 text-3xl font-thin text-gray-300 md:text-5xl lg:text-7xl">
+            <p className="mb-4 text-3xl font-thin text-gray-300 md:text-5xl lg:text-7xl border-b-2 border-yellow-500">
               Welcome to Blooms Hair
             </p>
-            <Button buttonName="book-now" type="button" color="yellow">
-              <Link href="/book-online">
-                <a>Book Now!</a>
-              </Link>
-            </Button>
+            <p className="mb-4 text-2xl font-thin text-gray-300">
+              Mobile Hairdressing
+            </p>
           </motion.div>
         </div>
       </div>

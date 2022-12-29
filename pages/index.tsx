@@ -26,17 +26,6 @@ export default function Home({ products }: { products: ProductProps[] }) {
     <Layout title="Home page" description="blooms hair home page">
       <main>
         <HeroContainer />
-        <section className="bg-white dark:bg-gray-900 ">
-          <div className="container md:mx-auto text-center py-4 border-b-2 border-yellow-400  sm:max-w-screen-sm">
-            <h1 className="text-2xl sm:text-4xl font-thin font-serif uppercase">
-              Our Best Sellers
-            </h1>
-          </div>
-
-          <ProductCarousel products={products} />
-        </section>
-
-        <BottomPageContainer />
       </main>
     </Layout>
   );

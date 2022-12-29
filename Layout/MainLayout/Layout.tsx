@@ -63,7 +63,7 @@ function Layout({ title, description, children }: ILayout): JSX.Element {
       </Head>
       <Navbar />
       <main
-        className={`relative ${router.asPath === "/" ? "mt-0" : "mt-24"} z-0`}
+        className={`relative ${router.asPath === "/" ? "mt-0" : "mt-20"} z-0`}
       >
         {children}
       </main>

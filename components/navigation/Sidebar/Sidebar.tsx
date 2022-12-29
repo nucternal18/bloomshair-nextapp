@@ -70,14 +70,15 @@ const Sidebar = () => {
 
           {/* Brand */}
           {hasMounted && (
-            <Link href={"/"}>
-              <a className="inline-block p-0 m-0 text-2xl font-bold cursor-pointer  ">
-                <BloomsLogo
-                  width={200}
-                  height={80}
-                  fill={`${theme === "dark" ? "#fff" : "#000"}`}
-                />
-              </a>
+            <Link
+              href={"/"}
+              className="inline-block p-0 m-0 text-2xl font-bold cursor-pointer  "
+            >
+              <BloomsLogo
+                width={200}
+                height={80}
+                fill={`${theme === "dark" ? "#fff" : "#000"}`}
+              />
             </Link>
           )}
         </div>
@@ -94,14 +95,15 @@ const Sidebar = () => {
             <div className="flex flex-wrap">
               <div className="w-6/12">
                 {mounted && (
-                  <Link href={"/"}>
-                    <a className="inline-block p-0 m-0 text-2xl font-bold cursor-pointer  ">
-                      <BloomsLogo
-                        width={200}
-                        height={80}
-                        fill={`${theme === "dark" ? "#fff" : "#000"}`}
-                      />
-                    </a>
+                  <Link
+                    href={"/"}
+                    className="inline-block p-0 m-0 text-2xl font-bold cursor-pointer  "
+                  >
+                    <BloomsLogo
+                      width={200}
+                      height={80}
+                      fill={`${theme === "dark" ? "#fff" : "#000"}`}
+                    />
                   </Link>
                 )}
               </div>

@@ -22,9 +22,8 @@ function ContactUs(): JSX.Element {
             <Image
               src={url}
               alt="home background image"
-              layout="fill"
-              objectFit="cover"
               quality={75}
+              layout="fill"
             />
 
             <span
@@ -35,7 +34,7 @@ function ContactUs(): JSX.Element {
           <div className="absolute mx-auto">
             <div className="flex flex-wrap items-center justify-center">
               <motion.div
-                className="opacity-75 "
+                className="opacity-75 text-center"
                 initial="hidden"
                 animate="visible"
                 variants={{
@@ -47,68 +46,56 @@ function ContactUs(): JSX.Element {
                 <h1 className="text-4xl font-thin text-gray-300 sm:text-7xl">
                   Contact Blooms Hair
                 </h1>
+                <p className="mb-4 text-2xl font-thin text-gray-300 border-t-2 border-yellow-500">
+                  Mobile Hairdressing
+                </p>
               </motion.div>
             </div>
           </div>
         </section>
         <section className="flex-grow w-full bg-white dark:bg-gray-900">
-          <div className="container grid max-w-screen-lg grid-cols-1 mx-auto py-8 lg:grid-cols-2">
-            <div className="flex justify-center col-span-1 px-4 py-6 my-6 item-center">
+          <div className="container grid max-w-screen-lg grid-cols-1 mx-auto py-8">
+            <div className="flex justify-center col-span-1 px-4 py-2 my-2 item-center">
               <div className="flex-col text-justify">
-                <h1 className="mb-4 text-3xl sm:text-5xl">Get In Touch</h1>
-                <p>
-                  We pride ourselves being passionate on making you feel amazing
-                  about yourselves – Not just in the salon but in between
-                  visits. Blooms Hair will create a bespoke look; every person
-                  is individual, different and we would like to tailor make
-                  every look with a personal touch.
-                </p>
+                <h1 className="text-3xl sm:text-5xl">Get In Touch</h1>
               </div>
             </div>
-            <div className="col-span-1 px-2 py-6 my-6 sm:px-4">
-              <div className="grid grid-cols-2 gap-1">
-                <div className="col-span-1 py-2 font-thin">PHONE</div>
-                <div className="col-span-1 py-2">07838849597</div>
-                <div className="col-span-1 py-2 font-thin">EMAIL</div>
-                <div className="col-span-1 py-2 break-words">
-                  <a href="mailto:appointments@bloomshair.co.uk">
-                    appointments@bloomshair.co.uk
-                  </a>
+            <div className="col-span-1 px-2 py-2 my-2 sm:px-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="sm:mb-4">
+                  <div>
+                    <p>
+                      We pride ourselves being passionate on making you feel
+                      amazing about yourselves – Not just in the salon but in
+                      between visits. Blooms Hair will create a bespoke look;
+                      every person is individual, different and we would like to
+                      tailor make every look with a personal touch.
+                    </p>
+                  </div>
                 </div>
-                <div className="col-span-1 py-2 font-thin">ADDRESS</div>
-                <div className="col-span-1 py-2">
-                  9 Lever St, London EC1V 3QU
-                </div>
-                <div className="col-span-1 py-2 font-thin">FOLLOW</div>
-                <div className="col-span-1 py-2">
-                  <ul className="flex flex-row text-gray-600 ">
-                    <li className="px-2 text-2xl hover:text-blue-500">
-                      <a href="https://www.facebook.com/pages/category/Pizza-Place/Viaromanonsolopizza-108686514250214/">
-                        <FaFacebook />
-                      </a>
-                    </li>
-                    <li className="px-2 text-2xl hover:text-blue-500">
-                      <a href="https://www.instagram.com/viaromanonsolopizza/">
-                        <FaInstagram />
-                      </a>
-                    </li>
-                    <li className="px-2 text-2xl hover:text-blue-500">
-                      <a href="https://www.google.com/maps/place/viaROMAnonsolopizza/@45.7240617,8.6311318,15z/data=!4m5!3m4!1s0x0:0x6dc73345553ebfda!8m2!3d45.7240617!4d8.6311318">
-                        <FaGoogle />
-                      </a>
-                    </li>
-                  </ul>
+                <div className="grid grid-cols-2 gap-1">
+                  <div className="col-span-1 py-2 font-thin">PHONE</div>
+                  <div className="col-span-1 py-2">07838849597</div>
+                  <div className="col-span-1 py-2 font-thin">EMAIL</div>
+                  <div className="col-span-1 py-2 break-words">
+                    <a href="mailto:appointments@bloomshair.co.uk">
+                      appointments@bloomshair.co.uk
+                    </a>
+                  </div>
+
+                  <div className="col-span-1 py-2 font-thin">FOLLOW</div>
+                  <div className="col-span-1 py-2">
+                    <ul className="flex flex-row text-gray-600 ">
+                      <li className="px-2 text-2xl hover:text-blue-500">
+                        <a href="https://www.instagram.com/viaromanonsolopizza/">
+                          <FaInstagram />
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="w-full">
-            <Maps
-              containerStyle={{
-                height: "400px",
-              }}
-              zoom={18}
-            />
           </div>
         </section>
       </main>

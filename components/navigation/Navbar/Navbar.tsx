@@ -117,23 +117,24 @@ const Navbar = () => {
           : "fixed shadow-b-2xl bg-white dark:bg-gray-900"
       }  navbar-expand-lg`}
     >
-      <div className="container flex items-center justify-between px-2 mx-auto font-light  md:relative sm:px-1 md:px-0 md:flex-row">
+      <div className="container flex items-center justify-between mx-auto font-light  md:relative sm:px-1 md:px-0 md:flex-row">
         {mounted && (
-          <Link href={"/"}>
-            <a className="inline-block p-0 m-0 text-2xl font-bold cursor-pointer md:mr-4 ">
-              <BloomsLogo
-                width={250}
-                height={80}
-                fill={`${
-                  router.asPath === "/" && pos === "top"
-                    ? "#fff"
-                    : resolvedTheme === "dark"
-                    ? "#fff"
-                    : "#000"
-                }`}
-              />
-              <span hidden>Home</span>
-            </a>
+          <Link
+            href={"/"}
+            className="inline-block p-0 m-0 text-2xl font-bold cursor-pointer md:mr-4 "
+          >
+            <BloomsLogo
+              width={200}
+              height={70}
+              fill={`${
+                router.asPath === "/" && pos === "top"
+                  ? "#fff"
+                  : resolvedTheme === "dark"
+                  ? "#fff"
+                  : "#000"
+              }`}
+            />
+            <span hidden>Home</span>
           </Link>
         )}
 
@@ -173,7 +174,7 @@ const Navbar = () => {
                 />
               </button>
             )}
-            <button
+            {/* <button
               aria-label="cart-button"
               className="snipcart-checkout text-2xl  list-none cursor-pointer hover:text-yellow-400"
             >
@@ -185,25 +186,24 @@ const Navbar = () => {
                     : "text-gray-900 dark:text-gray-200"
                 } font-bold relative flex items-center justify-center w-12 h-12 cursor-pointer `}
               />
-            </button>
+            </button> */}
           </div>
         </div>
         {/* Main Nav Links */}
         <ul className={position.right}>
           {navLink.map((link) => (
             <li key={link.id} className="flex px-1 m-0 list-none ">
-              <Link href={link.link}>
-                <a
-                  className={`${
-                    router.asPath === "/" && pos === "top"
-                      ? "text-gray-200"
-                      : router.asPath === link.link
-                      ? "text-yellow-500"
-                      : ""
-                  } flex items-center lg:block ml-0 mb-0 cursor-pointer py-1   hover:text-yellow-400 text-xs  font-normal list-none uppercase`}
-                >
-                  {link.title}
-                </a>
+              <Link
+                href={link.link}
+                className={`${
+                  router.asPath === "/" && pos === "top"
+                    ? "text-gray-200"
+                    : router.asPath === link.link
+                    ? "text-yellow-500"
+                    : ""
+                } flex items-center lg:block ml-0 mb-0 cursor-pointer py-1   hover:text-yellow-400 text-xs  font-normal list-none uppercase`}
+              >
+                {link.title}
               </Link>
             </li>
           ))}
@@ -261,41 +261,39 @@ const Navbar = () => {
                 ref={ref}
               >
                 <div>
-                  <button
-                    aria-label="user-profile-link"
-                    className="flex items-center px-4 py-2 space-x-2"
-                  >
-                    <FaUser fontSize={18} />
-                    <Link href={"/account/profile"}>
-                      <a
-                        className={`${
-                          router.asPath === "/auth/signin"
-                            ? "text-yellow-500"
-                            : ""
-                        } block text-lg font-medium space-x-2  list-none cursor-pointer hover:text-yellow-400`}
-                      >
-                        Profile
-                      </a>
-                    </Link>
-                  </button>
                   {session.user?.isAdmin && (
-                    <button
-                      aria-label="admin-link"
-                      className="flex items-center px-4 py-2 space-x-2"
-                    >
-                      <RiAdminFill fontSize={18} />
-                      <Link href={"/admin"}>
-                        <a
+                    <>
+                      <button
+                        aria-label="user-profile-link"
+                        className="flex items-center px-4 py-2 space-x-2"
+                      >
+                        <FaUser fontSize={18} />
+                        <Link
+                          href={"/account/profile"}
                           className={`${
-                            router.asPath === "/auth/signin"
+                            router.asPath === "/account/profile"
                               ? "text-yellow-500"
                               : ""
+                          } block text-lg font-medium space-x-2  list-none cursor-pointer hover:text-yellow-400`}
+                        >
+                          Profile
+                        </Link>
+                      </button>
+                      <button
+                        aria-label="admin-link"
+                        className="flex items-center px-4 py-2 space-x-2"
+                      >
+                        <RiAdminFill fontSize={18} />
+                        <Link
+                          href={"/admin"}
+                          className={`${
+                            router.asPath === "/admin" ? "text-yellow-500" : ""
                           } block text-lg font-medium   list-none cursor-pointer hover:text-yellow-400`}
                         >
                           Admin
-                        </a>
-                      </Link>
-                    </button>
+                        </Link>
+                      </button>
+                    </>
                   )}
                   <button
                     aria-label="logout-button"
@@ -321,15 +319,16 @@ const Navbar = () => {
                 } flex items-center px-1`}
               >
                 <FiLogIn fontSize={18} />
-                <Link href={"/auth/signin"}>
-                  <a className="flex items-center md:block ml-2 mb-2 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1  text-xs font-medium list-none uppercase">
-                    Sign In
-                  </a>
+                <Link
+                  href={"/auth/signin"}
+                  className="flex items-center md:block ml-2 mb-2 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1  text-xs font-medium list-none uppercase"
+                >
+                  Sign In
                 </Link>
               </button>
             </li>
           )}
-          <li className="list-none mb-1 flex items-center gap-1">
+          {/* <li className="list-none mb-1 flex items-center gap-1">
             <button
               aria-label="cart-button"
               className={`snipcart-checkout text-xl font-medium  uppercase list-none cursor-pointer `}
@@ -352,7 +351,7 @@ const Navbar = () => {
             >
               {cart.items?.count > 0 && `£${cart.subtotal?.toFixed(2)}`}
             </span>
-          </li>
+          </li> */}
         </ul>
       </div>
 
@@ -397,48 +396,46 @@ const Navbar = () => {
                   key={link.id}
                   className="flex px-1 m-0 text-base list-none sm:text-xs md:text-sm text-md"
                 >
-                  <Link href={link.link}>
-                    <a
-                      aria-label={link.title}
-                      className={`${
-                        router.asPath === link.link ? "text-yellow-500" : ""
-                      }flex items-center  ml-4 mb-2 cursor-pointer py-1.5  px-2   hover:text-yellow-400 text-lg font-medium list-none uppercase`}
-                    >
-                      {link.title}
-                    </a>
+                  <Link
+                    href={link.link}
+                    className={`${
+                      router.asPath === link.link ? "text-yellow-500" : ""
+                    }flex items-center  ml-4 mb-2 cursor-pointer py-1.5  px-2   hover:text-yellow-400 text-lg font-medium list-none uppercase`}
+                  >
+                    {link.title}
                   </Link>
                 </li>
               ))}
               {session?.user ? (
                 <>
-                  <li className="px-1 m-0 text-base list-none text-md">
-                    <button
-                      aria-label="user-profile-button"
-                      className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2"
-                    >
-                      <FaUser fontSize={18} />
-                      <Link href={"/account/profile"}>
-                        <a
-                          className={`${
-                            router.asPath === "/auth/signin"
-                              ? "text-yellow-500"
-                              : ""
-                          }flex items-center text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
-                        >
-                          Profile
-                        </a>
-                      </Link>
-                    </button>
-                  </li>
                   {session?.user?.isAdmin && (
-                    <li className="px-1 m-0 text-base list-none text-md">
-                      <button
-                        aria-label="admin-button"
-                        className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2"
-                      >
-                        <RiAdminFill fontSize={18} />
-                        <Link href={"/admin"}>
-                          <a
+                    <>
+                      <li className="px-1 m-0 text-base list-none text-md">
+                        <button
+                          aria-label="user-profile-button"
+                          className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2"
+                        >
+                          <FaUser fontSize={18} />
+                          <Link
+                            href={"/account/profile"}
+                            className={`${
+                              router.asPath === "/account/profile"
+                                ? "text-yellow-500"
+                                : ""
+                            }flex items-center text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
+                          >
+                            Profile
+                          </Link>
+                        </button>
+                      </li>
+                      <li className="px-1 m-0 text-base list-none text-md">
+                        <button
+                          aria-label="admin-button"
+                          className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2"
+                        >
+                          <RiAdminFill fontSize={18} />
+                          <Link
+                            href={"/admin"}
                             className={`${
                               router.asPath === "/auth/signin"
                                 ? "text-yellow-500"
@@ -446,10 +443,10 @@ const Navbar = () => {
                             } block text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
                           >
                             admin
-                          </a>
-                        </Link>
-                      </button>
-                    </li>
+                          </Link>
+                        </button>
+                      </li>
+                    </>
                   )}
                   <li className="px-1 m-0 text-base list-none text-md">
                     <button
@@ -469,16 +466,15 @@ const Navbar = () => {
                     className="flex items-center"
                   >
                     <FiLogIn fontSize={18} className="ml-5 mr-1 " />
-                    <Link href={"/auth/signin"}>
-                      <a
-                        className={`${
-                          router.asPath === "/auth/signin"
-                            ? "text-yellow-500"
-                            : ""
-                        }py-1 text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
-                      >
-                        Sign In
-                      </a>
+                    <Link
+                      href={"/auth/signin"}
+                      className={`${
+                        router.asPath === "/auth/signin"
+                          ? "text-yellow-500"
+                          : ""
+                      }py-1 text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
+                    >
+                      Sign In
                     </Link>
                   </button>
                 </li>

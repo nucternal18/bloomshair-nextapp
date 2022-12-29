@@ -42,7 +42,7 @@ function About(): JSX.Element {
                 transition={{ duration: 2.0 }}
               >
                 <p className="text-4xl font-thin text-gray-400 md:text-7xl">
-                  About Blooms Hair
+                  About Blooms Hair Mobile Hairdressing
                 </p>
               </motion.div>
             </div>
@@ -55,18 +55,18 @@ function About(): JSX.Element {
               <div className="flex items-center justify-center col-span-1 px-4 py-6 my-6">
                 <div className="flex flex-col">
                   <h2 className="mb-4 text-4xl font-bold ">
-                    Here At Blooms Hair, We Are Passionate About Making You Feel
-                    Special, Every Day.
+                    At Blooms Hair Mobile Hairdressing, We Are Passionate About
+                    Making You Feel Special, Every Day.
                   </h2>
                   <p className="text-2xl font-light leading-relaxed dark:text-gray-400">
                     That&apos;s why we offer a wide selection of quality
-                    services in our salon in Islington London. We have Wella
-                    Colour Master experts on hand that can deliver full hair
-                    colours to balayage and highlights, achieving your perfect
-                    shade is simple. Get healthier, fuller looking hair with our
-                    Brazilian smoothing treatments. We love to provide you with
-                    the latest haircut trends and insider info too so that you
-                    can leave looking, and feeling fantastic!
+                    services. We have Wella Colour Master experts on hand that
+                    can deliver full hair colours to balayage and highlights,
+                    achieving your perfect shade is simple. Get healthier,
+                    fuller looking hair with our Brazilian smoothing treatments.
+                    We love to provide you with the latest haircut trends and
+                    insider info too so that you can leave looking, and feeling
+                    fantastic!
                   </p>
                 </div>
               </div>

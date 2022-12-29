@@ -14,7 +14,7 @@ function ServiceMenu({ services }: { services: ServiceProps[] }): JSX.Element {
   return (
     <Layout
       title="Service Menu"
-      description="Blooms Hair Salon services prices"
+      description="Blooms Hair Mobile Hairdressing service prices"
     >
       <main className="flex-grow text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-hidden">
         <section className="relative flex items-center content-center justify-center">
@@ -172,14 +172,9 @@ function ServiceMenu({ services }: { services: ServiceProps[] }): JSX.Element {
               <p className="mb-2 font-thin">
                 Please note all colour prices are ‘from’. Exact quotes can only
                 be given after a consultation with a stylist. After colour
-                services, a blow-dry with a stylist starts at £25 and needs to
+                services, a blow-dry with a stylist starts at £33 and needs to
                 be specified when you book your appointment. All colour services
-                will otherwise include a quick dry from an experienced
-                assistant.
-              </p>
-              <p className="mb-2 font-thin">
-                To avoid disappointment, punctuality for appointments is greatly
-                appreciated.
+                will otherwise include a quick dry and finish.
               </p>
             </div>
           </div>
