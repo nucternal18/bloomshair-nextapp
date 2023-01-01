@@ -70,6 +70,6 @@ jobs:
       # - run: yarn test:ci
       - run: yarn generate
       - run: yarn run build
-      # - run: pm2 restart bloomshair-nextapp --watch
+      - run: pm2 restart bloomshair-nextapp --watch
     env:
       CI: true
