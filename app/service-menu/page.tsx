@@ -3,7 +3,6 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 import BottomPageContainer from "../components/BottomPageContainer";
-import { NEXT_URL } from "../../config";
 import { ServiceCategory, ServiceProps } from "@lib/types";
 
 const url =
@@ -15,9 +14,11 @@ const url =
 async function getServices() {
   const url = `hair-services?sortBy=${"all"}&category=${""}`;
 
-  const response = await fetch(`${NEXT_URL}/api/${url}`);
-  const data = await response.json();
+  const response = await fetch(`/api/${url}`);
 
+  if (!response.ok) throw new Error(response.statusText);
+
+  const data = await response.json();
   return data;
 }
 

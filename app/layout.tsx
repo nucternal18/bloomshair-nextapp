@@ -1,6 +1,7 @@
 import { Footer, Navbar, RootLayoutWrapper } from "./components";
 
-import Provider from "@app/providers/provider";
+import Provider from "./providers/provider";
+import "./styles/globals.css";
 
 export default function RootLayout({
   children,
@@ -9,7 +10,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="min-h-screen overflow-auto">
         <Provider>
           <Navbar />
           <RootLayoutWrapper>{children}</RootLayoutWrapper>

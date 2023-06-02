@@ -35,6 +35,11 @@ export default function Error({
           This page or item does not exist.
         </h2>
         <div className="flex justify-center">
+          <Button type="button" color="dark" onClick={() => reset()}>
+            Try again
+          </Button>
+        </div>
+        <div className="flex justify-center">
           <Button type="button" color="dark" onClick={() => router.back()}>
             GO BACK
           </Button>

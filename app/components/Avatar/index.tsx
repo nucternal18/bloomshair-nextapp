@@ -20,8 +20,8 @@ const Avatar = ({
             : "https://res.cloudinary.com/dtkjg8f0n/image/upload/e_sharpen:100,q_auto/v1621633003/sample.webp"
         }
         alt={"User image"}
-        layout="fill"
-        objectFit="cover"
+        fill
+        style={{ objectFit: "cover" }}
         className={`rounded-lg ${imgSize}`}
       />
     </div>

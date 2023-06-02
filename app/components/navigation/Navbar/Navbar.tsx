@@ -1,46 +1,26 @@
 "use client";
 /* eslint-disable react/display-name */
 import React, { useState, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { FaTimes, FaUser } from "react-icons/fa";
-import { FiLogIn, FiLogOut, FiMoon, FiSun } from "react-icons/fi";
+import { usePathname } from "next/navigation";
+import { FaTimes } from "react-icons/fa";
+import { FiMoon, FiSun } from "react-icons/fi";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { RiAdminFill } from "react-icons/ri";
-import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
-import { useSnipcart } from "use-snipcart";
-import { useSession } from "next-auth/react";
-import { Session } from "next-auth";
-
-// redux
-import { userApiSlice } from "app/global-state/api/apiSlice";
-import { useAppDispatch } from "app/global-state/hooks";
 
 // navlinks
 import { navLink } from "../../../../data";
 import { BloomsLogo } from "../../SVG/BloomsLogo";
 
-// components
-const CartIcon = dynamic(() => import("app/components/CartIcon"), {
-  ssr: false,
-});
-
 const Navbar = () => {
-  const router = useRouter();
-  const dispatch = useAppDispatch();
+  const path = usePathname();
+
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [cartIsOpen, setCartIsOpen] = useState<boolean>(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
   const [pos, setPos] = useState<string>("top");
-  const { data } = useSession();
-  const session: Session = data as Session;
-
-  const { cart = {} } = useSnipcart();
 
   useEffect(() => {
     setMounted(true);
@@ -102,18 +82,12 @@ const Navbar = () => {
     setCartIsOpen(!cartIsOpen);
   };
 
-  // logout handler
-  const logoutHandler = () => {
-    signOut();
-    dispatch(userApiSlice.util.resetApiState());
-  };
-
   return (
     <nav
       aria-label="main-navigation"
       data-testid="main-navigation"
       className={`top-0 z-10 flex flex-wrap items-center justify-between w-full px-2 py-2 text-gray-900 dark:text-gray-200 ${
-        router.asPath === "/" && pos === "top"
+        path === "/" && pos === "top"
           ? "bg-transparent absolute"
           : pos === "top"
           ? "absolute bg-white dark:bg-gray-900 "
@@ -130,7 +104,7 @@ const Navbar = () => {
               width={200}
               height={70}
               fill={`${
-                router.asPath === "/" && pos === "top"
+                path === "/" && pos === "top"
                   ? "#fff"
                   : resolvedTheme === "dark"
                   ? "#fff"
@@ -154,43 +128,13 @@ const Navbar = () => {
             <GiHamburgerMenu
               fontSize={21}
               className={`${
-                router.asPath === "/" && pos === "top"
+                path === "/" && pos === "top"
                   ? "text-gray-200"
                   : "text-gray-900 dark:text-gray-200"
               } font-bold `}
             />
           </button>
-          <div className="flex items-center lg:hidden">
-            {session?.user && (
-              <button
-                aria-label="user-dropdown"
-                className="flex items-center  bg-gray-200 border-2 border-yellow-500 rounded-full"
-                disabled
-              >
-                <Image
-                  src={session.user.image as string}
-                  alt={session.user.name as string}
-                  width={30}
-                  height={30}
-                  className="rounded-full"
-                  objectFit="cover"
-                />
-              </button>
-            )}
-            {/* <button
-              aria-label="cart-button"
-              className="snipcart-checkout text-2xl  list-none cursor-pointer hover:text-yellow-400"
-            >
-              <CartIcon
-                itemCount={cart.items?.count || 0}
-                classNames={`${
-                  router.asPath === "/" && pos === "top"
-                    ? "text-gray-200"
-                    : "text-gray-900 dark:text-gray-200"
-                } font-bold relative flex items-center justify-center w-12 h-12 cursor-pointer `}
-              />
-            </button> */}
-          </div>
+          <div className="flex items-center lg:hidden"></div>
         </div>
         {/* Main Nav Links */}
         <ul className={position.right}>
@@ -199,9 +143,9 @@ const Navbar = () => {
               <Link
                 href={link.link}
                 className={`${
-                  router.asPath === "/" && pos === "top"
+                  path === "/" && pos === "top"
                     ? "text-gray-200"
-                    : router.asPath === link.link
+                    : path === link.link
                     ? "text-yellow-500"
                     : ""
                 } flex items-center lg:block ml-0 mb-0 cursor-pointer py-1   hover:text-yellow-400 text-xs  font-normal list-none uppercase`}
@@ -221,7 +165,7 @@ const Navbar = () => {
                 <FiSun
                   fontSize={18}
                   className={`${
-                    router.asPath === "/" && pos === "top"
+                    path === "/" && pos === "top"
                       ? "text-gray-200"
                       : "text-gray-900 dark:text-gray-200"
                   } font-bold `}
@@ -230,7 +174,7 @@ const Navbar = () => {
                 <FiMoon
                   fontSize={18}
                   className={`${
-                    router.asPath === "/" && pos === "top"
+                    path === "/" && pos === "top"
                       ? "text-gray-200"
                       : "text-gray-900 dark:text-gray-200"
                   } font-bold `}
@@ -239,122 +183,6 @@ const Navbar = () => {
               <span hidden>toggle theme</span>
             </button>
           </li>
-          {session?.user ? (
-            <li className="px-1 m-0 text-base list-none">
-              <button
-                aria-label="user-dropdown-button"
-                className="flex items-center bg-white border-2 border-yellow-500 rounded-full"
-                onClick={toggleUserDropdown}
-              >
-                <Image
-                  src={session.user.image as string}
-                  alt={session.user.name as string}
-                  width={30}
-                  height={30}
-                  className="rounded-full"
-                  objectFit="cover"
-                />
-              </button>
-              <div
-                className={
-                  isDropDownOpen
-                    ? "absolute right-0 z-20 w-32 mt-2 overflow-hidden bg-white dark:bg-gray-900  rounded-md shadow-2xl"
-                    : "hidden"
-                }
-                ref={ref}
-              >
-                <div>
-                  {session.user?.isAdmin && (
-                    <>
-                      <button
-                        aria-label="user-profile-link"
-                        className="flex items-center px-4 py-2 space-x-2"
-                      >
-                        <FaUser fontSize={18} />
-                        <Link
-                          href={"/account/profile"}
-                          className={`${
-                            router.asPath === "/account/profile"
-                              ? "text-yellow-500"
-                              : ""
-                          } block text-lg font-medium space-x-2  list-none cursor-pointer hover:text-yellow-400`}
-                        >
-                          Profile
-                        </Link>
-                      </button>
-                      <button
-                        aria-label="admin-link"
-                        className="flex items-center px-4 py-2 space-x-2"
-                      >
-                        <RiAdminFill fontSize={18} />
-                        <Link
-                          href={"/admin"}
-                          className={`${
-                            router.asPath === "/admin" ? "text-yellow-500" : ""
-                          } block text-lg font-medium   list-none cursor-pointer hover:text-yellow-400`}
-                        >
-                          Admin
-                        </Link>
-                      </button>
-                    </>
-                  )}
-                  <button
-                    aria-label="logout-button"
-                    className="flex items-center px-4 py-2 space-x-2 text-lg hover:text-yellow-500"
-                    onClick={logoutHandler}
-                  >
-                    <FiLogOut fontSize={18} />
-                    <p className="font-medium">Logout </p>
-                  </button>
-                </div>
-              </div>
-            </li>
-          ) : (
-            <li className="m-0 list-none ">
-              <button
-                aria-label="login-button"
-                className={`${
-                  router.asPath === "/" && pos === "top"
-                    ? "text-gray-200"
-                    : router.asPath === "/auth/signin"
-                    ? "text-yellow-500"
-                    : ""
-                } flex items-center px-1`}
-              >
-                <FiLogIn fontSize={18} />
-                <Link
-                  href={"/auth/signin"}
-                  className="flex items-center md:block ml-2 mb-2 lg:ml-0 lg:mb-0 cursor-pointer py-1.5 lg:py-1 px-2 lg:px-1  text-xs font-medium list-none uppercase"
-                >
-                  Sign In
-                </Link>
-              </button>
-            </li>
-          )}
-          {/* <li className="list-none mb-1 flex items-center gap-1">
-            <button
-              aria-label="cart-button"
-              className={`snipcart-checkout text-xl font-medium  uppercase list-none cursor-pointer `}
-            >
-              <CartIcon
-                itemCount={cart.items?.count || 0}
-                classNames={`${
-                  router.asPath === "/" && pos === "top"
-                    ? "text-gray-200"
-                    : "text-gray-900 dark:text-gray-200"
-                } font-bold relative flex items-center justify-center w-12 h-12  `}
-              />
-            </button>
-            <span
-              className={`${
-                router.asPath === "/" && pos === "top"
-                  ? "text-gray-200"
-                  : "text-gray-900 dark:text-gray-200"
-              } text-sm mt-2 `}
-            >
-              {cart.items?.count > 0 && `£${cart.subtotal?.toFixed(2)}`}
-            </span>
-          </li> */}
         </ul>
       </div>
 
@@ -402,86 +230,13 @@ const Navbar = () => {
                   <Link
                     href={link.link}
                     className={`${
-                      router.asPath === link.link ? "text-yellow-500" : ""
+                      path === link.link ? "text-yellow-500" : ""
                     }flex items-center  ml-4 mb-2 cursor-pointer py-1.5  px-2   hover:text-yellow-400 text-lg font-medium list-none uppercase`}
                   >
                     {link.title}
                   </Link>
                 </li>
               ))}
-              {session?.user ? (
-                <>
-                  {session?.user?.isAdmin && (
-                    <>
-                      <li className="px-1 m-0 text-base list-none text-md">
-                        <button
-                          aria-label="user-profile-button"
-                          className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2"
-                        >
-                          <FaUser fontSize={18} />
-                          <Link
-                            href={"/account/profile"}
-                            className={`${
-                              router.asPath === "/account/profile"
-                                ? "text-yellow-500"
-                                : ""
-                            }flex items-center text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
-                          >
-                            Profile
-                          </Link>
-                        </button>
-                      </li>
-                      <li className="px-1 m-0 text-base list-none text-md">
-                        <button
-                          aria-label="admin-button"
-                          className="flex items-center py-1.5  px-2 mb-2 ml-4 space-x-2"
-                        >
-                          <RiAdminFill fontSize={18} />
-                          <Link
-                            href={"/admin"}
-                            className={`${
-                              router.asPath === "/auth/signin"
-                                ? "text-yellow-500"
-                                : ""
-                            } block text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
-                          >
-                            admin
-                          </Link>
-                        </button>
-                      </li>
-                    </>
-                  )}
-                  <li className="px-1 m-0 text-base list-none text-md">
-                    <button
-                      aria-label="logout-button"
-                      className="flex items-center  ml-4 mb-4 cursor-pointer py-1.5  px-2  space-x-2  text-lg font-medium list-none uppercase"
-                      onClick={logoutHandler}
-                    >
-                      <FiLogOut fontSize={18} />
-                      <p>Logout </p>
-                    </button>
-                  </li>
-                </>
-              ) : (
-                <li className="flex items-center px-1 m-0 text-base list-none text-md">
-                  <button
-                    aria-label="login-button"
-                    className="flex items-center"
-                  >
-                    <FiLogIn fontSize={18} className="ml-5 mr-1 " />
-                    <Link
-                      href={"/auth/signin"}
-                      className={`${
-                        router.asPath === "/auth/signin"
-                          ? "text-yellow-500"
-                          : ""
-                      }py-1 text-lg font-medium  uppercase list-none cursor-pointer hover:text-yellow-400`}
-                    >
-                      Sign In
-                    </Link>
-                  </button>
-                </li>
-              )}
             </ul>
           </div>
         </div>

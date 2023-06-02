@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect } from "react";
 import { useRouter, redirect, usePathname } from "next/navigation";
 import Image from "next/image";

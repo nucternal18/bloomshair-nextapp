@@ -1,24 +1,25 @@
 "use client";
-import { useState } from "react";
+import { Suspense } from "react";
 
 // Components
-import ImageCard from "../components/pictures/ImageCard";
-import Modal from "../components/Modal";
-// Server Url
-import { NEXT_URL } from "../../config";
+import PictureGrid from "@components/PictureGrid";
 import { GalleryProps } from "@lib/types";
 
 // title="Gallery" description="Pictures of hair color and cut"
 
-async function getPictures(): Promise<GalleryProps[]> {
-  const res = await fetch(`${NEXT_URL}/api/gallery`);
-  const data = await res.json();
-  return data;
-}
+// async function getPictures() {
+//   const res = await fetch(`/api/pictures`);
+
+//   if (!res.ok) {
+//     throw new Error(res.statusText);
+//   }
+//   const data = await res.json();
+//   return data;
+// }
 
 export default async function Gallery() {
-  const pictures = await getPictures();
-  const [selectedImg, setSelectedImg] = useState<string>("");
+  // const pictures = await getPictures();
+
   return (
     <section className="flex w-full text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 overflow-y-auto md:px-0">
       <div className="container max-w-screen-lg px-2 mx-auto">
@@ -27,19 +28,10 @@ export default async function Gallery() {
             Gallery
           </h1>
         </div>
-        <div className="grid grid-cols-1 gap-1 my-8 md:grid-cols-3 sm:mx-0">
-          {pictures.map((doc: GalleryProps) => (
-            <ImageCard
-              setSelectedImg={setSelectedImg}
-              image={doc.image}
-              key={doc.id}
-            />
-          ))}
-        </div>
+        <Suspense fallback={<div>Loading...</div>}>
+          {/* <PictureGrid pictures={pictures} /> */}
+        </Suspense>
       </div>
-      {selectedImg && (
-        <Modal selectedImg={selectedImg} setSelectedImg={setSelectedImg} />
-      )}
     </section>
   );
 }

@@ -41,7 +41,6 @@
     ".eslintrc.js",
     "jest.config.js",
     "next-sitemap.config.js",
-    "types/**/*.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules", "/app/api/auth/[...nextauth]/route.ts"],

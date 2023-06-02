@@ -37,8 +37,8 @@ const HeroContainer = () => {
               "blooms_hair_products/AdobeStock_53052353_xwep1d"
             ).toURL()}
             alt="BiZkettE1 / Freepik"
-            layout="fill"
-            objectFit="cover"
+            fill
+            style={{ objectFit: "cover" }}
             quality={50}
             priority
             placeholder="blur"

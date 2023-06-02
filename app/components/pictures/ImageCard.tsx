@@ -30,8 +30,7 @@ const ImageCards = ({
           alt=""
           width={400}
           height={400}
-          layout="responsive"
-          objectFit="cover"
+          style={{ objectFit: "cover" }}
         />
       </motion.div>
     </motion.div>

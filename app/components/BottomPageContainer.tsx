@@ -32,8 +32,8 @@ function BottomPageContainer() {
               "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1626474377/blooms_hair_products/lauren-fleischmann-akfxOADwNhk-unsplash_fcmoqo.webp"
             }
             alt="home background image"
-            layout="fill"
-            objectFit="cover"
+            fill
+            style={{ objectFit: "cover" }}
             quality={50}
             placeholder="blur"
             blurDataURL={`data:image/svg+xml;base64,${toBase64(
