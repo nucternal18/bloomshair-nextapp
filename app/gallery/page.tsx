@@ -8,7 +8,7 @@ import { GalleryProps } from "@lib/types";
 // title="Gallery" description="Pictures of hair color and cut"
 
 // async function getPictures() {
-//   const res = await fetch(`/api/pictures`);
+//   const res = await fetch(`${NEXT_URL}/api/pictures`);
 
 //   if (!res.ok) {
 //     throw new Error(res.statusText);

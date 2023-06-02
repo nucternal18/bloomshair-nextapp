@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 
 import BottomPageContainer from "../components/BottomPageContainer";
 import { ServiceCategory, ServiceProps } from "@lib/types";
+import { NEXT_URL } from "@config/index";
 
 const url =
   "https://res.cloudinary.com/dtkjg8f0n/image/upload/v1621805398/blooms_hair_products/AdobeStock_290145313_mbpudc.webp";
@@ -12,9 +13,7 @@ const url =
 // description = "Blooms Hair Mobile Hairdressing service prices";
 
 async function getServices() {
-  const url = `hair-services?sortBy=${"all"}&category=${""}`;
-
-  const response = await fetch(`/api/${url}`);
+  const response = await fetch(`${NEXT_URL}/api/hair-services`);
 
   if (!response.ok) throw new Error(response.statusText);
 
