@@ -26,30 +26,12 @@ export async function GET(req: Request) {
    * @route GET /api/hair-services
    * @access Public
    */
-  const { searchParams } = new URL(req.url);
-
-  const queryItems: QueryObjProps = Object.fromEntries(searchParams.entries());
-  const { sortBy, category } = queryItems;
-
-  let result: ServiceDataProps[];
-
-  // Chain sort conditions
-  if (sortBy === "latest" || category) {
-    result = await prisma.service.findMany({
-      where: { category: category as Category },
-      orderBy: {
-        createdAt: "desc",
-      },
+  const services = await prisma.service.findMany({});
+  if (!services) {
+    return new Response("No services found", {
+      status: 400,
     });
-  } else if (sortBy === "oldest" || category) {
-    result = await prisma.service.findMany({
-      orderBy: {
-        createdAt: "asc",
-      },
-    });
-  } else {
-    result = await prisma.service.findMany({});
   }
 
-  return NextResponse.json(result);
+  return NextResponse.json(services);
 }

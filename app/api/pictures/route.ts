@@ -5,7 +5,6 @@ import { prisma } from "../../../lib/prisma-db";
 
 export async function GET(req: Request) {
   const pictures = await prisma.picture.findMany({});
-  await prisma.$disconnect();
   if (pictures) {
     return NextResponse.json(pictures);
   } else {
