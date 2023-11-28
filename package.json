@@ -38,7 +38,7 @@
     "@tailwindcss/typography": "^0.5.8",
     "@types/nodemailer": "^6.4.7",
     "bcryptjs": "^2.4.3",
-    "cloudinary": "^1.33.0",
+    "cloudinary": "^1.37.3",
     "framer-motion": "^8.0.2",
     "html-react-parser": "^3.0.6",
     "js-cookie": "^3.0.1",
