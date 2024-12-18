@@ -45,7 +45,7 @@
     "jsonwebtoken": "^9.0.0",
     "marked": "^4.2.5",
     "moment": "^2.29.4",
-    "nanoid": "^4.0.0",
+    "nanoid": "^5.0.9",
     "next": "^13.4.3",
     "next-auth": "^4.22.1",
     "next-pwa": "^5.6.0",
